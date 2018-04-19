@@ -1,7 +1,8 @@
-package com.example.admlab105.mapa;
+package com.example.admlab105.recorridocampus;
 
-import android.support.v4.app.FragmentActivity;
+
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -13,10 +14,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MapaCampus extends FragmentActivity implements OnMapReadyCallback {
+public class Mapa extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    private int SITIOS = 30;
+    private int puntos = 30;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +28,7 @@ public class MapaCampus extends FragmentActivity implements OnMapReadyCallback {
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     }
+
 
 
     /**
@@ -49,14 +51,18 @@ public class MapaCampus extends FragmentActivity implements OnMapReadyCallback {
 
         List<LatLng> sitios = new ArrayList<LatLng>();
 
-        for (int i = 1; i <= SITIOS; i++) {
+        for (int i = 0; i < puntos; i++) {
             //sitios.set(i, new LatLng(-34, 151)); // Tomar coordenadas de la base
-            sitios.set(i, new LatLng(lat[i], lng[i])); // Tomar coordenadas de la base
+            sitios.add(new LatLng(3*i, 3*i)); // Tomar coordenadas de la base
 
             // Título de cada marcador (Tomar nombre de cada sitio de la base)
-            mMap.addMarker(new MarkerOptions().position(sitios.get(i)).title("xxxxxxxxx"));
+            mMap.addMarker(new MarkerOptions().position(sitios.get(i)).title(/*"xxxxxxxxx"*/String.valueOf(i+1)));
 
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(sitios.get(i)));
+            //mMap.moveCamera(CameraUpdateFactory.newLatLng(sitios.get(i)));
         }
     }
 }
+    /*List<LatLng> points=new ArrayList<LatLng>();
+for (int i = 0 ; i < pointX.length - 1; i++){
+    points.add(new LatLng(pointX[i],pointY[i]));
+};*/
