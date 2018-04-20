@@ -56,7 +56,7 @@ public class Mapa extends FragmentActivity implements OnMapReadyCallback {
             sitios.add(new LatLng(3*i, 3*i)); // Tomar coordenadas de la base
 
             // Título de cada marcador (Tomar nombre de cada sitio de la base)
-            mMap.addMarker(new MarkerOptions().position(sitios.get(i)).title(/*"xxxxxxxxx"*/String.valueOf(i+1)));
+            mMap.addMarker(new MarkerOptions().position(sitios.get(i)).title(String.valueOf(i+1)));
 
             //mMap.moveCamera(CameraUpdateFactory.newLatLng(sitios.get(i)));
         }
@@ -66,3 +66,8 @@ public class Mapa extends FragmentActivity implements OnMapReadyCallback {
 for (int i = 0 ; i < pointX.length - 1; i++){
     points.add(new LatLng(pointX[i],pointY[i]));
 };*/
+
+
+    // https://developers.google.com/maps/documentation/android-api/location?hl=es-419
+    // RECORDAR SOLICITAR AL USUARIO LOS PERMISOS DE UBICACIÓN
+    //https://stackoverflow.com/questions/30253123/blue-dot-and-circle-is-not-shown-on-mylocation-using-android-fused-location-api/30255219#30255219
