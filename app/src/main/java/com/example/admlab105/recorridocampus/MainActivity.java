@@ -18,4 +18,10 @@ public class MainActivity extends AppCompatActivity {
         startActivity(i);
 
     }
+
+    public void abrirMapa2(View view){
+        Intent i = new Intent(this, mapaframe.class);
+        startActivity(i);
+
+    }
 }
