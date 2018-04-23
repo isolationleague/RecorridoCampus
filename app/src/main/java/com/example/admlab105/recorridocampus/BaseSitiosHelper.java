@@ -27,6 +27,31 @@ public class BaseSitiosHelper extends SQLiteOpenHelper {
                 BaseSitiosContract.SitioBase.COLUMN_COORDENADA_Y + " REAL" + "," +
                 BaseSitiosContract.SitioBase.COLUMN_VISITADO + " INTEGER" + " )");
 
+        dB.execSQL("CREATE TABLE " + BaseSitiosContract.Usuario.TABLE_NAME + " (" +
+                BaseSitiosContract.Usuario._ID + " INTEGER PRIMARY KEY," +
+                BaseSitiosContract.Usuario.USUARIO_NOMBRE + " TEXT" + "," +
+                BaseSitiosContract.Usuario.USUARIO_PUNTOS + " INTEGER" + " )");
+
+        dB.execSQL("CREATE TABLE " + BaseSitiosContract.Foto.TABLE_NAME + " (" +
+                BaseSitiosContract.Foto._ID + " INTEGER PRIMARY KEY," +
+                BaseSitiosContract.Foto.ID_SITIO + " INTEGER " + "," +
+                BaseSitiosContract.Foto.RUTA + " TEXT " + " )");
+
+        dB.execSQL("CREATE TABLE " + BaseSitiosContract.Video.TABLE_NAME + " (" +
+                BaseSitiosContract.Video._ID + " INTEGER PRIMARY KEY," +
+                BaseSitiosContract.Video.ID_SITIO + " INTEGER " + "," +
+                BaseSitiosContract.Video.RUTA + " TEXT " + " )");
+
+        dB.execSQL("CREATE TABLE " + BaseSitiosContract.Audio.TABLE_NAME + " (" +
+                BaseSitiosContract.Audio._ID + " INTEGER PRIMARY KEY," +
+                BaseSitiosContract.Audio.ID_SITIO + " INTEGER " + "," +
+                BaseSitiosContract.Audio.RUTA + " TEXT " + " )");
+
+        dB.execSQL("CREATE TABLE " + BaseSitiosContract.Texto.TABLE_NAME + " (" +
+                BaseSitiosContract.Texto._ID + " INTEGER PRIMARY KEY," +
+                BaseSitiosContract.Texto.ID_SITIO + " INTEGER " + "," +
+                BaseSitiosContract.Texto.RUTA + " TEXT " + " )");
+
         llenaBase(dB);
     }
 
@@ -43,10 +68,8 @@ public class BaseSitiosHelper extends SQLiteOpenHelper {
         values.put(BaseSitiosContract.SitioBase.COLUMN_COORDENADA_X, -84.05199019999998);
         values.put(BaseSitiosContract.SitioBase.COLUMN_VISITADO, 0);
 
-        long newRowId = dB.insert(BaseSitiosContract.SitioBase.TABLE_NAME , null, values);
+        long newRowId = dB.insert(BaseSitiosContract.SitioBase.TABLE_NAME ,null, values);
         System.out.println(newRowId);
-
-
 
     }
 }
