@@ -60,7 +60,7 @@ public class mapaframe extends FragmentActivity implements OnMapReadyCallback{
         }
     }
     public void getCurrentCoordinates(View view){
-        System.out.println("Hello");
+        miUbic();
     }
 
     private void miUbic() {
