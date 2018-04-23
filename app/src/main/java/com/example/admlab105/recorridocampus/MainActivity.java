@@ -18,7 +18,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.TextView;
-
+import android.view.View;
+import android.content.Intent;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
@@ -39,6 +40,17 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(mViewPager);
     }
 
+    public void abrirMapa(View view){
+        Intent i = new Intent(this, Mapa.class);
+        startActivity(i);
+
+    }
+
+    public void abrirMapa2(View view){
+        Intent i = new Intent(this, mapaframe.class);
+        startActivity(i);
+
+    }
     private void setupViewPager(ViewPager viewPager) {
         SectionsPageAdapter adapter = new SectionsPageAdapter(getSupportFragmentManager());
         adapter.addFragment(new Tab1Fragment(), "Mapa");
