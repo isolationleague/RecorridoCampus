@@ -13,7 +13,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.ArrayList;
 import java.util.List;
 
-public class mapaframe extends AppCompatActivity implements OnMapReadyCallback{
+/*public class mapaframe extends AppCompatActivity implements OnMapReadyCallback{
 
     private GoogleMap mMap;
     int puntos = 10;
@@ -47,4 +47,4 @@ public class mapaframe extends AppCompatActivity implements OnMapReadyCallback{
         System.out.println("Hello");
     }
 
-}
+}*/
