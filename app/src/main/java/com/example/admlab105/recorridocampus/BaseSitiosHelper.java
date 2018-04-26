@@ -2,8 +2,10 @@ package com.example.admlab105.recorridocampus;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.widget.Toast;
 
 /**
  * Created by usuario on 18/04/2018.
@@ -12,14 +14,18 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class BaseSitiosHelper extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "BaseSitios.db";
+    Context context;
 
     public BaseSitiosHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+
     }
 
 
     @Override
     public void onCreate(SQLiteDatabase dB) {
+        context = this.context;
+
         dB.execSQL("CREATE TABLE " + BaseSitiosContract.SitioBase.TABLE_NAME + " (" +
                 BaseSitiosContract.SitioBase._ID + " INTEGER PRIMARY KEY," +
                 BaseSitiosContract.SitioBase.COLUMN_NOMBRE + " TEXT" + "," +
@@ -61,15 +67,49 @@ public class BaseSitiosHelper extends SQLiteOpenHelper {
         onCreate(dB);
     }
 
-    void llenaBase(SQLiteDatabase dB){
+    void llenaBase(SQLiteDatabase dB) {
         ContentValues values = new ContentValues();
         values.put(BaseSitiosContract.SitioBase.COLUMN_NOMBRE, "ECCI");
         values.put(BaseSitiosContract.SitioBase.COLUMN_COORDENADA_X, 9.937924599999999);
         values.put(BaseSitiosContract.SitioBase.COLUMN_COORDENADA_X, -84.05199019999998);
         values.put(BaseSitiosContract.SitioBase.COLUMN_VISITADO, 0);
 
-        long newRowId = dB.insert(BaseSitiosContract.SitioBase.TABLE_NAME ,null, values);
+        long newRowId = dB.insert(BaseSitiosContract.SitioBase.TABLE_NAME, null, values);
         System.out.println(newRowId);
 
+    }
+
+    public void agregarUsuario(String nombre) {
+        SQLiteDatabase db = getWritableDatabase();
+        if (db != null) {
+            //db.execSQL("INSERT INTO Usuario VALUES('"+nombre+"','"+0+"')");
+            ContentValues values = new ContentValues();
+            values.put(BaseSitiosContract.Usuario.USUARIO_NOMBRE, nombre);
+            values.put(BaseSitiosContract.Usuario.USUARIO_PUNTOS, 0);
+            long newRowId = db.insert(BaseSitiosContract.Usuario.TABLE_NAME, null, values);
+            db.close();
+        } else {
+            Toast.makeText(context, "No se pudo abrir base de datos", Toast.LENGTH_SHORT);
+
+        }
+    }
+
+    public String[] obtenerLugares() {
+        String[] lugares = null;
+
+        return lugares;
+    }
+
+    public Cursor verUsuario() {
+        SQLiteDatabase db = getReadableDatabase();
+        String nombre = "", puntos = "";
+        Cursor c=null;
+
+        if (db != null) {
+            return c = db.rawQuery(" SELECT nombre,puntos FROM Usuario ", null);
+
+        }
+        //Toast.makeText(context ,"",Toast.LENGTH_SHORT).show();
+        return c;
     }
 }
