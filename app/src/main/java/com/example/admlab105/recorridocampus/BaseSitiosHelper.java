@@ -6,6 +6,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.widget.Toast;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 
 /**
  * Created by usuario on 18/04/2018.
@@ -58,7 +63,11 @@ public class BaseSitiosHelper extends SQLiteOpenHelper {
                 BaseSitiosContract.Texto.ID_SITIO + " INTEGER " + "," +
                 BaseSitiosContract.Texto.RUTA + " TEXT " + " )");
 
-        llenaBase(dB);
+        try {
+            llenaBase(dB);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -67,15 +76,27 @@ public class BaseSitiosHelper extends SQLiteOpenHelper {
         onCreate(dB);
     }
 
-    void llenaBase(SQLiteDatabase dB) {
-        ContentValues values = new ContentValues();
+    void llenaBase(SQLiteDatabase dB) throws FileNotFoundException {
+    /*   ContentValues values = new ContentValues();
         values.put(BaseSitiosContract.SitioBase.COLUMN_NOMBRE, "ECCI");
         values.put(BaseSitiosContract.SitioBase.COLUMN_COORDENADA_X, 9.937924599999999);
-        values.put(BaseSitiosContract.SitioBase.COLUMN_COORDENADA_X, -84.05199019999998);
+        values.put(BaseSitiosContract.SitioBase.COLUMN_COORDENADA_Y, -84.05199019999998);
         values.put(BaseSitiosContract.SitioBase.COLUMN_VISITADO, 0);
-
         long newRowId = dB.insert(BaseSitiosContract.SitioBase.TABLE_NAME, null, values);
         System.out.println(newRowId);
+        */
+
+        File file = new File("coordenadas.txt");
+        BufferedReader br = new BufferedReader(new FileReader(file));
+        String st;
+        try {
+            while ((st = br.readLine()) != null)
+             st.split(",");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     }
 
