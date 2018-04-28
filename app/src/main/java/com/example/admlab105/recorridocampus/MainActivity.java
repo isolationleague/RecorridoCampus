@@ -40,17 +40,6 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(mViewPager);
     }
 
-    public void abrirMapa(View view){
-        Intent i = new Intent(this, Mapa.class);
-        startActivity(i);
-
-    }
-
-    public void abrirMapa2(View view){
-        Intent i = new Intent(this, Tab1Fragment.class);
-        startActivity(i);
-
-    }
 
     private void setupViewPager(ViewPager viewPager) {
         SectionsPageAdapter adapter = new SectionsPageAdapter(getSupportFragmentManager());

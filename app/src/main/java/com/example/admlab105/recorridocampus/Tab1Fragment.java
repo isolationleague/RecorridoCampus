@@ -14,6 +14,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -70,6 +71,8 @@ public class Tab1Fragment extends Fragment implements OnMapReadyCallback {
     double lat = 0.0, lon = 0.0;
     private Marker marker;
 
+    private static final int PERMISSIONS_REQUEST_LOCATION = 1;
+
     public Tab1Fragment() {
 
     }
@@ -120,8 +123,9 @@ public class Tab1Fragment extends Fragment implements OnMapReadyCallback {
         mMap = googleMap;
 
         List<LatLng> sitios = new ArrayList<LatLng>();
+        volverCampus();
 
-        for (int i = 0; i < puntos; i++) {
+       /* for (int i = 0; i < puntos; i++) {
             //sitios.set(i, new LatLng(-34, 151)); // Tomar coordenadas de la base
             sitios.add(new LatLng(3 * i, 3 * i)); // Tomar coordenadas de la base
 
@@ -129,7 +133,8 @@ public class Tab1Fragment extends Fragment implements OnMapReadyCallback {
             mMap.addMarker(new MarkerOptions().position(sitios.get(i)).title(String.valueOf(i + 1)));
 
             //mMap.moveCamera(CameraUpdateFactory.newLatLng(sitios.get(i)));
-        }
+        }*/
+
     }
 
 
@@ -137,6 +142,7 @@ public class Tab1Fragment extends Fragment implements OnMapReadyCallback {
 
 
     private void miUbic() {
+
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
@@ -151,6 +157,10 @@ public class Tab1Fragment extends Fragment implements OnMapReadyCallback {
                     999
             );
             return;*/
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION,
+                            android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    PERMISSIONS_REQUEST_LOCATION);
         }
 
 
@@ -242,6 +252,28 @@ public class Tab1Fragment extends Fragment implements OnMapReadyCallback {
 
         actualizarUbic(location);
 
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST_LOCATION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request.
+        }
     }
 
     private void volverCampus(){
