@@ -89,13 +89,19 @@ public class Tab1Fragment extends Fragment implements OnMapReadyCallback {
 
         View view = inflater.inflate(R.layout.tab1_fragment, container, false);
         Button btnCoor =  view.findViewById(R.id.btnCoor);
+        Button btnCampus= view.findViewById(R.id.btnCampus);
+
         btnCoor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 miUbic();
             }
         });
-
+        btnCampus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) { volverCampus();
+            }
+        });
 
         mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         if (mapFragment == null) {
@@ -236,6 +242,12 @@ public class Tab1Fragment extends Fragment implements OnMapReadyCallback {
 
         actualizarUbic(location);
 
+    }
+
+    private void volverCampus(){
+        LatLng coord = new LatLng(9.9370, -84.0503);
+        float zoomLevel = 16.5f; //This goes up to 21
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(coord, zoomLevel));
     }
 
     private void actualizarUbic(Location location) {
