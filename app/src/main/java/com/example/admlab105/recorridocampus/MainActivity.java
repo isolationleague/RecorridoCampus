@@ -20,6 +20,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.view.View;
 import android.content.Intent;
+import android.widget.Toast;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
@@ -40,12 +42,31 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(mViewPager);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+
+        if (id == R.id.action_settings) {
+            Toast.makeText(this, "Settings", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
 
     private void setupViewPager(ViewPager viewPager) {
         SectionsPageAdapter adapter = new SectionsPageAdapter(getSupportFragmentManager());
         adapter.addFragment(new Tab1Fragment(), "Mapa");
         adapter.addFragment(new Tab2Fragment(), "Mi Recorrido");
-        adapter.addFragment(new Tab3Fragment(), "Opciones");
         viewPager.setAdapter(adapter);
     }
 

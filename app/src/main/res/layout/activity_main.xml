@@ -13,7 +13,7 @@
         android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/appbar_padding_top"
+        android:paddingTop="0dp"
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <!--android.support.v7.widget.Toolbar
@@ -32,7 +32,9 @@
             android:id="@+id/tabs"
             app:tabTextColor="@color/colorAccent"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            app:tabBackground="@drawable/tab_color_selector"
+            app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"/>
 
     </android.support.design.widget.AppBarLayout>
 
