@@ -21,7 +21,7 @@ import java.io.IOException;
  */
 
 public class BaseSitiosHelper extends SQLiteOpenHelper {
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 3;
     private static final String DATABASE_NAME = "BaseSitios.db";
     Context context;
 
@@ -73,6 +73,11 @@ public class BaseSitiosHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase dB, int oVersion, int nVersion) {
         dB.execSQL("DROP TABLE IF EXISTS " + BaseSitiosContract.SitioBase.TABLE_NAME);
+        dB.execSQL("DROP TABLE IF EXISTS " + BaseSitiosContract.Usuario.TABLE_NAME);
+        dB.execSQL("DROP TABLE IF EXISTS " + BaseSitiosContract.Foto.TABLE_NAME);
+        dB.execSQL("DROP TABLE IF EXISTS " + BaseSitiosContract.Video.TABLE_NAME);
+        dB.execSQL("DROP TABLE IF EXISTS " + BaseSitiosContract.Texto.TABLE_NAME);
+        dB.execSQL("DROP TABLE IF EXISTS " + BaseSitiosContract.Audio.TABLE_NAME);
         onCreate(dB);
     }
 
@@ -91,6 +96,7 @@ public class BaseSitiosHelper extends SQLiteOpenHelper {
             BufferedReader br = new BufferedReader(new InputStreamReader(fraw));
             String linea ="";
             String[] sitioPartes = null;
+            int count = 0;
             while ((linea = br.readLine()) != null) {
                 sitioPartes = linea.split(",");    //nombre,coordenada x y coordenada y
                 ContentValues values = new ContentValues();
@@ -99,8 +105,12 @@ public class BaseSitiosHelper extends SQLiteOpenHelper {
                 values.put(BaseSitiosContract.SitioBase.COLUMN_COORDENADA_Y, sitioPartes[2]);
                 values.put(BaseSitiosContract.SitioBase.COLUMN_VISITADO, 0);
                 long newRowId = dB.insert(BaseSitiosContract.SitioBase.TABLE_NAME, null, values);
+                count ++;
             }
+            System.out.print("d");
             fraw.close();
+            Toast.makeText(context, ""+count, Toast.LENGTH_LONG).show();
+            br.close();
         }
         catch (Exception ex)
         {
@@ -108,7 +118,7 @@ public class BaseSitiosHelper extends SQLiteOpenHelper {
         }
     }
 
-    public void cargar()
+   /* public void cargar()
     {
         SQLiteDatabase dB = getWritableDatabase();
         try
@@ -135,6 +145,8 @@ public class BaseSitiosHelper extends SQLiteOpenHelper {
 
 
     }
+
+    */
 
 
 

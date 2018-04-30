@@ -62,7 +62,7 @@ public class PruebadeBase extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                db.cargar();
+               // db.cargar();
             }
         });
 
