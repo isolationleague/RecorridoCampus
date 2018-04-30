@@ -16,26 +16,27 @@
         android:paddingTop="0dp"
         android:theme="@style/AppTheme.AppBarOverlay">
 
-        <!--android.support.v7.widget.Toolbar
+        <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?android:attr/actionBarSize"
-            android:layout_weight="1"
-            android:background="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|enterAlways"
-            app:popupTheme="@style/AppTheme.PopupOverlay"
-            app:title="@string/app_name"-->
-
-        <!--/android.support.v7.widget.Toolbar-->
+            android:background="@color/selected"
+            app:popupTheme="@style/AppTheme.PopupOverlay" >
 
         <android.support.design.widget.TabLayout
             android:id="@+id/tabs"
             app:tabTextColor="@color/colorAccent"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            app:tabSelectedTextColor="@color/colorAccent"
+            android:layout_width="300dp"
+            android:layout_height="?android:attr/actionBarSize"
+            app:tabIndicatorColor="@color/unselected"
+            app:tabMaxWidth="0dp"
+            app:tabGravity="fill"
+            app:tabMode="fixed"
+            android:layout_gravity="center_horizontal"
             app:tabBackground="@drawable/tab_color_selector"
             app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"/>
-
+        </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v4.view.ViewPager
