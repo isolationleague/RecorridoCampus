@@ -2,7 +2,6 @@ package com.example.admlab105.recorridocampus;
 
 import android.content.Intent;
 import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.app.Activity;
 
@@ -17,7 +16,7 @@ public class StartScreen extends Activity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent i = new Intent(StartScreen.this, MainActivity.class);
+                Intent i = new Intent(StartScreen.this, Intro_activity.class);
                 startActivity(i);
                 this.finish();
             }

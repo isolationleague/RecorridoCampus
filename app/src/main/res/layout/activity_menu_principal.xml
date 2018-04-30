@@ -9,6 +9,7 @@
     <LinearLayout
         android:layout_width="386dp"
         android:layout_height="513dp"
+        android:gravity="center_horizontal"
         android:orientation="vertical"
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="0dp">
@@ -36,7 +37,7 @@
         <ProgressBar
             android:id="@+id/progressBar"
             style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="match_parent"
+            android:layout_width="150dp"
             android:layout_height="wrap_content" />
 
         <SearchView
