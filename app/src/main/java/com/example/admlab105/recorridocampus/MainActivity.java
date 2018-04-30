@@ -1,36 +1,86 @@
 package com.example.admlab105.recorridocampus;
 
-import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
+import android.app.ActionBar;
+import android.support.design.widget.TabLayout;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+
+import android.widget.TextView;
+import android.view.View;
+import android.content.Intent;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
-    BaseSitiosHelper dB;
+
+    private static final String TAG = "MainActivity";
+    private SectionsPageAdapter mSectionsPageAdapter;
+    private ViewPager mViewPager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        dB = new BaseSitiosHelper(this);
-        SQLiteDatabase db = dB.getReadableDatabase();
-
-        Intent prueba = new Intent(getApplicationContext(), PruebadeBase.class);
-        startActivity(prueba);
-
-// Define a projection that specifies which columns from the database
-// you will actually use after this query.
-        String[] projection = {
-                BaseSitiosContract.SitioBase._ID,
-                BaseSitiosContract.SitioBase.COLUMN_NOMBRE,
-                BaseSitiosContract.SitioBase.COLUMN_COORDENADA_Y,
-                BaseSitiosContract.SitioBase.COLUMN_COORDENADA_X,
-                BaseSitiosContract.SitioBase.COLUMN_VISITADO
-        };
-
-// Filter results WHERE "title" = 'My Title'
-        String selection = BaseSitiosContract.SitioBase._ID + " = 1";
-        for(String a: projection){
-            System.out.println(a);
-        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Log.d(TAG, "onCreate: Starting.");
+
+        mSectionsPageAdapter = new SectionsPageAdapter(getSupportFragmentManager());
+        mViewPager = (ViewPager) findViewById(R.id.container);
+        setupViewPager(mViewPager);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(null);
+
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(mViewPager);
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+
+        if (id == R.id.tuto) {
+            Toast.makeText(this, "Tutorial", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+        if (id == R.id.intro) {
+            Toast.makeText(this, "Introducción", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+        if (id == R.id.credits) {
+            Toast.makeText(this, "Créditos", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    private void setupViewPager(ViewPager viewPager) {
+        SectionsPageAdapter adapter = new SectionsPageAdapter(getSupportFragmentManager());
+        adapter.addFragment(new Tab1Fragment(), "Mapa");
+        adapter.addFragment(new Tab2Fragment(), "Mi recorrido");
+        viewPager.setAdapter(adapter);
+    }
+
 }
