@@ -1,5 +1,6 @@
 package com.example.admlab105.recorridocampus;
 
+import android.app.ActionBar;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -38,6 +39,10 @@ public class MainActivity extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.container);
         setupViewPager(mViewPager);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(null);
+
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
     }
@@ -54,8 +59,16 @@ public class MainActivity extends AppCompatActivity {
 
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
-            Toast.makeText(this, "Settings", Toast.LENGTH_SHORT).show();
+        if (id == R.id.tuto) {
+            Toast.makeText(this, "Tutorial", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+        if (id == R.id.intro) {
+            Toast.makeText(this, "Introducción", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+        if (id == R.id.credits) {
+            Toast.makeText(this, "Créditos", Toast.LENGTH_SHORT).show();
             return true;
         }
 
@@ -66,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
     private void setupViewPager(ViewPager viewPager) {
         SectionsPageAdapter adapter = new SectionsPageAdapter(getSupportFragmentManager());
         adapter.addFragment(new Tab1Fragment(), "Mapa");
-        adapter.addFragment(new Tab2Fragment(), "Mi Recorrido");
+        adapter.addFragment(new Tab2Fragment(), "Mi recorrido");
         viewPager.setAdapter(adapter);
     }
 
