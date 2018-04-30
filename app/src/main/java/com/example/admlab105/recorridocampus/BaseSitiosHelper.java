@@ -2,10 +2,14 @@ package com.example.admlab105.recorridocampus;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.widget.Toast;
+import android.util.Log;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -23,13 +27,13 @@ public class BaseSitiosHelper extends SQLiteOpenHelper {
 
     public BaseSitiosHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-
+        this.context = context;
     }
 
 
     @Override
     public void onCreate(SQLiteDatabase dB) {
-        context = this.context;
+
 
         dB.execSQL("CREATE TABLE " + BaseSitiosContract.SitioBase.TABLE_NAME + " (" +
                 BaseSitiosContract.SitioBase._ID + " INTEGER PRIMARY KEY," +
@@ -63,11 +67,7 @@ public class BaseSitiosHelper extends SQLiteOpenHelper {
                 BaseSitiosContract.Texto.ID_SITIO + " INTEGER " + "," +
                 BaseSitiosContract.Texto.RUTA + " TEXT " + " )");
 
-        try {
-            llenaBase(dB);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+        llenaBase(dB);
     }
 
     @Override
@@ -76,7 +76,7 @@ public class BaseSitiosHelper extends SQLiteOpenHelper {
         onCreate(dB);
     }
 
-    void llenaBase(SQLiteDatabase dB) throws FileNotFoundException {
+    void llenaBase(SQLiteDatabase dB) {
     /*   ContentValues values = new ContentValues();
         values.put(BaseSitiosContract.SitioBase.COLUMN_NOMBRE, "ECCI");
         values.put(BaseSitiosContract.SitioBase.COLUMN_COORDENADA_X, 9.937924599999999);
@@ -85,25 +85,63 @@ public class BaseSitiosHelper extends SQLiteOpenHelper {
         long newRowId = dB.insert(BaseSitiosContract.SitioBase.TABLE_NAME, null, values);
         System.out.println(newRowId);
         */
-
-        File file = new File("coordenadas.txt");
-        BufferedReader br = new BufferedReader(new FileReader(file));
-        String st;
-        try {
-            while ((st = br.readLine()) != null)
-             st.split(",");
-        } catch (IOException e) {
-            e.printStackTrace();
+        try
+        {
+            InputStream fraw =  context.getResources().openRawResource(R.raw.coordenadas);
+            BufferedReader br = new BufferedReader(new InputStreamReader(fraw));
+            String linea ="";
+            String[] sitioPartes = null;
+            while ((linea = br.readLine()) != null) {
+                sitioPartes = linea.split(",");    //nombre,coordenada x y coordenada y
+                ContentValues values = new ContentValues();
+                values.put(BaseSitiosContract.SitioBase.COLUMN_NOMBRE, sitioPartes[0]);
+                values.put(BaseSitiosContract.SitioBase.COLUMN_COORDENADA_X, sitioPartes[1]);
+                values.put(BaseSitiosContract.SitioBase.COLUMN_COORDENADA_Y, sitioPartes[2]);
+                values.put(BaseSitiosContract.SitioBase.COLUMN_VISITADO, 0);
+                long newRowId = dB.insert(BaseSitiosContract.SitioBase.TABLE_NAME, null, values);
+            }
+            fraw.close();
+        }
+        catch (Exception ex)
+        {
+            Log.e("Ficheros", "Error al leer fichero desde recurso raw");
         }
     }
 
+    public void cargar()
+    {
+        SQLiteDatabase dB = getWritableDatabase();
+        try
+        {
+            InputStream fraw =  context.getResources().openRawResource(R.raw.coordenadas);
+            BufferedReader br = new BufferedReader(new InputStreamReader(fraw));
+            String linea ="";
+            String[] sitioPartes = null;
+            while ((linea = br.readLine()) != null) {
+                sitioPartes = linea.split(",");    //nombre,coordenada x y coordenada y
+                ContentValues values = new ContentValues();
+                values.put(BaseSitiosContract.SitioBase.COLUMN_NOMBRE, sitioPartes[0]);
+                values.put(BaseSitiosContract.SitioBase.COLUMN_COORDENADA_X, sitioPartes[1]);
+                values.put(BaseSitiosContract.SitioBase.COLUMN_COORDENADA_Y, sitioPartes[2]);
+                values.put(BaseSitiosContract.SitioBase.COLUMN_VISITADO, 0);
+                long newRowId = dB.insert(BaseSitiosContract.SitioBase.TABLE_NAME, null, values);
+            }
+            fraw.close();
+        }
+        catch (Exception ex)
+        {
+            Log.e("Ficheros", "Error al leer fichero desde recurso raw");
+        }
+
 
     }
 
+
+
+    /*Solo se llamararia una unica vez*/
     public void agregarUsuario(String nombre) {
         SQLiteDatabase db = getWritableDatabase();
         if (db != null) {
-            //db.execSQL("INSERT INTO Usuario VALUES('"+nombre+"','"+0+"')");
             ContentValues values = new ContentValues();
             values.put(BaseSitiosContract.Usuario.USUARIO_NOMBRE, nombre);
             values.put(BaseSitiosContract.Usuario.USUARIO_PUNTOS, 0);
@@ -113,12 +151,17 @@ public class BaseSitiosHelper extends SQLiteOpenHelper {
             Toast.makeText(context, "No se pudo abrir base de datos", Toast.LENGTH_SHORT);
 
         }
+       // db.execSQL("drop table if exists sitio");
     }
 
-    public String[] obtenerLugares() {
-        String[] lugares = null;
+    public Cursor obtenerLugares() {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c=null;
 
-        return lugares;
+        if (db != null) {
+            c = db.rawQuery(" SELECT nombre,coordenadaX,coordenadaY FROM sitio ", null);
+        }
+        return c;
     }
 
     public Cursor verUsuario() {
@@ -127,10 +170,8 @@ public class BaseSitiosHelper extends SQLiteOpenHelper {
         Cursor c=null;
 
         if (db != null) {
-            return c = db.rawQuery(" SELECT nombre,puntos FROM Usuario ", null);
-
+            c = db.rawQuery(" SELECT nombre,puntos FROM Usuario ", null);
         }
-        //Toast.makeText(context ,"",Toast.LENGTH_SHORT).show();
         return c;
     }
 }
