@@ -21,7 +21,7 @@ import java.io.IOException;
  */
 
 public class BaseSitiosHelper extends SQLiteOpenHelper {
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "BaseSitios.db";
     Context context;
 

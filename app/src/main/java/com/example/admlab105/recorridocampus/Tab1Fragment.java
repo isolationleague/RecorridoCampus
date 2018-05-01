@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -40,6 +41,7 @@ import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListe
 
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /*public class Tab1Fragment extends Fragment {
@@ -70,6 +72,8 @@ public class Tab1Fragment extends Fragment implements OnMapReadyCallback {
 
     double lat = 0.0, lon = 0.0;
     private Marker marker;
+    private LinkedList<Marker> sitios;
+    private BaseSitiosHelper db;
 
     private static final int PERMISSIONS_REQUEST_LOCATION = 1;
 
@@ -90,6 +94,7 @@ public class Tab1Fragment extends Fragment implements OnMapReadyCallback {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
 
+        db = new BaseSitiosHelper(this.getContext());
         View view = inflater.inflate(R.layout.tab1_fragment, container, false);
         Button btnCoor =  view.findViewById(R.id.btnCoor);
         Button btnCampus= view.findViewById(R.id.btnCampus);
@@ -120,7 +125,10 @@ public class Tab1Fragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+
         mMap = googleMap;
+
+        colocaSitios();
 
         List<LatLng> sitios = new ArrayList<LatLng>();
         volverCampus();
@@ -298,6 +306,16 @@ public class Tab1Fragment extends Fragment implements OnMapReadyCallback {
                 /*.icon(BitmapDescriptorFactory.fromResource(R.mipmap.cueva8bit)).draggable(true)*/);
 
         mMap.animateCamera(miUbic);
+    }
+    private void colocaSitios(){
+        sitios = new LinkedList<Marker>();
+        Cursor c=db.obtenerLugares();
+        if (c.moveToFirst()) {
+            do {
+                LatLng coord = new LatLng(c.getDouble(1), c.getDouble(2));
+                sitios.add(mMap.addMarker(new MarkerOptions().position(coord).title(c.getString(0))));
+            } while(c.moveToNext());
+        }
     }
 }
 

@@ -4,6 +4,7 @@ package com.example.admlab105.recorridocampus;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -23,6 +24,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Mapa extends FragmentActivity implements OnMapReadyCallback {
@@ -40,6 +42,7 @@ public class Mapa extends FragmentActivity implements OnMapReadyCallback {
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
     }
 
 
@@ -57,12 +60,8 @@ public class Mapa extends FragmentActivity implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        /*// Edificio de la Escuela de Arquitectura
-        LatLng sitio1 = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sitio1).title("xxxxxxxxxx"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sitio1));*/
 
-        List<LatLng> sitios = new ArrayList<LatLng>();
+        /*List<LatLng> sitios = new ArrayList<LatLng>();
 
         for (int i = 0; i < puntos; i++) {
             //sitios.set(i, new LatLng(-34, 151)); // Tomar coordenadas de la base
@@ -73,7 +72,7 @@ public class Mapa extends FragmentActivity implements OnMapReadyCallback {
 
             //mMap.moveCamera(CameraUpdateFactory.newLatLng(sitios.get(i)));
             miUbic();
-        }
+        }*/
     }
 
     /*List<LatLng> points=new ArrayList<LatLng>();
@@ -208,6 +207,8 @@ for (int i = 0 ; i < pointX.length - 1; i++){
 
         mMap.animateCamera(miUbic);
     }
+
+
 }
 
     // https://developers.google.com/maps/documentation/android-api/location?hl=es-419
