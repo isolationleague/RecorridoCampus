@@ -5,10 +5,12 @@ import android.content.Context;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.service.carrier.CarrierMessagingService;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -29,6 +31,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -144,7 +148,24 @@ public class Tab1Fragment extends Fragment implements OnMapReadyCallback {
         }*/
 
     }
+    @Override
+    public void onStart(){
+        super.onStart();
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable(){
+            public void run(){
+                miUbic();
+            }
+        },10);
 
+    }
+
+
+    public void onLocationChanged(Location location){
+        double latitude = location.getLatitude();
+        double longitude = location.getLongitude();
+        LatLng latLng = new LatLng(latitude, longitude);
+    }
 
 
 
@@ -194,6 +215,7 @@ public class Tab1Fragment extends Fragment implements OnMapReadyCallback {
                     android.location.LocationListener locationListener1 = new android.location.LocationListener() {
                         @Override
                         public void onLocationChanged(Location location) {
+                            actualizarUbic(location);
                         }
 
                         @Override
@@ -208,7 +230,7 @@ public class Tab1Fragment extends Fragment implements OnMapReadyCallback {
                         public void onProviderDisabled(String s) {
                         }
                     };
-                    locationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, locationListener1, null);
+                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,1000,1f,locationListener1 );;
 
                     Log.d("GPS Enabled", "GPS Enabled");
 
@@ -225,6 +247,7 @@ public class Tab1Fragment extends Fragment implements OnMapReadyCallback {
                         android.location.LocationListener locationListener2 = new android.location.LocationListener() {
                             @Override
                             public void onLocationChanged(Location location) {
+                                actualizarUbic(location);
                             }
 
                             @Override
@@ -239,7 +262,7 @@ public class Tab1Fragment extends Fragment implements OnMapReadyCallback {
                             public void onProviderDisabled(String s) {
                             }
                         };
-                        locationManager.requestSingleUpdate(LocationManager.NETWORK_PROVIDER, locationListener2, null);
+                        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,100,1f,locationListener2 );
 
                         Log.d("Network", "Network");
 
@@ -261,6 +284,7 @@ public class Tab1Fragment extends Fragment implements OnMapReadyCallback {
         actualizarUbic(location);
 
     }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
@@ -285,8 +309,8 @@ public class Tab1Fragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void volverCampus(){
-        LatLng coord = new LatLng(9.9370, -84.0503);
-        float zoomLevel = 16.5f; //This goes up to 21
+        LatLng coord = new LatLng(9.9370, -84.0506);
+        float zoomLevel = 15.8f; //This goes up to 21
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(coord, zoomLevel));
     }
 
@@ -300,13 +324,22 @@ public class Tab1Fragment extends Fragment implements OnMapReadyCallback {
 
     private void agregarMarcador(double la, double lo) {
         LatLng coord = new LatLng(la, lo);
-        CameraUpdate miUbic = CameraUpdateFactory.newLatLngZoom(coord, 20f);
+        //CameraUpdate miUbic = CameraUpdateFactory.newLatLngZoom(coord, 16f);
         if (marker != null) marker.remove();
-        marker = mMap.addMarker(new MarkerOptions().position(coord).title("Primera cueva")
-                /*.icon(BitmapDescriptorFactory.fromResource(R.mipmap.cueva8bit)).draggable(true)*/);
+        marker = mMap.addMarker(new MarkerOptions().position(coord).title("Usuario").icon(BitmapDescriptorFactory
+                .defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+        /*.icon(BitmapDescriptorFactory.fromResource(R.mipmap.cueva8bit)).draggable(true)*/;
 
-        mMap.animateCamera(miUbic);
+        //mMap.animateCamera(miUbic);
     }
+
+    public BitmapDescriptor getMarkerIcon(String color) {
+        float[] hsv = new float[3];
+        Color.colorToHSV(Color.parseColor(color), hsv);
+        return BitmapDescriptorFactory.defaultMarker(hsv[0]);
+    }
+
+
     private void colocaSitios(){
         sitios = new LinkedList<Marker>();
         Cursor c=db.obtenerLugares();
