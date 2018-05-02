@@ -24,6 +24,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -100,8 +101,8 @@ public class Tab1Fragment extends Fragment implements OnMapReadyCallback {
 
         db = new BaseSitiosHelper(this.getContext());
         View view = inflater.inflate(R.layout.tab1_fragment, container, false);
-        Button btnCoor =  view.findViewById(R.id.btnCoor);
-        Button btnCampus= view.findViewById(R.id.btnCampus);
+        ImageButton btnCoor =  view.findViewById(R.id.btnCoor);
+        ImageButton btnCampus= view.findViewById(R.id.btnCampus);
 
         btnCoor.setOnClickListener(new View.OnClickListener() {
             @Override
