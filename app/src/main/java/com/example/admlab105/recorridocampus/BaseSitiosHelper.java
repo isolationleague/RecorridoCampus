@@ -17,7 +17,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 /**
- * Created by usuario on 18/04/2018.
+ * Esta clase se encargar de poblar la base de datos y prooveer metodos de acceso a la base.
  */
 
 public class BaseSitiosHelper extends SQLiteOpenHelper {
@@ -31,9 +31,11 @@ public class BaseSitiosHelper extends SQLiteOpenHelper {
     }
 
 
-    @Override
+    /**
+     * Crear las tablas y cargar la base, se ejecuta solo una vez
+     * @param dB base de datos
+     */
     public void onCreate(SQLiteDatabase dB) {
-
 
         dB.execSQL("CREATE TABLE " + BaseSitiosContract.SitioBase.TABLE_NAME + " (" +
                 BaseSitiosContract.SitioBase._ID + " INTEGER PRIMARY KEY," +
@@ -42,10 +44,11 @@ public class BaseSitiosHelper extends SQLiteOpenHelper {
                 BaseSitiosContract.SitioBase.COLUMN_COORDENADA_Y + " REAL" + "," +
                 BaseSitiosContract.SitioBase.COLUMN_VISITADO + " INTEGER" + " )");
 
-        dB.execSQL("CREATE TABLE " + BaseSitiosContract.Usuario.TABLE_NAME + " (" +
+       /* dB.execSQL("CREATE TABLE " + BaseSitiosContract.Usuario.TABLE_NAME + " (" +
                 BaseSitiosContract.Usuario._ID + " INTEGER PRIMARY KEY," +
                 BaseSitiosContract.Usuario.USUARIO_NOMBRE + " TEXT" + "," +
                 BaseSitiosContract.Usuario.USUARIO_PUNTOS + " INTEGER" + " )");
+        */
 
         dB.execSQL("CREATE TABLE " + BaseSitiosContract.Foto.TABLE_NAME + " (" +
                 BaseSitiosContract.Foto._ID + " INTEGER PRIMARY KEY," +
@@ -70,10 +73,15 @@ public class BaseSitiosHelper extends SQLiteOpenHelper {
         llenaBase(dB);
     }
 
-    @Override
+    /**
+     * Este metodo actualiza la base de datos
+     * @param dB base de datos que se quiere actualizar
+     * @param oVersion numero anterior de version de base de datos
+     * @param nVersion numero actual de version de base de datos.
+     */
     public void onUpgrade(SQLiteDatabase dB, int oVersion, int nVersion) {
         dB.execSQL("DROP TABLE IF EXISTS " + BaseSitiosContract.SitioBase.TABLE_NAME);
-        dB.execSQL("DROP TABLE IF EXISTS " + BaseSitiosContract.Usuario.TABLE_NAME);
+       // dB.execSQL("DROP TABLE IF EXISTS " + BaseSitiosContract.Usuario.TABLE_NAME);
         dB.execSQL("DROP TABLE IF EXISTS " + BaseSitiosContract.Foto.TABLE_NAME);
         dB.execSQL("DROP TABLE IF EXISTS " + BaseSitiosContract.Video.TABLE_NAME);
         dB.execSQL("DROP TABLE IF EXISTS " + BaseSitiosContract.Texto.TABLE_NAME);
@@ -81,6 +89,10 @@ public class BaseSitiosHelper extends SQLiteOpenHelper {
         onCreate(dB);
     }
 
+    /**
+     * Llena la base de datos con la informacion de sitios en archivo llamado coordenadas
+     * @param dB base de datos
+     */
     void llenaBase(SQLiteDatabase dB) {
     /*   ContentValues values = new ContentValues();
         values.put(BaseSitiosContract.SitioBase.COLUMN_NOMBRE, "ECCI");
@@ -118,54 +130,30 @@ public class BaseSitiosHelper extends SQLiteOpenHelper {
         }
     }
 
-   /* public void cargar()
-    {
-        SQLiteDatabase dB = getWritableDatabase();
-        try
-        {
-            InputStream fraw =  context.getResources().openRawResource(R.raw.coordenadas);
-            BufferedReader br = new BufferedReader(new InputStreamReader(fraw));
-            String linea ="";
-            String[] sitioPartes = null;
-            while ((linea = br.readLine()) != null) {
-                sitioPartes = linea.split(",");    //nombre,coordenada x y coordenada y
+
+
+
+    /*Solo se llamararia una unica vez
+        public void agregarUsuario(String nombre) {
+            SQLiteDatabase db = getWritableDatabase();
+            if (db != null) {
                 ContentValues values = new ContentValues();
-                values.put(BaseSitiosContract.SitioBase.COLUMN_NOMBRE, sitioPartes[0]);
-                values.put(BaseSitiosContract.SitioBase.COLUMN_COORDENADA_X, sitioPartes[1]);
-                values.put(BaseSitiosContract.SitioBase.COLUMN_COORDENADA_Y, sitioPartes[2]);
-                values.put(BaseSitiosContract.SitioBase.COLUMN_VISITADO, 0);
-                long newRowId = dB.insert(BaseSitiosContract.SitioBase.TABLE_NAME, null, values);
+                values.put(BaseSitiosContract.Usuario.USUARIO_NOMBRE, nombre);
+                values.put(BaseSitiosContract.Usuario.USUARIO_PUNTOS, 0);
+                long newRowId = db.insert(BaseSitiosContract.Usuario.TABLE_NAME, null, values);
+                db.close();
+            } else {
+                Toast.makeText(context, "No se pudo abrir base de datos", Toast.LENGTH_SHORT);
+
             }
-            fraw.close();
+           // db.execSQL("drop table if exists sitio");
         }
-        catch (Exception ex)
-        {
-            Log.e("Ficheros", "Error al leer fichero desde recurso raw");
-        }
+     */
 
-
-    }
-
-    */
-
-
-
-    /*Solo se llamararia una unica vez*/
-    public void agregarUsuario(String nombre) {
-        SQLiteDatabase db = getWritableDatabase();
-        if (db != null) {
-            ContentValues values = new ContentValues();
-            values.put(BaseSitiosContract.Usuario.USUARIO_NOMBRE, nombre);
-            values.put(BaseSitiosContract.Usuario.USUARIO_PUNTOS, 0);
-            long newRowId = db.insert(BaseSitiosContract.Usuario.TABLE_NAME, null, values);
-            db.close();
-        } else {
-            Toast.makeText(context, "No se pudo abrir base de datos", Toast.LENGTH_SHORT);
-
-        }
-       // db.execSQL("drop table if exists sitio");
-    }
-
+    /**
+     * Devuelve un cursor que da acceso a todas las tuplas en los campos nombre ,coordenadaX y coordenadaY de la tabla sitio.
+     * @return cursor
+     */
     public Cursor obtenerLugares() {
         SQLiteDatabase db = getReadableDatabase();
         Cursor c=null;
@@ -176,6 +164,7 @@ public class BaseSitiosHelper extends SQLiteOpenHelper {
         return c;
     }
 
+    /*
     public Cursor verUsuario() {
         SQLiteDatabase db = getReadableDatabase();
         String nombre = "", puntos = "";
@@ -186,4 +175,5 @@ public class BaseSitiosHelper extends SQLiteOpenHelper {
         }
         return c;
     }
+    */
 }
