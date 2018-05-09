@@ -25,7 +25,7 @@ public class PruebadeBase extends AppCompatActivity {
         final Button bconsultLugares = findViewById(R.id.bconsultarlugares);
 
         /*boton agregar usuario*/
-        bAddU.setOnClickListener(new View.OnClickListener() {
+        /*bAddU.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Code here executes on main thread after user presses button
                db.agregarUsuario(text.getText().toString());
@@ -66,7 +66,7 @@ public class PruebadeBase extends AppCompatActivity {
             }
         });
 
-        /*Boton agregar usuario*/
+        /*Boton agregar usuario
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -82,7 +82,7 @@ public class PruebadeBase extends AppCompatActivity {
                 }
                 Toast.makeText(context,nombre,Toast.LENGTH_SHORT).show();
             }
-        });
+        });*/
 
     }
 }
