@@ -47,7 +47,8 @@
             android:value="AIzaSyBAoSBVrfD75NvXO9y6j5KLsVJzKmhy1ws" />
 
         <activity android:name=".Mapa" />
-        <activity android:name=".Intro_activity" />
+        <activity android:name=".Intro_activity" android:noHistory="true"/>
+
 
     </application>
 

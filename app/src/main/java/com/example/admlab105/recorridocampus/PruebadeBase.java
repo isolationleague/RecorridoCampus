@@ -28,7 +28,7 @@ public class PruebadeBase extends AppCompatActivity {
         bAddU.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Code here executes on main thread after user presses button
-               db.agregarUsuario(text.getText().toString());
+              // db.agregarUsuario(text.getText().toString());
 
             }
         });
@@ -66,11 +66,11 @@ public class PruebadeBase extends AppCompatActivity {
             }
         });
 
-        /*Boton agregar usuario*/
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
+      /*Boton agregar usuario*/
+    /*     button.setOnClickListener(new View.OnClickListener() {
+           @Override
             public void onClick(View view) {
-               Cursor c=db.verUsuario();
+               //Cursor c=db.verUsuario();
                String nombre="";
                String puntos="";
                 if (c.moveToFirst()) {
@@ -83,6 +83,6 @@ public class PruebadeBase extends AppCompatActivity {
                 Toast.makeText(context,nombre,Toast.LENGTH_SHORT).show();
             }
         });
-
+*/
     }
 }
