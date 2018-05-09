@@ -12,6 +12,8 @@ import android.widget.Button;
 
 public class Intro_activity extends Activity {
     Button bclose;
+    SharedPreferences prefs = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,5 +33,6 @@ public class Intro_activity extends Activity {
 
 
     }
+
 
 }
