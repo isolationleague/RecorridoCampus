@@ -44,12 +44,6 @@ public class BaseSitiosHelper extends SQLiteOpenHelper {
                 BaseSitiosContract.SitioBase.COLUMN_COORDENADA_Y + " REAL" + "," +
                 BaseSitiosContract.SitioBase.COLUMN_VISITADO + " INTEGER" + " )");
 
-       /* dB.execSQL("CREATE TABLE " + BaseSitiosContract.Usuario.TABLE_NAME + " (" +
-                BaseSitiosContract.Usuario._ID + " INTEGER PRIMARY KEY," +
-                BaseSitiosContract.Usuario.USUARIO_NOMBRE + " TEXT" + "," +
-                BaseSitiosContract.Usuario.USUARIO_PUNTOS + " INTEGER" + " )");
-        */
-
         dB.execSQL("CREATE TABLE " + BaseSitiosContract.Foto.TABLE_NAME + " (" +
                 BaseSitiosContract.Foto._ID + " INTEGER PRIMARY KEY," +
                 BaseSitiosContract.Foto.ID_SITIO + " INTEGER " + "," +
@@ -94,14 +88,8 @@ public class BaseSitiosHelper extends SQLiteOpenHelper {
      * @param dB base de datos
      */
     void llenaBase(SQLiteDatabase dB) {
-    /*   ContentValues values = new ContentValues();
-        values.put(BaseSitiosContract.SitioBase.COLUMN_NOMBRE, "ECCI");
-        values.put(BaseSitiosContract.SitioBase.COLUMN_COORDENADA_X, 9.937924599999999);
-        values.put(BaseSitiosContract.SitioBase.COLUMN_COORDENADA_Y, -84.05199019999998);
-        values.put(BaseSitiosContract.SitioBase.COLUMN_VISITADO, 0);
-        long newRowId = dB.insert(BaseSitiosContract.SitioBase.TABLE_NAME, null, values);
-        System.out.println(newRowId);
-        */
+
+        //coordenadas
         try
         {
             InputStream fraw =  context.getResources().openRawResource(R.raw.coordenadas);
@@ -110,45 +98,40 @@ public class BaseSitiosHelper extends SQLiteOpenHelper {
             String[] sitioPartes = null;
             int count = 0;
             while ((linea = br.readLine()) != null) {
-                sitioPartes = linea.split(",");    //nombre,coordenada x y coordenada y
+                sitioPartes = linea.split(",");    //nombre,coordenada x y coordenada y numero de fotos
                 ContentValues values = new ContentValues();
                 values.put(BaseSitiosContract.SitioBase.COLUMN_NOMBRE, sitioPartes[0]);
                 values.put(BaseSitiosContract.SitioBase.COLUMN_COORDENADA_X, sitioPartes[1]);
                 values.put(BaseSitiosContract.SitioBase.COLUMN_COORDENADA_Y, sitioPartes[2]);
                 values.put(BaseSitiosContract.SitioBase.COLUMN_VISITADO, 0);
                 long newRowId = dB.insert(BaseSitiosContract.SitioBase.TABLE_NAME, null, values);
+
+                //carga las imagenes de cada sitio
+                int cantidadFotos = Integer.parseInt(sitioPartes[3]);
+                for(int i=0;i<cantidadFotos;i++){
+                    values.put(BaseSitiosContract.Foto.ID_SITIO, newRowId);
+                    values.put(BaseSitiosContract.Foto.RUTA,"");
+                    long iRowId = dB.insert(BaseSitiosContract.Foto.TABLE_NAME, null, values);
+
+                }
+
+
                 count ++;
             }
-            System.out.print("d");
+
             fraw.close();
-            Toast.makeText(context, ""+count, Toast.LENGTH_LONG).show();
             br.close();
         }
         catch (Exception ex)
         {
             Log.e("Ficheros", "Error al leer fichero desde recurso raw");
         }
+
+
+
+
     }
 
-
-
-
-    /*Solo se llamararia una unica vez
-        public void agregarUsuario(String nombre) {
-            SQLiteDatabase db = getWritableDatabase();
-            if (db != null) {
-                ContentValues values = new ContentValues();
-                values.put(BaseSitiosContract.Usuario.USUARIO_NOMBRE, nombre);
-                values.put(BaseSitiosContract.Usuario.USUARIO_PUNTOS, 0);
-                long newRowId = db.insert(BaseSitiosContract.Usuario.TABLE_NAME, null, values);
-                db.close();
-            } else {
-                Toast.makeText(context, "No se pudo abrir base de datos", Toast.LENGTH_SHORT);
-
-            }
-           // db.execSQL("drop table if exists sitio");
-        }
-     */
 
     /**
      * Devuelve un cursor que da acceso a todas las tuplas en los campos nombre ,coordenadaX y coordenadaY de la tabla sitio.
@@ -164,16 +147,4 @@ public class BaseSitiosHelper extends SQLiteOpenHelper {
         return c;
     }
 
-    /*
-    public Cursor verUsuario() {
-        SQLiteDatabase db = getReadableDatabase();
-        String nombre = "", puntos = "";
-        Cursor c=null;
-
-        if (db != null) {
-            c = db.rawQuery(" SELECT nombre,puntos FROM Usuario ", null);
-        }
-        return c;
-    }
-    */
 }
