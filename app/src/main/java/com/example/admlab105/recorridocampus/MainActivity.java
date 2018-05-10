@@ -64,17 +64,17 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         if (id == R.id.intro) {
-            Toast.makeText(this, "Introducción", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "Introducción", Toast.LENGTH_SHORT).show();
+            Intent i = new Intent(MainActivity.this, Intro_activity.class);
+            startActivity(i);
             return true;
         }
         if (id == R.id.credits) {
             Toast.makeText(this, "Créditos", Toast.LENGTH_SHORT).show();
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
-
 
     private void setupViewPager(ViewPager viewPager) {
         SectionsPageAdapter adapter = new SectionsPageAdapter(getSupportFragmentManager());
@@ -82,5 +82,4 @@ public class MainActivity extends AppCompatActivity {
         adapter.addFragment(new Tab2Fragment(), "Mi recorrido");
         viewPager.setAdapter(adapter);
     }
-
 }
