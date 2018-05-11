@@ -29,7 +29,7 @@
             app:tabSelectedTextColor="@color/colorAccent"
             android:layout_width="match_parent"
             android:layout_height="?android:attr/actionBarSize"
-            android:layout_marginLeft="50dp"
+            android:layout_marginStart="50dp"
             app:tabIndicatorColor="@color/unselected"
             app:tabMaxWidth="0dp"
             app:tabGravity="fill"
@@ -44,6 +44,7 @@
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@android:color/white"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 </android.support.design.widget.CoordinatorLayout>
