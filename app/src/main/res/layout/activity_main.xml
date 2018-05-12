@@ -29,14 +29,14 @@
             app:tabSelectedTextColor="@color/colorAccent"
             android:layout_width="match_parent"
             android:layout_height="?android:attr/actionBarSize"
-            android:layout_marginStart="50dp"
             app:tabIndicatorColor="@color/unselected"
             app:tabMaxWidth="0dp"
             app:tabGravity="fill"
             app:tabMode="fixed"
             android:layout_gravity="center_horizontal"
             app:tabBackground="@drawable/tab_color_selector"
-            app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"/>
+            app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
+            android:layout_marginLeft="50dp" />
         </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
 
