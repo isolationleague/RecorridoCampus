@@ -108,13 +108,13 @@ public class BaseSitiosHelper extends SQLiteOpenHelper {
 
                 //carga las imagenes de cada sitio
                 int cantidadFotos = Integer.parseInt(sitioPartes[3]);
-                for(int i=0;i<cantidadFotos;i++){
-                    values.put(BaseSitiosContract.Foto.ID_SITIO, newRowId);
-                    values.put(BaseSitiosContract.Foto.RUTA,"");
-                    long iRowId = dB.insert(BaseSitiosContract.Foto.TABLE_NAME, null, values);
-
+                if(cantidadFotos>0) {
+                    for (int i = 0; i < cantidadFotos; i++) {
+                        values.put(BaseSitiosContract.Foto.ID_SITIO, newRowId);
+                        values.put(BaseSitiosContract.Foto.RUTA, sitioPartes[4+i]);
+                        long iRowId = dB.insert(BaseSitiosContract.Foto.TABLE_NAME, null, values);
+                    }
                 }
-
 
                 count ++;
             }
