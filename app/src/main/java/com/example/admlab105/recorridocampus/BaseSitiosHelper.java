@@ -98,7 +98,7 @@ public class BaseSitiosHelper extends SQLiteOpenHelper {
             String[] sitioPartes = null;
             int count = 0;
             while ((linea = br.readLine()) != null) {
-                sitioPartes = linea.split(",");    //nombre,coordenada x y coordenada y numero de fotos
+                sitioPartes = linea.split(",");    //nombre,coordenada x , coordenaday , numero de fotos, nombres de fotos..,
                 ContentValues values = new ContentValues();
                 values.put(BaseSitiosContract.SitioBase.COLUMN_NOMBRE, sitioPartes[0]);
                 values.put(BaseSitiosContract.SitioBase.COLUMN_COORDENADA_X, sitioPartes[1]);
@@ -112,6 +112,7 @@ public class BaseSitiosHelper extends SQLiteOpenHelper {
                     for (int i = 0; i < cantidadFotos; i++) {
                         values.put(BaseSitiosContract.Foto.ID_SITIO, newRowId);
                         values.put(BaseSitiosContract.Foto.RUTA, sitioPartes[4+i]);
+                        Toast.makeText(context,sitioPartes[4+i],Toast.LENGTH_SHORT).show();
                         long iRowId = dB.insert(BaseSitiosContract.Foto.TABLE_NAME, null, values);
                     }
                 }
