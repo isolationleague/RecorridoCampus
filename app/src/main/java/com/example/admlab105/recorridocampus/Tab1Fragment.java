@@ -104,6 +104,7 @@ public class Tab1Fragment extends Fragment implements OnMapReadyCallback {
         ImageButton btnCoor =  view.findViewById(R.id.btnCoor);
         ImageButton btnCampus= view.findViewById(R.id.btnCampus);
         ImageButton btnTest = view.findViewById(R.id.btnTest);
+        ImageButton btnTest2 = view.findViewById(R.id.btnTest2);
 
         btnCoor.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,6 +118,17 @@ public class Tab1Fragment extends Fragment implements OnMapReadyCallback {
             }
         });
         btnTest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                InfoFragment fragment = new InfoFragment();
+                //FragmentManager fm = getFragmentManager();
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.frameLayout, fragment, "tag1");
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+        });
+        btnTest2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 InfoFragment fragment = new InfoFragment();
