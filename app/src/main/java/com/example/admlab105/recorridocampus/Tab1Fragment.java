@@ -11,6 +11,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.service.carrier.CarrierMessagingService;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -26,28 +27,41 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
-
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-
-
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
-import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
-
+import org.osmdroid.api.IMapController;
+import org.osmdroid.config.Configuration;
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.ItemizedIconOverlay;
+import org.osmdroid.views.overlay.OverlayItem;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+
+import android.app.Activity;
+import android.content.Context;
+
+import android.content.Intent;
+import android.preference.PreferenceManager;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+
+import org.osmdroid.api.IMapController;
+import org.osmdroid.config.Configuration;
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.ItemizedIconOverlay;
+import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
+import org.osmdroid.views.overlay.Marker;
+import org.osmdroid.views.overlay.OverlayItem;
+
+import java.util.ArrayList;
+
 
 /*public class Tab1Fragment extends Fragment {
     private static final String TAG = "Tab1Fragment";
@@ -69,292 +83,130 @@ import java.util.List;
 }*/
 
 
-public class Tab1Fragment extends Fragment implements OnMapReadyCallback {
+public class Tab1Fragment extends Fragment {
+    public MapView map;
 
-    private GoogleMap mMap;
-    SupportMapFragment mapFragment;
-    int puntos = 10;
-
-    double lat = 0.0, lon = 0.0;
-    private Marker marker;
-    private LinkedList<Marker> sitios;
-    private BaseSitiosHelper db;
-
-    private static final int PERMISSIONS_REQUEST_LOCATION = 1;
-
-    public Tab1Fragment() {
-
-    }
-
-    /*@Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_mapaframe);
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-    }*/
+    ArrayList<OverlayItem> anotherOverlayItemArray;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-
-        db = new BaseSitiosHelper(this.getContext());
         View view = inflater.inflate(R.layout.tab1_fragment, container, false);
-        ImageButton btnCoor =  view.findViewById(R.id.btnCoor);
-        ImageButton btnCampus= view.findViewById(R.id.btnCampus);
 
-        btnCoor.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                miUbic();
-            }
-        });
-        btnCampus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) { volverCampus();
-            }
-        });
+        anotherOverlayItemArray = new ArrayList<OverlayItem>();
+        anotherOverlayItemArray.add(new OverlayItem("cicle", "prueba", new GeoPoint(9.9400,-84.0510)));
+        anotherOverlayItemArray.add(new OverlayItem("cicle", "prueba", new GeoPoint(9.9395,-84.0510)));
+        anotherOverlayItemArray.add(new OverlayItem("cicle", "prueba", new GeoPoint(9.9397,-84.0515)));
+        anotherOverlayItemArray.add(new OverlayItem("cicle", "prueba", new GeoPoint(9.9397,-84.0505)));
 
-        mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-        if (mapFragment == null) {
-            FragmentManager fm = getFragmentManager();
-            FragmentTransaction ft = fm.beginTransaction();
-            mapFragment = SupportMapFragment.newInstance();
-            ft.replace(R.id.map, mapFragment).commit();
-        }
-        mapFragment.getMapAsync(this);
-        //mapFragment.getMapAsync(this);
+
+        Context ctx = getActivity();
+        Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
+
+        map = view.findViewById(R.id.map);
+        map.getTileProvider().setTileSource(TileSourceFactory.MAPNIK);
+
+        map.setBuiltInZoomControls(true);
+        map.setMultiTouchControls(true);
+
+        IMapController mapController = map.getController();
+        mapController.setZoom(19);
+        GeoPoint startPoint = new GeoPoint(9.9370,-84.0510);
+        mapController.setCenter(startPoint);
+
         return view;
     }
 
     @Override
-    public void onMapReady(GoogleMap googleMap) {
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-        mMap = googleMap;
-
-        colocaSitios();
-
-        List<LatLng> sitios = new ArrayList<LatLng>();
-        volverCampus();
-
-       /* for (int i = 0; i < puntos; i++) {
-            //sitios.set(i, new LatLng(-34, 151)); // Tomar coordenadas de la base
-            sitios.add(new LatLng(3 * i, 3 * i)); // Tomar coordenadas de la base
-
-            // Título de cada marcador (Tomar nombre de cada sitio de la base)
-            mMap.addMarker(new MarkerOptions().position(sitios.get(i)).title(String.valueOf(i + 1)));
-
-            //mMap.moveCamera(CameraUpdateFactory.newLatLng(sitios.get(i)));
-        }*/
-
-    }
-    @Override
-    public void onStart(){
-        super.onStart();
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable(){
-            public void run(){
-                miUbic();
-            }
-        },10);
 
     }
 
+    public void anadirMarcador(View v){
+        Button b = (Button)v;
+        String buttonText = b.getText().toString();
+        System.out.println(buttonText);
 
-    public void onLocationChanged(Location location){
-        double latitude = location.getLatitude();
-        double longitude = location.getLongitude();
-        LatLng latLng = new LatLng(latitude, longitude);
+        GeoPoint pointB = new GeoPoint(9.9370,-84.0510);
+        addMarker(pointB, buttonText);
     }
 
+    public void anadirMarcador2(View v){
+        Button b = (Button)v;
+        String buttonText = b.getText().toString();
+        System.out.println(buttonText);
 
+        GeoPoint pointA = new GeoPoint(9.9380, -84.0510);
+        addCat(pointA, buttonText);
 
+    }
 
-    private void miUbic() {
-
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-          /*  ActivityCompat.requestPermissions(
-                    this,
-                    new String[] { Manifest.permission.ACCESS_FINE_LOCATION },
-                    999
-            );
-            return;*/
-            ActivityCompat.requestPermissions(getActivity(),
-                    new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION,
-                            android.Manifest.permission.ACCESS_FINE_LOCATION},
-                    PERMISSIONS_REQUEST_LOCATION);
-        }
-
-
-        LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-        Location location = null;
-        try {
-
-            // getting GPS status
-            boolean isGPSEnabled = locationManager
-                    .isProviderEnabled(LocationManager.GPS_PROVIDER);
-
-            // getting network status
-            boolean isNetworkEnabled = locationManager
-                    .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-
-            if (!isGPSEnabled && !isNetworkEnabled) {
-                int i;
-                // location service disabled
-            } else {
-                // if GPS Enabled get lat/long using GPS Services
-
-                if (isGPSEnabled && !isNetworkEnabled) {
-                    android.location.LocationListener locationListener1 = new android.location.LocationListener() {
-                        @Override
-                        public void onLocationChanged(Location location) {
-                            actualizarUbic(location);
-                        }
-
-                        @Override
-                        public void onStatusChanged(String s, int i, Bundle bundle) {
-                        }
-
-                        @Override
-                        public void onProviderEnabled(String s) {
-                        }
-
-                        @Override
-                        public void onProviderDisabled(String s) {
-                        }
-                    };
-                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,1000,1f,locationListener1 );;
-
-                    Log.d("GPS Enabled", "GPS Enabled");
-
-                    if (locationManager != null) {
-                        while (location == null) {
-                            location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                        }
-                    }
-                }
-
-                // First get location from Network Provider
-                if (isNetworkEnabled) {
-                    if (location == null) {
-                        android.location.LocationListener locationListener2 = new android.location.LocationListener() {
-                            @Override
-                            public void onLocationChanged(Location location) {
-                                actualizarUbic(location);
-                            }
-
-                            @Override
-                            public void onStatusChanged(String s, int i, Bundle bundle) {
-                            }
-
-                            @Override
-                            public void onProviderEnabled(String s) {
-                            }
-
-                            @Override
-                            public void onProviderDisabled(String s) {
-                            }
-                        };
-                        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,100,1f,locationListener2 );
-
-                        Log.d("Network", "Network");
-
-                        if (locationManager != null) {
-                            while (location == null) {
-                                location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                            }
-                        }
-                    }
-
-                }
-            }
-        } catch (Exception e) {
-            // e.printStackTrace();
-            Log.e("Error : Location",
-                    "Impossible to connect to LocationManager", e);
-        }
-
-        actualizarUbic(location);
-
+    public void anadirCiclo(View v){
+        Button b = (Button)v;
+        addCicle();
     }
 
 
     @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case PERMISSIONS_REQUEST_LOCATION: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
-                } else {
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                }
-                return;
-            }
-
-            // other 'case' lines to check for other
-            // permissions this app might request.
-        }
+    public void onResume(){
+        super.onResume();
+        //this will refresh the osmdroid configuration on resuming.
+        //if you make changes to the configuration, use
+        //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        //Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this));
+        map.onResume(); //needed for compass, my location overlays, v6.0.0 and up
     }
 
-    private void volverCampus(){
-        LatLng coord = new LatLng(9.9370, -84.0506);
-        float zoomLevel = 15.8f; //This goes up to 21
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(coord, zoomLevel));
+    @Override
+    public void onPause(){
+        super.onPause();
+        //this will refresh the osmdroid configuration on resuming.
+        //if you make changes to the configuration, use
+        //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        //Configuration.getInstance().save(this, prefs);
+        map.onPause();  //needed for compass, my location overlays, v6.0.0 and up
     }
 
-    private void actualizarUbic(Location location) {
-        if (location != null) {
-            lat = location.getLatitude();
-            lon = location.getLongitude();
-            agregarMarcador(lat, lon);
-        }
+    public void addCat(GeoPoint point, String nombre){
+        org.osmdroid.views.overlay.Marker marker = new org.osmdroid.views.overlay.Marker(map);
+        marker.setPosition(point);
+        //marker.setAnchor(Marker.ANCHOR_BOTTOM, Marker.ANCHOR_CENTER);
+        marker.setTitle(nombre);
+        marker.setIcon(getResources().getDrawable(R.drawable.cat));
+        IMapController mapController = map.getController();
+        mapController.setCenter(point);
+        // map.getOverlays().clear();
+        map.getOverlays().add(marker);
+        map.invalidate();
+
     }
 
-    private void agregarMarcador(double la, double lo) {
-        LatLng coord = new LatLng(la, lo);
-        //CameraUpdate miUbic = CameraUpdateFactory.newLatLngZoom(coord, 16f);
-        if (marker != null) marker.remove();
-        marker = mMap.addMarker(new MarkerOptions().position(coord).title("Usuario").icon(BitmapDescriptorFactory
-                .defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
-        /*.icon(BitmapDescriptorFactory.fromResource(R.mipmap.cueva8bit)).draggable(true)*/;
+    public void addMarker(GeoPoint point, String nombre){
+        org.osmdroid.views.overlay.Marker marker = new org.osmdroid.views.overlay.Marker(map);
+        marker.setPosition(point);
+        //marker.setAnchor(Marker.ANCHOR_BOTTOM, Marker.ANCHOR_CENTER);
+        marker.setTitle(nombre);
+        //marker.setIcon(getResources().getDrawable(R.drawable.cat));
+        IMapController mapController = map.getController();
+        mapController.setCenter(point);
+        //map.getOverlays().clear();
+        map.getOverlays().add(marker);
+        map.invalidate();
 
-        //mMap.animateCamera(miUbic);
     }
 
-    public BitmapDescriptor getMarkerIcon(String color) {
-        float[] hsv = new float[3];
-        Color.colorToHSV(Color.parseColor(color), hsv);
-        return BitmapDescriptorFactory.defaultMarker(hsv[0]);
+    public void addCicle(){
+        ItemizedIconOverlay<OverlayItem> anotherItemizedIconOverlay
+                = new ItemizedIconOverlay<OverlayItem>(getActivity(), anotherOverlayItemArray, null);
+        map.getOverlays().add(anotherItemizedIconOverlay);
     }
 
-
-    private void colocaSitios(){
-        sitios = new LinkedList<Marker>();
-        Cursor c=db.obtenerLugares();
-        if (c.moveToFirst()) {
-            do {
-                LatLng coord = new LatLng(c.getDouble(1), c.getDouble(2));
-                sitios.add(mMap.addMarker(new MarkerOptions().position(coord).title(c.getString(0))));
-            } while(c.moveToNext());
-        }
-    }
 }
 
 // https://developers.google.com/maps/documentation/android-api/location?hl=es-419
-// RECORDAR SOLICITAR AL USUARIO LOS PERMISOS DE UBICACIÓN
+// RECORDAR SOLICITAR AL USUARIO LOS PERMISOS DE UBICACION
 //https://stackoverflow.com/questions/30253123/blue-dot-and-circle-is-not-shown-on-mylocation-using-android-fused-location-api/30255219#30255219
 
 //https://www.sitepoint.com/requesting-runtime-permissions-in-android-m-and-n/ (permisos)
