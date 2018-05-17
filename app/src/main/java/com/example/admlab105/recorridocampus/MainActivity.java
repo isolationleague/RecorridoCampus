@@ -1,6 +1,7 @@
 package com.example.admlab105.recorridocampus;
 
 import android.app.ActionBar;
+import android.os.CountDownTimer;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -28,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private SectionsPageAdapter mSectionsPageAdapter;
     private ViewPager mViewPager;
+    private boolean isUserClickedBackButton = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,17 +66,17 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         if (id == R.id.intro) {
-            Toast.makeText(this, "Introducción", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "Introducción", Toast.LENGTH_SHORT).show();
+            Intent i = new Intent(MainActivity.this, Intro_activity.class);
+            startActivity(i);
             return true;
         }
         if (id == R.id.credits) {
             Toast.makeText(this, "Créditos", Toast.LENGTH_SHORT).show();
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
-
 
     private void setupViewPager(ViewPager viewPager) {
         SectionsPageAdapter adapter = new SectionsPageAdapter(getSupportFragmentManager());
@@ -83,4 +85,32 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(adapter);
     }
 
+
+    @Override
+    public void onBackPressed() {
+        Fragment currentFragment = this.getSupportFragmentManager().findFragmentById(R.id.frameLayout);
+        if(!(currentFragment instanceof InfoFragment)) {
+            // do something with f
+            /*((Tab1Fragment) currentFragment).doSomething();*/
+            if (!isUserClickedBackButton) {
+                Toast.makeText(this,"Presione de nuevo para salir", Toast.LENGTH_LONG).show();
+                isUserClickedBackButton = true;
+            } else {
+                super.onBackPressed();
+            }
+
+            new CountDownTimer(3000,1000){
+
+                @Override
+                public void onTick(long msUntilFinish) {}
+
+                @Override
+                public void onFinish(){
+                    isUserClickedBackButton = false;
+                }
+            }.start();
+        } else {
+            super.onBackPressed();
+        }
+    }
 }

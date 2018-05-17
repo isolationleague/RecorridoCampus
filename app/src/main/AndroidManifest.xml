@@ -20,7 +20,8 @@
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBar"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:launchMode="singleInstance">
         </activity>
 
         <activity
@@ -47,7 +48,8 @@
             android:value="AIzaSyBAoSBVrfD75NvXO9y6j5KLsVJzKmhy1ws" />
 
         <activity android:name=".Mapa" />
-        <activity android:name=".Intro_activity" />
+        <activity android:name=".Intro_activity"
+            android:noHistory="true"/>
 
     </application>
 

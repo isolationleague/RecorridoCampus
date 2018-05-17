@@ -103,6 +103,7 @@ public class Tab1Fragment extends Fragment implements OnMapReadyCallback {
         View view = inflater.inflate(R.layout.tab1_fragment, container, false);
         ImageButton btnCoor =  view.findViewById(R.id.btnCoor);
         ImageButton btnCampus= view.findViewById(R.id.btnCampus);
+        ImageButton btnTest = view.findViewById(R.id.btnTest);
 
         btnCoor.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,6 +116,18 @@ public class Tab1Fragment extends Fragment implements OnMapReadyCallback {
             public void onClick(View v) { volverCampus();
             }
         });
+        btnTest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                InfoFragment fragment = new InfoFragment();
+                //FragmentManager fm = getFragmentManager();
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.frameLayout, fragment, "tag1");
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+        });
+
 
         mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         if (mapFragment == null) {
@@ -231,7 +244,7 @@ public class Tab1Fragment extends Fragment implements OnMapReadyCallback {
                         public void onProviderDisabled(String s) {
                         }
                     };
-                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,1000,1f,locationListener1 );;
+                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,1000,1f,locationListener1 );
 
                     Log.d("GPS Enabled", "GPS Enabled");
 
