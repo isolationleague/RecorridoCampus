@@ -77,25 +77,6 @@ import org.osmdroid.views.overlay.OverlayItem;
 import java.util.ArrayList;
 
 
-/*public class Tab1Fragment extends Fragment {
-    private static final String TAG = "Tab1Fragment";
-    private Button btn;
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.tab1_fragment,container,false);
-        btn = (Button) view.findViewById(R.id.btn);
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(getActivity(), "TESTING BUTTON CLICK 1",Toast.LENGTH_SHORT).show();
-            }
-        });
-        return view;
-    }
-}*/
-
 
 public class Tab1Fragment extends Fragment {
     private MapView map;
@@ -107,19 +88,11 @@ public class Tab1Fragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.tab1_fragment, container, false);
-
-        anotherOverlayItemArray = new ArrayList<OverlayItem>();
-        anotherOverlayItemArray.add(new OverlayItem("cicle", "prueba", new GeoPoint(9.9400,-84.0510)));
-        anotherOverlayItemArray.add(new OverlayItem("cicle", "prueba", new GeoPoint(9.9395,-84.0510)));
-        anotherOverlayItemArray.add(new OverlayItem("cicle", "prueba", new GeoPoint(9.9397,-84.0515)));
-        anotherOverlayItemArray.add(new OverlayItem("cicle", "prueba", new GeoPoint(9.9397,-84.0505)));
-
-
         Context ctx = getActivity();
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
 
-        map = new MapView(getActivity());
-        //map = (MapView) view.findViewById(R.id.map);
+        //map = new MapView(getActivity());
+        map =  view.findViewById(R.id.map);
 
         map.getTileProvider().setTileSource(TileSourceFactory.MAPNIK);
 
@@ -148,8 +121,44 @@ public class Tab1Fragment extends Fragment {
 
 
 
+        Button btnUCR =  view.findViewById(R.id.btnUcr);
+        Button btnCat = view.findViewById(R.id.btnCat);
+        Button btnCcl = view.findViewById(R.id.btnCcl);
 
-        return /*view*//*new MapView(getActivity())*/map;
+        btnUCR.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                anadirMarcador();
+            }
+        });
+        btnCat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                anadirMarcador2();
+            }
+        });
+        btnCcl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                anadirCiclo();
+            }
+        });
+
+        anotherOverlayItemArray = new ArrayList<OverlayItem>();
+        anotherOverlayItemArray.add(new OverlayItem("cicle", "prueba", new GeoPoint(9.9400,-84.0510)));
+        anotherOverlayItemArray.add(new OverlayItem("cicle", "prueba", new GeoPoint(9.9395,-84.0510)));
+        anotherOverlayItemArray.add(new OverlayItem("cicle", "prueba", new GeoPoint(9.9397,-84.0515)));
+        anotherOverlayItemArray.add(new OverlayItem("cicle", "prueba", new GeoPoint(9.9397,-84.0505)));
+
+
+
+
+
+        anadirMarcador();
+        anadirMarcador2();
+        anadirCiclo();
+        return  view;
+                //map;
     }
 
     @Override
@@ -159,13 +168,13 @@ public class Tab1Fragment extends Fragment {
 
     }
 
-    public void anadirMarcador(View v){
-        Button b = (Button)v;
-        String buttonText = b.getText().toString();
-        System.out.println(buttonText);
+    public void anadirMarcador(){
+
+
+        //System.out.println(buttonText);
 
         GeoPoint pointB = new GeoPoint(9.9370,-84.0510);
-        addMarker(pointB, buttonText);
+        addMarker(pointB);
 
 
 
@@ -180,18 +189,13 @@ public class Tab1Fragment extends Fragment {
 
     }
 
-    public void anadirMarcador2(View v){
-        Button b = (Button)v;
-        String buttonText = b.getText().toString();
-        System.out.println(buttonText);
-
+    public void anadirMarcador2(){
         GeoPoint pointA = new GeoPoint(9.9380, -84.0510);
-        addCat(pointA, buttonText);
+        addCat(pointA);
 
     }
 
-    public void anadirCiclo(View v){
-        Button b = (Button)v;
+    public void anadirCiclo(){
         addCicle();
     }
 
@@ -216,11 +220,11 @@ public class Tab1Fragment extends Fragment {
         map.onPause();  //needed for compass, my location overlays, v6.0.0 and up
     }
 
-    public void addCat(GeoPoint point, String nombre){
+    public void addCat(GeoPoint point){
         org.osmdroid.views.overlay.Marker marker = new org.osmdroid.views.overlay.Marker(map);
         marker.setPosition(point);
         //marker.setAnchor(Marker.ANCHOR_BOTTOM, Marker.ANCHOR_CENTER);
-        marker.setTitle(nombre);
+        marker.setTitle("Cat");
         marker.setIcon(getResources().getDrawable(R.drawable.cat));
         IMapController mapController = map.getController();
         mapController.setCenter(point);
@@ -230,11 +234,11 @@ public class Tab1Fragment extends Fragment {
 
     }
 
-    public void addMarker(GeoPoint point, String nombre){
+    public void addMarker(GeoPoint point){
         org.osmdroid.views.overlay.Marker marker = new org.osmdroid.views.overlay.Marker(map);
         marker.setPosition(point);
         //marker.setAnchor(Marker.ANCHOR_BOTTOM, Marker.ANCHOR_CENTER);
-        marker.setTitle(nombre);
+        marker.setTitle("UCR");
         //marker.setIcon(getResources().getDrawable(R.drawable.cat));
         IMapController mapController = map.getController();
         mapController.setCenter(point);

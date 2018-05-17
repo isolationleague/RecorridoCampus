@@ -14,7 +14,6 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:onClick="anadirCiclo"
         android:text="Cicle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -22,17 +21,6 @@
         app:layout_constraintStart_toEndOf="@+id/btnUcr"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.959" />
-
-    <org.osmdroid.views.MapView
-        android:id="@+id/map"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginBottom="100dp"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        tools:layout_editor_absoluteX="-6dp">
-
-    </org.osmdroid.views.MapView>
 
     <Button
         android:id="@+id/btnUcr"
@@ -42,14 +30,13 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:onClick="anadirMarcador"
         android:text="UCR"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.028"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.751" />
+        app:layout_constraintVertical_bias="0.958" />
 
     <Button
         android:id="@+id/btnCat"
@@ -60,12 +47,28 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="cat"
-        android:onClick="anadirMarcador2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.027"
         app:layout_constraintStart_toEndOf="@+id/btnUcr"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.959" />
+
+    <org.osmdroid.views.MapView
+        android:id="@+id/map"
+        tilesource="Mapnik"
+        android:layout_width="378dp"
+        android:layout_height="568dp"
+        android:layout_marginBottom="92dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+    </org.osmdroid.views.MapView>
 
 </android.support.constraint.ConstraintLayout>
