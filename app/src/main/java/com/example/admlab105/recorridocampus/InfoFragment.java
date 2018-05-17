@@ -22,9 +22,7 @@ public class InfoFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         View view = inflater.inflate(R.layout.info_fragment, container, false);
-
         //mSectionsPageAdapter = new SectionsPageAdapter(getChildFragmentManager());
         mViewPager = (ViewPager) view.findViewById(R.id.info_container);
         setupViewPager(mViewPager);
@@ -35,6 +33,10 @@ public class InfoFragment extends Fragment {
         return view;
     }
 
+    public void onDetach(){
+        super.onDetach();
+        getActivity().getSupportFragmentManager().beginTransaction().remove(getParentFragment()).commit();
+    }
     private void setupViewPager(ViewPager viewPager) {
         SectionsPageAdapter adapter = new SectionsPageAdapter(getChildFragmentManager());
         adapter.addFragment(new InfoTextsFragment(), "Textos");
