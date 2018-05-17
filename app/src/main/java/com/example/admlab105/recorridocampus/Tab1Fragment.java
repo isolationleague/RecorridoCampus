@@ -36,6 +36,20 @@ import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.OverlayItem;
 
 import java.util.ArrayList;
+
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.MapController;
+import org.osmdroid.views.MapView;
+
+import org.osmdroid.views.overlay.ItemizedIconOverlay;
+import org.osmdroid.views.overlay.ItemizedIconOverlay.OnItemGestureListener;
+import org.osmdroid.views.overlay.OverlayItem;
+import org.osmdroid.views.overlay.OverlayManager;
+import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
+import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
+
+
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -84,7 +98,8 @@ import java.util.ArrayList;
 
 
 public class Tab1Fragment extends Fragment {
-    public MapView map;
+    private MapView map;
+    private MyLocationNewOverlay mMyLocationOverlay;
 
     ArrayList<OverlayItem> anotherOverlayItemArray;
 
@@ -103,7 +118,9 @@ public class Tab1Fragment extends Fragment {
         Context ctx = getActivity();
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
 
-        map = view.findViewById(R.id.map);
+        map = new MapView(getActivity());
+        //map = (MapView) view.findViewById(R.id.map);
+
         map.getTileProvider().setTileSource(TileSourceFactory.MAPNIK);
 
         map.setBuiltInZoomControls(true);
@@ -114,7 +131,25 @@ public class Tab1Fragment extends Fragment {
         GeoPoint startPoint = new GeoPoint(9.9370,-84.0510);
         mapController.setCenter(startPoint);
 
-        return view;
+        //enable multitouch
+        map.setMultiTouchControls(true);
+        //GpsMyLocationProvider can be replaced by your own class. It provides the position information through GPS or Cell towers.
+        //GpsMyLocationProvider imlp = new GpsMyLocationProvider(this.getBaseContext());
+        //minimum distance for update
+        //imlp.setLocationUpdateMinDistance(1000);
+        //minimum time for update
+        //imlp.setLocationUpdateMinTime(60000);
+        //mMyLocationOverlay = new MyLocationNewOverlay(this.getBaseContext(),imlp , map, resProxyImp);
+
+        //mMyLocationOverlay.setUseSafeCanvas(false);
+        //mMyLocationOverlay.setDrawAccuracyEnabled(true);
+
+        //map.getOverlays().add(mMyLocationOverlay);
+
+
+
+
+        return /*view*//*new MapView(getActivity())*/map;
     }
 
     @Override
@@ -131,6 +166,18 @@ public class Tab1Fragment extends Fragment {
 
         GeoPoint pointB = new GeoPoint(9.9370,-84.0510);
         addMarker(pointB, buttonText);
+
+
+
+        //ItemizedIconOverlay markersOverlay = new ItemizedIconOverlay(new LinkedList(), myMarker, null, resProxyImp);
+        //map.getOverlays().add(markersOverlay);
+        //Add markers
+        //OverlayItem ovm = new OverlayItem("titolo", "descrizione", new GeoPoint(s.LatitudeE6(), s.LongitudeE6()));
+        //ovm.setMarker(myMarker);
+        //markersOverlay.addItem(ovm);
+
+
+
     }
 
     public void anadirMarcador2(View v){
@@ -210,6 +257,9 @@ public class Tab1Fragment extends Fragment {
 //https://stackoverflow.com/questions/30253123/blue-dot-and-circle-is-not-shown-on-mylocation-using-android-fused-location-api/30255219#30255219
 
 //https://www.sitepoint.com/requesting-runtime-permissions-in-android-m-and-n/ (permisos)
+
+//https://stackoverflow.com/questions/14897143/integrating-osmdroid-with-fragments
+//http://devblog.blackberry.com/2013/03/android-map-blackberry-10/
 
 
 
