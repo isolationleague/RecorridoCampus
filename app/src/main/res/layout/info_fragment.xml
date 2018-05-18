@@ -22,12 +22,6 @@
             android:background="@android:color/white"
             app:popupTheme="@style/AppTheme.PopupOverlay">
 
-            <ImageButton
-                android:id="@+id/imageButton3"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:src="?attr/actionModeCloseDrawable" />
-
             <TextView
                 android:id="@+id/textView4"
                 android:layout_width="wrap_content"
