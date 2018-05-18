@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private SectionsPageAdapter mSectionsPageAdapter;
     public ViewPager mViewPager;
     private boolean isUserClickedBackButton = false;
-
+    public int marcador=0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
