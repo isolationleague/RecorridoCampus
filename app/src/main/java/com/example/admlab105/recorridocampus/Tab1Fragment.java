@@ -104,11 +104,11 @@ public class Tab1Fragment extends Fragment {
 
         map.getTileProvider().setTileSource(TileSourceFactory.MAPNIK);
 
-        map.setBuiltInZoomControls(true);
+        map.setBuiltInZoomControls(false);
         map.setMultiTouchControls(true);
 
         IMapController mapController = map.getController();
-        mapController.setZoom(19);
+        mapController.setZoom(16);
         GeoPoint startPoint = new GeoPoint(9.9370,-84.0510);
         mapController.setCenter(startPoint);
 
@@ -142,7 +142,7 @@ public class Tab1Fragment extends Fragment {
         btnDB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                colocaSitios();
+                miUbic();
             }
         });
 
