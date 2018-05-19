@@ -12,9 +12,10 @@ public class ImageAdapter extends BaseAdapter {
     private Context mContext;
 
     // references to our images
-    private ArrayList<Integer> mThumbIds= new ArrayList<Integer>();
+    public  ArrayList<Integer> mThumbIds;
     public ImageAdapter(Context c) {
         mContext = c;
+        mThumbIds= new ArrayList<Integer>();
         int marcador =0;
 
         if(marcador==0){
