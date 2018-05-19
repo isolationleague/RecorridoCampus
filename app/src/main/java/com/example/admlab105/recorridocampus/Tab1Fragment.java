@@ -82,11 +82,19 @@ public class Tab1Fragment extends Fragment {
     private MapView map;
     private MyLocationNewOverlay mMyLocationOverlay;
 
+    double lat = 0.0, lon = 0.0;
+    private Marker marker;
+    private LinkedList<Marker> sitios;
+    private BaseSitiosHelper db;
+
+    private static final int PERMISSIONS_REQUEST_LOCATION = 1;
+
     ArrayList<OverlayItem> anotherOverlayItemArray;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
+        db = new BaseSitiosHelper(this.getContext());
         View view = inflater.inflate(R.layout.tab1_fragment, container, false);
         Context ctx = getActivity();
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
@@ -104,26 +112,14 @@ public class Tab1Fragment extends Fragment {
         GeoPoint startPoint = new GeoPoint(9.9370,-84.0510);
         mapController.setCenter(startPoint);
 
-        //enable multitouch
+
         map.setMultiTouchControls(true);
-        //GpsMyLocationProvider can be replaced by your own class. It provides the position information through GPS or Cell towers.
-        //GpsMyLocationProvider imlp = new GpsMyLocationProvider(this.getBaseContext());
-        //minimum distance for update
-        //imlp.setLocationUpdateMinDistance(1000);
-        //minimum time for update
-        //imlp.setLocationUpdateMinTime(60000);
-        //mMyLocationOverlay = new MyLocationNewOverlay(this.getBaseContext(),imlp , map, resProxyImp);
-
-        //mMyLocationOverlay.setUseSafeCanvas(false);
-        //mMyLocationOverlay.setDrawAccuracyEnabled(true);
-
-        //map.getOverlays().add(mMyLocationOverlay);
-
 
 
         Button btnUCR =  view.findViewById(R.id.btnUcr);
         Button btnCat = view.findViewById(R.id.btnCat);
         Button btnCcl = view.findViewById(R.id.btnCcl);
+        Button btnDB = view.findViewById(R.id.btnDB);
 
         btnUCR.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -143,6 +139,12 @@ public class Tab1Fragment extends Fragment {
                 anadirCiclo();
             }
         });
+        btnDB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                colocaSitios();
+            }
+        });
 
         anotherOverlayItemArray = new ArrayList<OverlayItem>();
         anotherOverlayItemArray.add(new OverlayItem("cicle", "prueba", new GeoPoint(9.9400,-84.0510)));
@@ -150,23 +152,178 @@ public class Tab1Fragment extends Fragment {
         anotherOverlayItemArray.add(new OverlayItem("cicle", "prueba", new GeoPoint(9.9397,-84.0515)));
         anotherOverlayItemArray.add(new OverlayItem("cicle", "prueba", new GeoPoint(9.9397,-84.0505)));
 
-
-
-
-
-        anadirMarcador();
-        anadirMarcador2();
-        anadirCiclo();
+        marker= new Marker(map);
+        colocaSitios();
         return  view;
                 //map;
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
+    public void onStart(){
+        super.onStart();
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable(){
+            public void run(){
+                miUbic();
+            }
+        },10);
 
     }
+
+    private void miUbic() {
+
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION,
+                            android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    PERMISSIONS_REQUEST_LOCATION);
+        }
+
+
+        LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        Location location = null;
+        try {
+
+            // getting GPS status
+            boolean isGPSEnabled = locationManager
+                    .isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+            // getting network status
+            boolean isNetworkEnabled = locationManager
+                    .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+            if (!isGPSEnabled && !isNetworkEnabled) {
+                int i;
+                // location service disabled
+            } else {
+                // if GPS Enabled get lat/long using GPS Services
+
+                if (isGPSEnabled && !isNetworkEnabled) {
+                    android.location.LocationListener locationListener1 = new android.location.LocationListener() {
+                        @Override
+                        public void onLocationChanged(Location location) {
+                            actualizarUbic(location);
+                        }
+
+                        @Override
+                        public void onStatusChanged(String s, int i, Bundle bundle) {
+                        }
+
+                        @Override
+                        public void onProviderEnabled(String s) {
+                        }
+
+                        @Override
+                        public void onProviderDisabled(String s) {
+                        }
+                    };
+                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,1000,1f,locationListener1 );;
+
+                    Log.d("GPS Enabled", "GPS Enabled");
+
+                    if (locationManager != null) {
+                        while (location == null) {
+                            location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                        }
+                    }
+                }
+
+                // First get location from Network Provider
+                if (isNetworkEnabled) {
+                    if (location == null) {
+                        android.location.LocationListener locationListener2 = new android.location.LocationListener() {
+                            @Override
+                            public void onLocationChanged(Location location) {
+                                actualizarUbic(location);
+                            }
+
+                            @Override
+                            public void onStatusChanged(String s, int i, Bundle bundle) {
+                            }
+
+                            @Override
+                            public void onProviderEnabled(String s) {
+                            }
+
+                            @Override
+                            public void onProviderDisabled(String s) {
+                            }
+                        };
+                        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,100,1f,locationListener2 );
+
+                        Log.d("Network", "Network");
+
+                        if (locationManager != null) {
+                            while (location == null) {
+                                location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                            }
+                        }
+                    }
+
+                }
+            }
+        } catch (Exception e) {
+            // e.printStackTrace();
+            Log.e("Error : Location",
+                    "Impossible to connect to LocationManager", e);
+        }
+
+        actualizarUbic(location);
+
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST_LOCATION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request.
+        }
+    }
+
+    private void actualizarUbic(Location location) {
+        if (location != null) {
+            lat = location.getLatitude();
+            lon = location.getLongitude();
+            agregarMarcador(lat, lon);
+        }
+    }
+
+    private void agregarMarcador(double la, double lo) {
+        lat=la;
+        lon=lo;
+        //CameraUpdate miUbic = CameraUpdateFactory.newLatLngZoom(coord, 16f);
+        if (marker != null) {
+            marker.remove(map);
+        }
+        GeoPoint user= new GeoPoint(lat, lon);
+        marker.setTitle("Usuario");
+        marker.setPosition(user);
+        map.getOverlays().add(marker);
+
+
+        /*.icon(BitmapDescriptorFactory.fromResource(R.mipmap.cueva8bit)).draggable(true)*/;
+
+        //mMap.animateCamera(miUbic);
+    }
+
+
+
 
     public void anadirMarcador(){
 
@@ -253,6 +410,25 @@ public class Tab1Fragment extends Fragment {
                 = new ItemizedIconOverlay<OverlayItem>(getActivity(), anotherOverlayItemArray, null);
         map.getOverlays().add(anotherItemizedIconOverlay);
     }
+
+    private void colocaSitios(){
+        sitios = new LinkedList<Marker>();
+        Cursor c=db.obtenerLugares();
+        if (c.moveToFirst()) {
+            do {
+                org.osmdroid.views.overlay.Marker marker = new org.osmdroid.views.overlay.Marker(map);
+                lat=c.getDouble(1);
+                lon=c.getDouble(2);
+                GeoPoint sitio= new GeoPoint(lat,lon);
+                marker.setPosition(sitio);
+                marker.setTitle(c.getString(0));
+                map.getOverlays().add(marker);
+                map.invalidate();
+                //sitios.add(mMap.addMarker(new MarkerOptions().position(coord).title(c.getString(0))));
+            } while(c.moveToNext());
+        }
+    }
+
 
 }
 
