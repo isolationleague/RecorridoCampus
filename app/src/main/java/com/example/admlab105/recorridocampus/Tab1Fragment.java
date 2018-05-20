@@ -120,6 +120,7 @@ public class Tab1Fragment extends Fragment implements OnMapReadyCallback {
         btnTest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 InfoFragment fragment = new InfoFragment();
                 //FragmentManager fm = getFragmentManager();
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
@@ -131,6 +132,7 @@ public class Tab1Fragment extends Fragment implements OnMapReadyCallback {
         btnTest2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 InfoFragment fragment = new InfoFragment();
                 //FragmentManager fm = getFragmentManager();
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
