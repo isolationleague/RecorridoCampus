@@ -152,9 +152,9 @@ public class InfoTextsFragment extends Fragment {
             Context context = getActivity();
             ImageView imageView = new ImageView(context);
             int padding = context.getResources().getDimensionPixelSize(
-                    R.dimen.padding_large);
-            imageView.setPadding(padding*3, padding, padding*3, padding);
-            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+                    R.dimen.padding_small);
+            imageView.setPadding(padding, padding, padding, padding);
+            imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
             imageView.setImageResource(mImages[position]);
             ((ViewPager) container).addView(imageView, 0);
             return imageView;
