@@ -1,7 +1,7 @@
 Edificio de la Escuela de Arquitectura, 9.934535, -84.052497
 Instituto Confucio, 9.934677, -84.052795
 Casa del SINDEU, 9.934502, -84.052941  
-Edificio de la Facultad de Ingenier?a, 9.935517, -84.052101
+Edificio de la Facultad de Ingenieria, 9.935517, -84.052101
 Busto del profesor Carlos Monge Alfaro, 9.835563, -84.51376       
 Fuente de cupido y el cisne, 9.935804, -84.051154        
 Estatua de Rodrigo Facio Brenes, 9.935693,-84.050830
