@@ -7,15 +7,18 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 public class InfoFragment extends Fragment {
 
     //private SectionsPageAdapter mSectionsPageAdapter;
     private ViewPager mViewPager;
+    private String etiqueta;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        etiqueta = this.getArguments().getString("etiq");
         setRetainInstance(true);
     }
 
@@ -29,7 +32,8 @@ public class InfoFragment extends Fragment {
 
         TabLayout tabLayout = (TabLayout) view.findViewById(R.id.info_tabLayout);
         tabLayout.setupWithViewPager(mViewPager);
-
+        TextView tv = (TextView)view.findViewById(R.id.etqSitio);
+        tv.setText(etiqueta);
         return view;
     }
 
