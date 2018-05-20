@@ -17,7 +17,7 @@ public class PruebadeBase extends AppCompatActivity {
         final Context context=this;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pruebade_base);
-        final BaseSitiosHelper db = new BaseSitiosHelper(this);
+        final BaseSitiosHelper db =  BaseSitiosHelper.getInstance(this.getApplicationContext());
         final Button button = findViewById(R.id.button);
         final Button bcargar = findViewById(R.id.bcargar);
         final EditText text = findViewById(R.id.etext);

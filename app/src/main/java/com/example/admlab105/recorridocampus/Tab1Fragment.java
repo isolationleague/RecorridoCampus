@@ -81,8 +81,6 @@ public class Tab1Fragment extends Fragment implements OnMapReadyCallback, Google
     private BaseSitiosHelper db;
 
     private static final int PERMISSIONS_REQUEST_LOCATION = 1;
-    boolean dobleClick = false;
-    Marker ultimoTocado;
 
     public Tab1Fragment() {
 
@@ -101,7 +99,7 @@ public class Tab1Fragment extends Fragment implements OnMapReadyCallback, Google
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
 
-        db = new BaseSitiosHelper(this.getContext());
+        db = BaseSitiosHelper.getInstance(this.getContext().getApplicationContext());
         View view = inflater.inflate(R.layout.tab1_fragment, container, false);
         ImageButton btnCoor =  view.findViewById(R.id.btnCoor);
         ImageButton btnCampus= view.findViewById(R.id.btnCampus);
@@ -378,6 +376,7 @@ public class Tab1Fragment extends Fragment implements OnMapReadyCallback, Google
     private void colocaSitios(){
         sitios = new LinkedList<Marker>();
         Cursor c=db.obtenerLugares();
+        int ooo= c.getCount();
         if (c.moveToFirst()) {
             do {
                 LatLng coord = new LatLng(c.getDouble(1), c.getDouble(2));

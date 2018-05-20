@@ -21,11 +21,26 @@ import java.io.IOException;
  */
 
 public class BaseSitiosHelper extends SQLiteOpenHelper {
-    private static final int DATABASE_VERSION = 1;
+
+    private static BaseSitiosHelper sInstance;
+
+    private static final int DATABASE_VERSION = 2;
     private static final String DATABASE_NAME = "BaseSitios.db";
     Context context;
+//https://www.androiddesignpatterns.com/2012/05/correctly-managing-your-sqlite-database.html
+    //Para compartir la db
+    public static synchronized BaseSitiosHelper getInstance(Context context) {
 
-    public BaseSitiosHelper(Context context) {
+        // Use the application context, which will ensure that you
+        // don't accidentally leak an Activity's context.
+        // See this article for more information: http://bit.ly/6LRzfx
+        if (sInstance == null) {
+            sInstance = new BaseSitiosHelper(context.getApplicationContext());
+        }
+        return sInstance;
+    }
+
+    private BaseSitiosHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
     }
@@ -107,7 +122,7 @@ public class BaseSitiosHelper extends SQLiteOpenHelper {
                 long newRowId = dB.insert(BaseSitiosContract.SitioBase.TABLE_NAME, null, values);
 
                 //carga las imagenes de cada sitio
-                int cantidadFotos = Integer.parseInt(sitioPartes[3]);
+                /*int cantidadFotos = Integer.parseInt(sitioPartes[3]);
                 if(cantidadFotos>0) {
                     for (int i = 0; i < cantidadFotos; i++) {
                         values.put(BaseSitiosContract.Foto.ID_SITIO, newRowId);
@@ -117,7 +132,7 @@ public class BaseSitiosHelper extends SQLiteOpenHelper {
                     }
                 }
 
-                count ++;
+                count ++;*/
             }
 
             fraw.close();
@@ -146,6 +161,22 @@ public class BaseSitiosHelper extends SQLiteOpenHelper {
             c = db.rawQuery(" SELECT nombre,coordenadaX,coordenadaY FROM sitio ", null);
         }
         return c;
+    }
+    public double obtengaX(String s){
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c=null;
+        if (db != null) {
+        c = db.rawQuery(" SELECT coordenadaX FROM sitio WHERE nombre = \""+s+"\"", null);
+        c.moveToFirst();
+        } return (c.getColumnCount()!=0)? c.getDouble(0): 99.0 ;
+    }
+    public double obtengaY(String s){
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c=null;
+        if (db != null) {
+            c = db.rawQuery(" SELECT coordenadaY FROM sitio WHERE nombre = \""+s+"\"", null);
+            c.moveToFirst();
+        } return (c.getColumnCount()!=0)? c.getDouble(0): 99.0 ;
     }
 
 }

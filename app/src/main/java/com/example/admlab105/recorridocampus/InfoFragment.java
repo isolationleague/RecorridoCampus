@@ -14,11 +14,14 @@ public class InfoFragment extends Fragment {
     //private SectionsPageAdapter mSectionsPageAdapter;
     private ViewPager mViewPager;
     private String etiqueta;
+    private BaseSitiosHelper db;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         etiqueta = this.getArguments().getString("etiq");
+        db = BaseSitiosHelper.getInstance(this.getContext());
+
         setRetainInstance(true);
     }
 
@@ -34,6 +37,12 @@ public class InfoFragment extends Fragment {
         tabLayout.setupWithViewPager(mViewPager);
         TextView tv = (TextView)view.findViewById(R.id.etqSitio);
         tv.setText(etiqueta);
+
+        TextView tv2 = (TextView)view.findViewById(R.id.cX);
+        tv2.setText(String.valueOf(db.obtengaX(etiqueta)));
+        TextView tv3 = (TextView)view.findViewById(R.id.cY);
+        tv3.setText(String.valueOf(db.obtengaY(etiqueta)));
+
         return view;
     }
 
