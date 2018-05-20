@@ -2,6 +2,7 @@ package com.example.admlab105.recorridocampus;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -33,6 +34,7 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
+import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
 import org.osmdroid.views.overlay.OverlayItem;
 
 import java.util.ArrayList;
@@ -40,45 +42,19 @@ import java.util.ArrayList;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapController;
 import org.osmdroid.views.MapView;
-
+import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.ItemizedIconOverlay.OnItemGestureListener;
 import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.OverlayManager;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
-
-
-
 import java.util.LinkedList;
-import java.util.List;
-
-import android.app.Activity;
-import android.content.Context;
-
-import android.content.Intent;
-import android.preference.PreferenceManager;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-
-import org.osmdroid.api.IMapController;
-import org.osmdroid.config.Configuration;
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
-import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.MapView;
-import org.osmdroid.views.overlay.ItemizedIconOverlay;
-import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
-import org.osmdroid.views.overlay.Marker;
-import org.osmdroid.views.overlay.OverlayItem;
-
-import java.util.ArrayList;
 
 
 
-public class Tab1Fragment extends Fragment {
+
+public class Tab1Fragment extends Fragment{
     private MapView map;
     private MyLocationNewOverlay mMyLocationOverlay;
 
@@ -89,7 +65,9 @@ public class Tab1Fragment extends Fragment {
 
     private static final int PERMISSIONS_REQUEST_LOCATION = 1;
 
-    ArrayList<OverlayItem> anotherOverlayItemArray;
+    ArrayList<OverlayItem> marcadores;
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -118,7 +96,6 @@ public class Tab1Fragment extends Fragment {
 
         Button btnUCR =  view.findViewById(R.id.btnUcr);
         Button btnCat = view.findViewById(R.id.btnCat);
-        Button btnCcl = view.findViewById(R.id.btnCcl);
         Button btnDB = view.findViewById(R.id.btnDB);
 
         btnUCR.setOnClickListener(new View.OnClickListener() {
@@ -133,12 +110,7 @@ public class Tab1Fragment extends Fragment {
                 anadirMarcador2();
             }
         });
-        btnCcl.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                anadirCiclo();
-            }
-        });
+
         btnDB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -146,14 +118,35 @@ public class Tab1Fragment extends Fragment {
             }
         });
 
-        anotherOverlayItemArray = new ArrayList<OverlayItem>();
-        anotherOverlayItemArray.add(new OverlayItem("cicle", "prueba", new GeoPoint(9.9400,-84.0510)));
-        anotherOverlayItemArray.add(new OverlayItem("cicle", "prueba", new GeoPoint(9.9395,-84.0510)));
-        anotherOverlayItemArray.add(new OverlayItem("cicle", "prueba", new GeoPoint(9.9397,-84.0515)));
-        anotherOverlayItemArray.add(new OverlayItem("cicle", "prueba", new GeoPoint(9.9397,-84.0505)));
+        marcadores = new ArrayList<OverlayItem>();
+        sitios = new LinkedList<Marker>();
+        Cursor c=db.obtenerLugares();
+        if (c.moveToFirst()) {
+            do {
+                marcadores.add(new OverlayItem(c.getString(0), "", new GeoPoint(c.getDouble(1),c.getDouble(2))));
 
+            } while(c.moveToNext());
+        }
+
+        ItemizedIconOverlay.OnItemGestureListener<OverlayItem> gestureListener = new OnItemGestureListener<OverlayItem>() {
+            @Override
+            public boolean onItemSingleTapUp(final int index, final OverlayItem item) {
+                //do something
+                Toast.makeText(getActivity(), item.getTitle(),Toast.LENGTH_LONG).show();
+                return true;
+            }
+            @Override
+            public boolean onItemLongPress(final int index, final OverlayItem item) {
+                return false;
+            }
+        };
+        ItemizedIconOverlay<OverlayItem> mOverlay = new ItemizedIconOverlay<OverlayItem>(getActivity(),marcadores,gestureListener);
+
+
+
+        map.getOverlays().add(mOverlay);
         marker= new Marker(map);
-        colocaSitios();
+        //colocaSitios();
         return  view;
                 //map;
     }
@@ -169,6 +162,15 @@ public class Tab1Fragment extends Fragment {
         },10);
 
     }
+
+    public void onClick(Marker mark){
+        Toast.makeText(getActivity(),mark.getTitle() ,
+                Toast.LENGTH_LONG).show();
+
+
+
+    }
+
 
     private void miUbic() {
 
@@ -316,9 +318,6 @@ public class Tab1Fragment extends Fragment {
         marker.setPosition(user);
         map.getOverlays().add(marker);
 
-
-        /*.icon(BitmapDescriptorFactory.fromResource(R.mipmap.cueva8bit)).draggable(true)*/;
-
         //mMap.animateCamera(miUbic);
     }
 
@@ -327,34 +326,15 @@ public class Tab1Fragment extends Fragment {
 
     public void anadirMarcador(){
 
-
-        //System.out.println(buttonText);
-
         GeoPoint pointB = new GeoPoint(9.9370,-84.0510);
         addMarker(pointB);
-
-
-
-        //ItemizedIconOverlay markersOverlay = new ItemizedIconOverlay(new LinkedList(), myMarker, null, resProxyImp);
-        //map.getOverlays().add(markersOverlay);
-        //Add markers
-        //OverlayItem ovm = new OverlayItem("titolo", "descrizione", new GeoPoint(s.LatitudeE6(), s.LongitudeE6()));
-        //ovm.setMarker(myMarker);
-        //markersOverlay.addItem(ovm);
-
-
-
     }
 
     public void anadirMarcador2(){
         GeoPoint pointA = new GeoPoint(9.9380, -84.0510);
         addCat(pointA);
-
     }
 
-    public void anadirCiclo(){
-        addCicle();
-    }
 
 
     @Override
@@ -405,13 +385,28 @@ public class Tab1Fragment extends Fragment {
 
     }
 
-    public void addCicle(){
+    /*public void addCicle(){
         ItemizedIconOverlay<OverlayItem> anotherItemizedIconOverlay
                 = new ItemizedIconOverlay<OverlayItem>(getActivity(), anotherOverlayItemArray, null);
         map.getOverlays().add(anotherItemizedIconOverlay);
-    }
+    }*/
 
-    private void colocaSitios(){
+
+
+
+}
+
+// https://developers.google.com/maps/documentation/android-api/location?hl=es-419
+// RECORDAR SOLICITAR AL USUARIO LOS PERMISOS DE UBICACION
+//https://stackoverflow.com/questions/30253123/blue-dot-and-circle-is-not-shown-on-mylocation-using-android-fused-location-api/30255219#30255219
+
+//https://www.sitepoint.com/requesting-runtime-permissions-in-android-m-and-n/ (permisos)
+
+//https://stackoverflow.com/questions/14897143/integrating-osmdroid-with-fragments
+//http://devblog.blackberry.com/2013/03/android-map-blackberry-10/
+
+    /*private void colocaSitios(){
+
         sitios = new LinkedList<Marker>();
         Cursor c=db.obtenerLugares();
         if (c.moveToFirst()) {
@@ -427,20 +422,6 @@ public class Tab1Fragment extends Fragment {
                 //sitios.add(mMap.addMarker(new MarkerOptions().position(coord).title(c.getString(0))));
             } while(c.moveToNext());
         }
-    }
-
-
-}
-
-// https://developers.google.com/maps/documentation/android-api/location?hl=es-419
-// RECORDAR SOLICITAR AL USUARIO LOS PERMISOS DE UBICACION
-//https://stackoverflow.com/questions/30253123/blue-dot-and-circle-is-not-shown-on-mylocation-using-android-fused-location-api/30255219#30255219
-
-//https://www.sitepoint.com/requesting-runtime-permissions-in-android-m-and-n/ (permisos)
-
-//https://stackoverflow.com/questions/14897143/integrating-osmdroid-with-fragments
-//http://devblog.blackberry.com/2013/03/android-map-blackberry-10/
-
-
+    }*/
 
 
