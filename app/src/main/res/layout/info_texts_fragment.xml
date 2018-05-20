@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+
 
     <android.support.constraint.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true">
 
         <android.support.v4.view.ViewPager
             android:id="@+id/view_pager"
@@ -17,8 +18,8 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_marginBottom="351dp"
-            android:layout_marginTop="150dp"
+            android:layout_marginBottom="370dp"
+            android:layout_marginTop="80dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -27,35 +28,58 @@
 
         </android.support.v4.view.ViewPager>
 
-        <SeekBar
-            android:id="@+id/seekBar"
-            android:clickable="false"
-            android:enabled="false"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="122dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginStart="10dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+    <SeekBar
+        android:id="@+id/seekBar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="260dp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginLeft="80dp"
+        android:layout_marginRight="40dp"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="15dp"
+        android:clickable="false"
+        android:enabled="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view_pager" />
 
-        <ImageButton
-            android:id="@+id/playButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="32dp"
-            android:layout_marginEnd="165dp"
-            android:layout_marginLeft="163dp"
-            android:layout_marginRight="165dp"
-            android:layout_marginStart="163dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:srcCompat="@drawable/sharp_play_arrow_black_18dp" />
+    <ImageButton
+        android:id="@+id/playButton"
+        android:layout_width="49dp"
+        android:layout_height="37dp"
+        android:layout_marginBottom="260dp"
+        android:layout_marginEnd="6dp"
+        android:layout_marginLeft="45dp"
+        android:layout_marginRight="6dp"
+        android:layout_marginStart="45dp"
+        android:layout_marginTop="15dp"
+        android:background="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/seekBar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view_pager"
+        app:srcCompat="@drawable/sharp_play_arrow_black_18dp" />
 
-    </android.support.constraint.ConstraintLayout>
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="40dp"
+        android:layout_marginEnd="45dp"
+        android:layout_marginLeft="45dp"
+        android:layout_marginRight="45dp"
+        android:layout_marginStart="45dp"
+        android:layout_marginTop="20dp"
+        android:text="TextView"
+        android:textSize="16sp"
+        android:typeface="serif"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/seekBar" />
 
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>
+

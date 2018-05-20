@@ -46,10 +46,11 @@ public class InfoFragment extends Fragment {
         return view;
     }
 
-    public void onDetach(){
+    /*public void onDetach(){
         super.onDetach();
         getActivity().getSupportFragmentManager().beginTransaction().remove(getParentFragment()).commit();
-    }
+    }*/
+
     private void setupViewPager(ViewPager viewPager) {
         SectionsPageAdapter adapter = new SectionsPageAdapter(getChildFragmentManager());
         adapter.addFragment(new InfoTextsFragment(), "Textos");

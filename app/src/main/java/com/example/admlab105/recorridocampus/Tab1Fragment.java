@@ -49,26 +49,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-/*public class Tab1Fragment extends Fragment {
-    private static final String TAG = "Tab1Fragment";
-    private Button btn;
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.tab1_fragment,container,false);
-        btn = (Button) view.findViewById(R.id.btn);
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(getActivity(), "TESTING BUTTON CLICK 1",Toast.LENGTH_SHORT).show();
-            }
-        });
-        return view;
-    }
-}*/
-
-
 public class Tab1Fragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener {
 
     private GoogleMap mMap;
@@ -103,11 +83,6 @@ public class Tab1Fragment extends Fragment implements OnMapReadyCallback, Google
         View view = inflater.inflate(R.layout.tab1_fragment, container, false);
         ImageButton btnCoor =  view.findViewById(R.id.btnCoor);
         ImageButton btnCampus= view.findViewById(R.id.btnCampus);
-        ImageButton btnTest = view.findViewById(R.id.btnTest);
-        ImageButton btnTest2 = view.findViewById(R.id.btnTest2);
-
-
-
         btnCoor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -119,32 +94,6 @@ public class Tab1Fragment extends Fragment implements OnMapReadyCallback, Google
             public void onClick(View v) { volverCampus();
             }
         });
-        /*btnTest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                InfoFragment fragment = new InfoFragment();
-                //FragmentManager fm = getFragmentManager();
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.frameLayout, fragment, "tag1");
-                transaction.addToBackStack(null);
-                transaction.commit();
-            }
-        });
-        btnTest2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                InfoFragment fragment = new InfoFragment();
-                //FragmentManager fm = getFragmentManager();
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.frameLayout, fragment, "tag1");
-                transaction.addToBackStack(null);
-                transaction.commit();
-            }
-        });*/
-
-
         mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         if (mapFragment == null) {
             FragmentManager fm = getFragmentManager();

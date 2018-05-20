@@ -15,6 +15,11 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
+import android.widget.TextView;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 
 public class InfoTextsFragment extends Fragment {
@@ -43,7 +48,28 @@ public class InfoTextsFragment extends Fragment {
                 play(v);
             }
         });
+        TextView txtview = view.findViewById(R.id.textView);
+        loadTextView(txtview);
         return view;
+    }
+
+    public void loadTextView (TextView txtView) {
+        InputStream inputStream = getResources().openRawResource(R.raw.lorem_ipsum);
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+        int i;
+        try {
+            i = inputStream.read();
+            while (i != -1)
+            {
+                byteArrayOutputStream.write(i);
+                i = inputStream.read();
+            }
+            inputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        txtView.setText(byteArrayOutputStream.toString());
     }
 
     public void play(View view) {
@@ -126,9 +152,9 @@ public class InfoTextsFragment extends Fragment {
             Context context = getActivity();
             ImageView imageView = new ImageView(context);
             int padding = context.getResources().getDimensionPixelSize(
-                    R.dimen.padding_medium);
-            imageView.setPadding(padding, padding, padding, padding);
-            imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                    R.dimen.padding_large);
+            imageView.setPadding(padding*3, padding, padding*3, padding);
+            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
             imageView.setImageResource(mImages[position]);
             ((ViewPager) container).addView(imageView, 0);
             return imageView;
