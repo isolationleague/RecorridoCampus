@@ -33,7 +33,10 @@ public class InfoTextsFragment extends Fragment {
         viewPager.setAdapter(adapter);
         playButton = view.findViewById(R.id.playButton);
         seekBar = view.findViewById(R.id.seekBar);
+        seekBar.setClickable(false);
+        seekBar.setFocusable(false);
         handler = new Handler();
+        initializePlayer();
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -44,51 +47,56 @@ public class InfoTextsFragment extends Fragment {
     }
 
     public void play(View view) {
-        if (audioPlayer == null) {
-            audioPlayer = MediaPlayer.create(getActivity(), R.raw.lacus_somniorum);
-            //audioPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-            seekBar.setMax(audioPlayer.getDuration());
-            playing();
-            audioPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                @Override
-                public void onCompletion(MediaPlayer mediaPlayer) {
-                    stopPlayer();
-                }
-            });
+        if (audioPlayer != null) {
             if (audioPlayer.isPlaying()) {
-                if (audioPlayer != null) {
-                    audioPlayer.pause();
-                    playButton.setImageResource(R.drawable.sharp_play_arrow_black_18dp);
-                }
+                audioPlayer.pause();
+                playButton.setImageResource(R.drawable.sharp_play_arrow_black_18dp);
             } else {
-                if (audioPlayer != null) {
-                    audioPlayer.start();
-                    playButton.setImageResource(R.drawable.sharp_pause_black_18dp);
-                }
+                audioPlayer.start();
+                playButton.setImageResource(R.drawable.sharp_pause_black_18dp);
             }
+        } else {
+            initializePlayer();
+            audioPlayer.start();
+            playButton.setImageResource(R.drawable.sharp_pause_black_18dp);
         }
-        audioPlayer.start();
     }
 
     private void stopPlayer() {
         if (audioPlayer != null) {
             audioPlayer.release();
             audioPlayer = null;
-
+            playButton.setImageResource(R.drawable.sharp_play_arrow_black_18dp);
         }
         handler.removeCallbacks(runnable);
     }
 
     @Override
     public void onStop() {
-        playButton.setImageResource(R.drawable.sharp_play_arrow_black_18dp);
         super.onStop();
         stopPlayer();
     }
 
+    public void initializePlayer() {
+        if (audioPlayer != null){
+            audioPlayer.release();
+        }
+        audioPlayer = MediaPlayer.create(getActivity(), R.raw.lacus_somniorum);
+        //audioPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        seekBar.setMax(audioPlayer.getDuration());
+        audioPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mediaPlayer) {
+                stopPlayer();
+            }
+        });
+        playing();
+    }
+
     public void playing() {
-            if (audioPlayer != null)
-                handler.postDelayed(updateTime, 100);
+        if (audioPlayer != null)
+            handler.postDelayed(updateTime, 100);
+
     }
 
     private Runnable updateTime = new Runnable() {
@@ -103,8 +111,6 @@ public class InfoTextsFragment extends Fragment {
 
     private class ImagePagerAdapter extends PagerAdapter {
         private int[] mImages = new int[] {R.drawable.captura_intromenu,R.drawable.default0};
-
-
         @Override
         public int getCount() {
             return mImages.length;
