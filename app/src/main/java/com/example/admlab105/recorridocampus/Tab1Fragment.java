@@ -69,7 +69,7 @@ import java.util.List;
 }*/
 
 
-public class Tab1Fragment extends Fragment implements OnMapReadyCallback {
+public class Tab1Fragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener {
 
     private GoogleMap mMap;
     SupportMapFragment mapFragment;
@@ -99,12 +99,14 @@ public class Tab1Fragment extends Fragment implements OnMapReadyCallback {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
 
-        db = new BaseSitiosHelper(this.getContext());
+        db = BaseSitiosHelper.getInstance(this.getContext().getApplicationContext());
         View view = inflater.inflate(R.layout.tab1_fragment, container, false);
         ImageButton btnCoor =  view.findViewById(R.id.btnCoor);
         ImageButton btnCampus= view.findViewById(R.id.btnCampus);
         ImageButton btnTest = view.findViewById(R.id.btnTest);
         ImageButton btnTest2 = view.findViewById(R.id.btnTest2);
+
+
 
         btnCoor.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,7 +119,7 @@ public class Tab1Fragment extends Fragment implements OnMapReadyCallback {
             public void onClick(View v) { volverCampus();
             }
         });
-        btnTest.setOnClickListener(new View.OnClickListener() {
+        /*btnTest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -140,7 +142,7 @@ public class Tab1Fragment extends Fragment implements OnMapReadyCallback {
                 transaction.addToBackStack(null);
                 transaction.commit();
             }
-        });
+        });*/
 
 
         mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
@@ -159,8 +161,11 @@ public class Tab1Fragment extends Fragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
 
         mMap = googleMap;
+        mMap.setOnInfoWindowClickListener(this);
 
         colocaSitios();
+        //mMap.getUiSettings().setZoomGesturesEnabled(false);
+
 
         List<LatLng> sitios = new ArrayList<LatLng>();
         volverCampus();
@@ -371,12 +376,50 @@ public class Tab1Fragment extends Fragment implements OnMapReadyCallback {
     private void colocaSitios(){
         sitios = new LinkedList<Marker>();
         Cursor c=db.obtenerLugares();
+        int ooo= c.getCount();
         if (c.moveToFirst()) {
             do {
                 LatLng coord = new LatLng(c.getDouble(1), c.getDouble(2));
                 sitios.add(mMap.addMarker(new MarkerOptions().position(coord).title(c.getString(0))));
             } while(c.moveToNext());
         }
+    }
+//METODO para abrir con double click en el marker los fragment de info
+    /*@Override
+    public boolean onMarkerClick(Marker marker) {
+        if (dobleClick && marker.equals(ultimoTocado)) {
+            InfoFragment fragment = new InfoFragment();
+            //FragmentManager fm = getFragmentManager();
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            transaction.replace(R.id.frameLayout, fragment, "tag1");
+            transaction.addToBackStack(null);
+            transaction.commit();
+            return true;
+        } else {
+            ultimoTocado = marker;
+            this.dobleClick = true;
+            new Handler().postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    dobleClick = false;
+                }
+            }, 2000);
+            return false;
+        }
+    }*/
+//METODO para abrir con click en el label del marker los fragment de info
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        Bundle arg = new Bundle();
+        arg.putString("etiq", marker.getTitle());
+        InfoFragment fragment = new InfoFragment();
+        fragment.setArguments(arg);
+        //FragmentManager fm = getFragmentManager();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.frameLayout, fragment, "tag1");
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 }
 
