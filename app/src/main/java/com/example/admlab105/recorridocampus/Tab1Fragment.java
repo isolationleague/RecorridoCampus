@@ -168,11 +168,11 @@ public class Tab1Fragment extends Fragment{
             } while(c.moveToNext());
 
 
-                roadManager = new OSRMRoadManager(getActivity());
-                Road road = roadManager.getRoad(marcadores2);
-                Polyline roadOverlay = RoadManager.buildRoadOverlay(road);
-                map.getOverlays().add(roadOverlay);
-                map.invalidate();
+            roadManager = new OSRMRoadManager(getActivity());
+            Road road = roadManager.getRoad(marcadores2);
+            Polyline roadOverlay = RoadManager.buildRoadOverlay(road);
+            map.getOverlays().add(roadOverlay);
+            map.invalidate();
 
 
 
@@ -219,7 +219,7 @@ public class Tab1Fragment extends Fragment{
 
         //colocaSitios();
         return  view;
-                //map;
+        //map;
     }
 
     @Override
@@ -512,6 +512,6 @@ public class Tab1Fragment extends Fragment{
         }
     }*/
 
-    // https://github.com/MKergall/osmbonuspack/wiki/features
+// https://github.com/MKergall/osmbonuspack/wiki/features
 
 
