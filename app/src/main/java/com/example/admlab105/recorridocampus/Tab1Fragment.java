@@ -74,11 +74,18 @@ public class Tab1Fragment extends Fragment{
     private static final int PERMISSIONS_REQUEST_LOCATION = 1;
 
     ArrayList<OverlayItem> marcadores;
+    ArrayList<GeoPoint> marcadores2;
 
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+        almacenar();// Petición de permiso para external storage
+
+        RoadManager roadManager = new MapQuestRoadManager("oDJQc4K80LIhYWgAFxit5ktTbWVBoYjy"); // API key en https://developer.mapquest.com/
+        roadManager.addRequestOption("routeType=pedestrian");
+
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
@@ -141,46 +148,49 @@ public class Tab1Fragment extends Fragment{
 
         marcadores = new ArrayList<OverlayItem>();
 
-        ArrayList<GeoPoint> marcadores2 = new ArrayList<GeoPoint>();
+        marcadores2 = new ArrayList<GeoPoint>();
+
+        GeoPoint pointB = new GeoPoint(9.9370,-84.0510);
+
+        GeoPoint pointA = new GeoPoint(9.9380, -84.0510);
+        marcadores2.add(pointA);
+        marcadores2.add(pointB);
 
         sitios = new LinkedList<Marker>();
         Cursor c=db.obtenerLugares();
 
-        Road road;
 
         if (c.moveToFirst()) {
             do {
                 marcadores.add(new OverlayItem(c.getString(0), "", new GeoPoint(c.getDouble(1),c.getDouble(2))));
-                marcadores2.add(new GeoPoint(c.getDouble(1),c.getDouble(2)));
+                //marcadores2.add(new GeoPoint(c.getDouble(1),c.getDouble(2)));
 
             } while(c.moveToNext());
 
-            try {
-                RoadManager roadManager = new OSRMRoadManager(getContext());
-                road = roadManager.getRoad(marcadores2);
+
+                roadManager = new OSRMRoadManager(getActivity());
+                Road road = roadManager.getRoad(marcadores2);
                 Polyline roadOverlay = RoadManager.buildRoadOverlay(road);
                 map.getOverlays().add(roadOverlay);
                 map.invalidate();
 
 
-                Drawable nodeIcon = getResources().getDrawable(R.drawable.cat);
-                for (int i=0; i<road.mNodes.size(); i++){
-                    RoadNode node = road.mNodes.get(i);
-                    Marker nodeMarker = new Marker(map);
-                    nodeMarker.setPosition(node.mLocation);
-                    nodeMarker.setIcon(nodeIcon);
-                    nodeMarker.setTitle("Step "+i);
-                    map.getOverlays().add(nodeMarker);
 
-                    nodeMarker.setSnippet(node.mInstructions);
-                    nodeMarker.setSubDescription(Road.getLengthDurationText(getContext(), node.mLength, node.mDuration));
-                    Drawable icon = getResources().getDrawable(R.drawable.default0);
-                    nodeMarker.setImage(icon);
+            Drawable nodeIcon = getResources().getDrawable(R.drawable.cat);
+            for (int i=0; i<road.mNodes.size(); i++){
+                RoadNode node = road.mNodes.get(i);
+                Marker nodeMarker = new Marker(map);
+                nodeMarker.setPosition(node.mLocation);
+                nodeMarker.setIcon(nodeIcon);
+                nodeMarker.setTitle("Step "+i);
+                map.getOverlays().add(nodeMarker);
 
-                }
+                nodeMarker.setSnippet(node.mInstructions);
+                nodeMarker.setSubDescription(Road.getLengthDurationText(getContext(), node.mLength, node.mDuration));
+                Drawable icon = getResources().getDrawable(R.drawable.cat);
+                nodeMarker.setImage(icon);
 
-
-            } catch (Exception e) {}
+            }
 
         }
 
@@ -203,8 +213,7 @@ public class Tab1Fragment extends Fragment{
         map.getOverlays().add(mOverlay);
         marker= new Marker(map);
 
-        RoadManager roadManager = new MapQuestRoadManager("oDJQc4K80LIhYWgAFxit5ktTbWVBoYjy"); // API key en https://developer.mapquest.com/
-        roadManager.addRequestOption("routeType=pedestrian");
+
 
 
 
@@ -240,6 +249,14 @@ public class Tab1Fragment extends Fragment{
         mapController.setCenter(startPoint);
     }
 
+    private void almacenar() {
+        int check = ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (check == PackageManager.PERMISSION_GRANTED) {
+            //Do something
+        } else {
+            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1024);
+        }
+    }
 
     private void miUbic() {
 
@@ -250,6 +267,8 @@ public class Tab1Fragment extends Fragment{
                             android.Manifest.permission.ACCESS_FINE_LOCATION},
                     PERMISSIONS_REQUEST_LOCATION);
         }
+
+
 
 
         LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
