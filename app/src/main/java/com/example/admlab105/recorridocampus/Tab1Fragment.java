@@ -98,7 +98,7 @@ public class Tab1Fragment extends Fragment{
         map.setMultiTouchControls(true);
 
         IMapController mapController = map.getController();
-        mapController.setZoom(16);
+        mapController.setZoom(17);
         GeoPoint startPoint = new GeoPoint(9.9370,-84.0510);
         mapController.setCenter(startPoint);
 
@@ -108,7 +108,9 @@ public class Tab1Fragment extends Fragment{
 
         Button btnUCR =  view.findViewById(R.id.btnUcr);
         Button btnCat = view.findViewById(R.id.btnCat);
-        Button btnDB = view.findViewById(R.id.btnDB);
+
+        ImageButton btnCampus=view.findViewById(R.id.btnCampus);
+        ImageButton btnUser=view.findViewById(R.id.btnUser);
 
         btnUCR.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,10 +125,17 @@ public class Tab1Fragment extends Fragment{
             }
         });
 
-        btnDB.setOnClickListener(new View.OnClickListener() {
+        btnUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 miUbic();
+            }
+        });
+
+        btnCampus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                volverCampus();
             }
         });
 
@@ -222,6 +231,13 @@ public class Tab1Fragment extends Fragment{
 
 
 
+    }
+
+    private void volverCampus(){
+        IMapController mapController = map.getController();
+        mapController.setZoom(17);
+        GeoPoint startPoint = new GeoPoint(9.9370,-84.0510);
+        mapController.setCenter(startPoint);
     }
 
 
