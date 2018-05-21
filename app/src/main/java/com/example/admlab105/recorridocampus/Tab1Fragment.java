@@ -7,11 +7,13 @@ import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.service.carrier.CarrierMessagingService;
 import android.support.annotation.Nullable;
@@ -29,6 +31,11 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 import org.osmdroid.api.IMapController;
+import org.osmdroid.bonuspack.routing.MapQuestRoadManager;
+import org.osmdroid.bonuspack.routing.OSRMRoadManager;
+import org.osmdroid.bonuspack.routing.Road;
+import org.osmdroid.bonuspack.routing.RoadManager;
+import org.osmdroid.bonuspack.routing.RoadNode;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
@@ -47,6 +54,7 @@ import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.ItemizedIconOverlay.OnItemGestureListener;
 import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.OverlayManager;
+import org.osmdroid.views.overlay.Polyline;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 import java.util.LinkedList;
@@ -71,6 +79,10 @@ public class Tab1Fragment extends Fragment{
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
 
         db = new BaseSitiosHelper(this.getContext());
         View view = inflater.inflate(R.layout.tab1_fragment, container, false);
@@ -119,13 +131,48 @@ public class Tab1Fragment extends Fragment{
         });
 
         marcadores = new ArrayList<OverlayItem>();
+
+        ArrayList<GeoPoint> marcadores2 = new ArrayList<GeoPoint>();
+
         sitios = new LinkedList<Marker>();
         Cursor c=db.obtenerLugares();
+
+        Road road;
+
         if (c.moveToFirst()) {
             do {
                 marcadores.add(new OverlayItem(c.getString(0), "", new GeoPoint(c.getDouble(1),c.getDouble(2))));
+                marcadores2.add(new GeoPoint(c.getDouble(1),c.getDouble(2)));
 
             } while(c.moveToNext());
+
+            try {
+                RoadManager roadManager = new OSRMRoadManager(getContext());
+                road = roadManager.getRoad(marcadores2);
+                Polyline roadOverlay = RoadManager.buildRoadOverlay(road);
+                map.getOverlays().add(roadOverlay);
+                map.invalidate();
+
+
+                Drawable nodeIcon = getResources().getDrawable(R.drawable.cat);
+                for (int i=0; i<road.mNodes.size(); i++){
+                    RoadNode node = road.mNodes.get(i);
+                    Marker nodeMarker = new Marker(map);
+                    nodeMarker.setPosition(node.mLocation);
+                    nodeMarker.setIcon(nodeIcon);
+                    nodeMarker.setTitle("Step "+i);
+                    map.getOverlays().add(nodeMarker);
+
+                    nodeMarker.setSnippet(node.mInstructions);
+                    nodeMarker.setSubDescription(Road.getLengthDurationText(getContext(), node.mLength, node.mDuration));
+                    Drawable icon = getResources().getDrawable(R.drawable.default0);
+                    nodeMarker.setImage(icon);
+
+                }
+
+
+            } catch (Exception e) {}
+
         }
 
         ItemizedIconOverlay.OnItemGestureListener<OverlayItem> gestureListener = new OnItemGestureListener<OverlayItem>() {
@@ -146,6 +193,12 @@ public class Tab1Fragment extends Fragment{
 
         map.getOverlays().add(mOverlay);
         marker= new Marker(map);
+
+        RoadManager roadManager = new MapQuestRoadManager("oDJQc4K80LIhYWgAFxit5ktTbWVBoYjy"); // API key en https://developer.mapquest.com/
+        roadManager.addRequestOption("routeType=pedestrian");
+
+
+
         //colocaSitios();
         return  view;
                 //map;
@@ -423,5 +476,7 @@ public class Tab1Fragment extends Fragment{
             } while(c.moveToNext());
         }
     }*/
+
+    // https://github.com/MKergall/osmbonuspack/wiki/features
 
 
