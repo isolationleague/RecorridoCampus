@@ -68,6 +68,7 @@ public class Tab1Fragment extends Fragment{
 
     double lat = 0.0, lon = 0.0;
     private Marker marker;
+    private Marker marker2;
     private LinkedList<Marker> sitios;
     private BaseSitiosHelper db;
 
@@ -76,7 +77,8 @@ public class Tab1Fragment extends Fragment{
     ArrayList<OverlayItem> marcadores;
     ArrayList<GeoPoint> marcadores2;
 
-
+    GeoPoint user;
+    GeoPoint user2;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -199,6 +201,8 @@ public class Tab1Fragment extends Fragment{
             public boolean onItemSingleTapUp(final int index, final OverlayItem item) {
                 //do something
                 Toast.makeText(getActivity(), item.getTitle(),Toast.LENGTH_LONG).show();
+                String distancia = Double.toString(user.distanceToAsDouble(user2));
+                Toast.makeText(getActivity(), distancia,Toast.LENGTH_LONG).show();
                 return true;
             }
             @Override
@@ -212,7 +216,7 @@ public class Tab1Fragment extends Fragment{
 
         map.getOverlays().add(mOverlay);
         marker= new Marker(map);
-
+        marker2= new Marker(map);
 
 
 
@@ -401,10 +405,18 @@ public class Tab1Fragment extends Fragment{
         if (marker != null) {
             marker.remove(map);
         }
-        GeoPoint user= new GeoPoint(lat, lon);
+        user= new GeoPoint(lat, lon);
         marker.setTitle("Usuario");
         marker.setPosition(user);
         map.getOverlays().add(marker);
+
+        if (marker2 != null) {
+            marker2.remove(map);
+        }
+        user2= new GeoPoint(lat+0.001, lon+0.001);
+        marker2.setTitle("PRUEBA");
+        marker2.setPosition(user2);
+        map.getOverlays().add(marker2);
 
         //mMap.animateCamera(miUbic);
     }
