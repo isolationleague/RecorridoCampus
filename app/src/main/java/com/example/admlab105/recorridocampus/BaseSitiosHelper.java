@@ -112,28 +112,28 @@ public class BaseSitiosHelper extends SQLiteOpenHelper {
             String linea ="";
             String[] sitioPartes = null;
             int count = 0;
-            while ((linea = br.readLine()) != null) {
-                sitioPartes = linea.split(",");    //nombre,coordenada x , coordenaday , numero de fotos, nombres de fotos..,
-                ContentValues values = new ContentValues();
-                values.put(BaseSitiosContract.SitioBase.COLUMN_NOMBRE, sitioPartes[0]);
-                values.put(BaseSitiosContract.SitioBase.COLUMN_COORDENADA_X, sitioPartes[1]);
-                values.put(BaseSitiosContract.SitioBase.COLUMN_COORDENADA_Y, sitioPartes[2]);
-                values.put(BaseSitiosContract.SitioBase.COLUMN_VISITADO, 0);
-                long newRowId = dB.insert(BaseSitiosContract.SitioBase.TABLE_NAME, null, values);
+                while ((linea = br.readLine()) != null) {
+                    sitioPartes = linea.split(",");    //nombre,coordenada x , coordenaday , numero de fotos, nombres de fotos..,
+                    ContentValues values = new ContentValues();
+                    values.put(BaseSitiosContract.SitioBase.COLUMN_NOMBRE, sitioPartes[0]);
+                    values.put(BaseSitiosContract.SitioBase.COLUMN_COORDENADA_X, sitioPartes[1]);
+                    values.put(BaseSitiosContract.SitioBase.COLUMN_COORDENADA_Y, sitioPartes[2]);
+                    values.put(BaseSitiosContract.SitioBase.COLUMN_VISITADO, 0);
+                    long newRowId = dB.insert(BaseSitiosContract.SitioBase.TABLE_NAME, null, values);
 
-                //carga las imagenes de cada sitio
-                /*int cantidadFotos = Integer.parseInt(sitioPartes[3]);
-                if(cantidadFotos>0) {
-                    for (int i = 0; i < cantidadFotos; i++) {
-                        values.put(BaseSitiosContract.Foto.ID_SITIO, newRowId);
-                        values.put(BaseSitiosContract.Foto.RUTA, sitioPartes[4+i]);
-                        Toast.makeText(context,sitioPartes[4+i],Toast.LENGTH_SHORT).show();
-                        long iRowId = dB.insert(BaseSitiosContract.Foto.TABLE_NAME, null, values);
-                    }
+                    //carga las imagenes de cada siti mmnmo
+                    //int cantidadFotos = Integer.parseInt(sitioPartes[3]);
+                    //if(Integer.parseInt(sitioPartes[3])>0) {
+                       /* for (int i = 0; i < Integer.parseInt(sitioPartes[3]); i++) {
+                            values.put(BaseSitiosContract.Foto.ID_SITIO, sitioPartes[0]); //IMPORTANTE aqui en vez de un id va el nombre del sitio para mas facilidad
+                            values.put(BaseSitiosContract.Foto.RUTA, sitioPartes[4+i]);
+                            Toast.makeText(context,sitioPartes[4+i],Toast.LENGTH_SHORT).show();
+                            long iRowId = dB.insert(BaseSitiosContract.Foto.TABLE_NAME, null, values);
+                        }*/
+                    //}
+
+
                 }
-
-                count ++;*/
-            }
 
             fraw.close();
             br.close();
@@ -178,5 +178,21 @@ public class BaseSitiosHelper extends SQLiteOpenHelper {
             c.moveToFirst();
         } return (c.getColumnCount()!=0)? c.getDouble(0): 99.0 ;
     }
+
+
+    /**
+     * Devuelve un cursor con el nombre de las imagenes de el sitio indicado
+     * @param id_nombreSitio del sitio del cual se desean recuperar las imagenes
+     * @return c
+     */
+    public Cursor obtenerImagenesDeSitio(String id_nombreSitio) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c=null;
+        if (db != null) {
+            c = db.rawQuery(" SELECT ruta FROM Foto WHERE id_sitio = id_nombreSitio ", null);
+        }
+        return c;
+    }
+
 
 }
