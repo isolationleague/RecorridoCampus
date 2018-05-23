@@ -6,19 +6,19 @@ Busto del profesor Carlos Monge Alfaro, 9.835563, -84.51376
 Fuente de cupido y el cisne, 9.935804, -84.051154        
 Estatua de Rodrigo Facio Brenes, 9.935693,-84.050830
 Edificio de Escuela de Estudios Generales,  9.936010,-84.050556
-Jard?n escult?rico,  9.935868,-84.050632        
-Edificio de la Facultad de Educaci?n, 9.935725,-84.048650
+Jardin escultorico,  9.935868,-84.050632
+Edificio de la Facultad de Educacion, 9.935725,-84.048650
 Busto de Omar Dengo, 9.935754,-84.048694
-Edificio de la Escuela de Qu?mica, 9.9375197 -84.0487133
-Busto de Clodomiro Picado por Juan Rafael Chac?n, 9.9377532, -840489829   
-Edificio de la Facultad de Microbiolog?a, 9.9380260, -84.0490754
+Edificio de la Escuela de Quimica, 9.9375197 -84.0487133
+Busto de Clodomiro Picado por Juan Rafael Chacon, 9.9377532, -840489829
+Edificio de la Facultad de Microbiologia, 9.9380260, -84.0490754
 Busto de Pasteur, 9.9383291 ,-84.0490680
 Busto del Ing. Fabio Baudrit Moreno,   9.9387093 ,-84.0484984
-Edificio de Escuela Centroamericana de Geolog?a, 9.9380871, -84.0524399
-Edificio de la Facultad de Ciencias Econ?micas, 9.9371032, -84.0517710
+Edificio de Escuela Centroamericana de Geologia, 9.9380871, -84.0524399
+Edificio de la Facultad de Ciencias Economicas, 9.9371032, -84.0517710
 Plaza 24 de abril, 9.9363556, -84.0508044
 Escultura de Leda Astorga, 9.9365184, -84.0506927
-Sin t?tulo. Bronce. Marisel Jim?nez Rittner. Biblioteca Luis Demetrio Tinoco, 9.9362321,-84.0524781
+Sin titulo. Bronce. Marisel Jiminez Rittner. Biblioteca Luis Demetrio Tinoco, 9.9362321,-84.0524781
 Busto de Luis Demetrio Tinoco, 9.9357674, -84.0526015
 Busto del Dr. Rafael Angel Calder?n Guardia, 9.9354662,-4.0545464
 Busto del Lic. Fernando Baudrit Solera, 9.9360382, -84.0540435

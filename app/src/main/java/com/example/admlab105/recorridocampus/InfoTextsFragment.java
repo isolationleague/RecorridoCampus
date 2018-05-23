@@ -1,7 +1,6 @@
 package com.example.admlab105.recorridocampus;
 
 import android.content.Context;
-import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,9 +17,9 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 
 
 public class InfoTextsFragment extends Fragment {
@@ -30,10 +29,14 @@ public class InfoTextsFragment extends Fragment {
     SeekBar seekBar;
     Handler handler;
     Runnable runnable;
+    private String etiqueta;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) { View view = inflater.inflate(R.layout.info_texts_fragment,container,false);
+
+        etiqueta = this.getArguments().getString("etiq");
+
         ViewPager viewPager = (ViewPager) view.findViewById(R.id.view_pager);
         ImagePagerAdapter adapter = new ImagePagerAdapter();
         viewPager.setAdapter(adapter);
@@ -56,7 +59,26 @@ public class InfoTextsFragment extends Fragment {
     }
 
     public void loadTextView (TextView txtView) {
-        InputStream inputStream = getResources().openRawResource(R.raw.lorem_ipsum);
+        String texto = "";
+        try
+        {
+            InputStream ins = getResources().openRawResource(
+                    getResources().getIdentifier("edificio_de_la_facultad_de_educacion",
+                            "raw", getContext().getPackageName()));
+            InputStreamReader reader= new InputStreamReader(ins); //"res\\raw\\textos\\"+etiqueta+".txt"
+            BufferedReader br= new BufferedReader(reader);
+            String line = "";
+            while((line= br.readLine()) !=null)
+            {
+                texto+=line;
+            }
+        }
+        catch (Exception ex)
+        {
+            texto = "No hay texto definido para el siguiente sitio";
+        }
+        txtView.setText(texto);
+        /*InputStream inputStream = getResources().openRawResource(R.raw.lorem_ipsum);
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
         int i;
@@ -71,7 +93,7 @@ public class InfoTextsFragment extends Fragment {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        txtView.setText(byteArrayOutputStream.toString());
+        txtView.setText(byteArrayOutputStream.toString());*/
     }
 
     public void play(View view) {
