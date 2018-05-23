@@ -42,7 +42,6 @@ public class InfoTextsFragment extends Fragment {
         seekBar.setClickable(false);
         seekBar.setFocusable(false);
         handler = new Handler();
-        initializePlayer();
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -81,11 +80,13 @@ public class InfoTextsFragment extends Fragment {
                 playButton.setImageResource(R.drawable.sharp_play_arrow_black_18dp);
             } else {
                 audioPlayer.start();
+                playing();
                 playButton.setImageResource(R.drawable.sharp_pause_black_18dp);
             }
         } else {
             initializePlayer();
             audioPlayer.start();
+            playing();
             playButton.setImageResource(R.drawable.sharp_pause_black_18dp);
         }
     }
@@ -118,11 +119,10 @@ public class InfoTextsFragment extends Fragment {
                 stopPlayer();
             }
         });
-        playing();
     }
 
     public void playing() {
-        if (audioPlayer != null)
+        if (audioPlayer != null && audioPlayer.isPlaying() == true)
             handler.postDelayed(updateTime, 100);
 
     }
@@ -130,7 +130,7 @@ public class InfoTextsFragment extends Fragment {
     private Runnable updateTime = new Runnable() {
         @Override
         public void run() {
-            if (audioPlayer != null) {
+            if (audioPlayer != null && audioPlayer.isPlaying() == true) {
                 seekBar.setProgress(audioPlayer.getCurrentPosition());
                 handler.postDelayed(this, 100);
             }
