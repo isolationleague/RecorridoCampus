@@ -1,5 +1,6 @@
 package com.example.admlab105.recorridocampus;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -7,6 +8,7 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 public class InfoFragment extends Fragment {
@@ -38,18 +40,27 @@ public class InfoFragment extends Fragment {
         TextView tv = (TextView)view.findViewById(R.id.etqSitio);
         tv.setText(etiqueta);
 
+        ImageButton backButton = view.findViewById(R.id.backButton);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().onBackPressed();
+            }
+        });
+        /*
         TextView tv2 = (TextView)view.findViewById(R.id.cX);
         tv2.setText(String.valueOf(db.obtengaX(etiqueta)));
         TextView tv3 = (TextView)view.findViewById(R.id.cY);
-        tv3.setText(String.valueOf(db.obtengaY(etiqueta)));
+        tv3.setText(String.valueOf(db.obtengaY(etiqueta)));*/
 
         return view;
     }
 
-    public void onDetach(){
+    /*public void onDetach(){
         super.onDetach();
         getActivity().getSupportFragmentManager().beginTransaction().remove(getParentFragment()).commit();
-    }
+    }*/
+
     private void setupViewPager(ViewPager viewPager) {
         SectionsPageAdapter adapter = new SectionsPageAdapter(getChildFragmentManager());
         adapter.addFragment(new InfoTextsFragment(), "Textos");

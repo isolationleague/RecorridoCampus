@@ -1,5 +1,6 @@
 package com.example.admlab105.recorridocampus;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -27,8 +28,14 @@ public class InfoPicturesFragment extends Fragment {
         grid00.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
-                Toast.makeText(getActivity(), "" + position,
-                        Toast.LENGTH_SHORT).show();
+
+
+                    // Sending image id to FullScreenActivity
+                    Intent i = new Intent(getActivity(), FullImageActivity.class);
+                    // passing array index
+                    i.putExtra("id", position);
+                    startActivity(i);
+
             }
         });
         return view;

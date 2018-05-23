@@ -9,12 +9,18 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
+import android.widget.TextView;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 
 public class InfoTextsFragment extends Fragment {
@@ -33,62 +39,92 @@ public class InfoTextsFragment extends Fragment {
         viewPager.setAdapter(adapter);
         playButton = view.findViewById(R.id.playButton);
         seekBar = view.findViewById(R.id.seekBar);
+        seekBar.setClickable(false);
+        seekBar.setFocusable(false);
         handler = new Handler();
+        initializePlayer();
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 play(v);
             }
         });
+        TextView txtview = view.findViewById(R.id.textView);
+        txtview.setMovementMethod(new ScrollingMovementMethod());
+        loadTextView(txtview);
         return view;
     }
 
-    public void play(View view) {
-        if (audioPlayer == null) {
-            audioPlayer = MediaPlayer.create(getActivity(), R.raw.lacus_somniorum);
-            //audioPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-            seekBar.setMax(audioPlayer.getDuration());
-            playing();
-            audioPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                @Override
-                public void onCompletion(MediaPlayer mediaPlayer) {
-                    stopPlayer();
-                }
-            });
-            if (audioPlayer.isPlaying()) {
-                if (audioPlayer != null) {
-                    audioPlayer.pause();
-                    playButton.setImageResource(R.drawable.sharp_play_arrow_black_18dp);
-                }
-            } else {
-                if (audioPlayer != null) {
-                    audioPlayer.start();
-                    playButton.setImageResource(R.drawable.sharp_pause_black_18dp);
-                }
+    public void loadTextView (TextView txtView) {
+        InputStream inputStream = getResources().openRawResource(R.raw.lorem_ipsum);
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+        int i;
+        try {
+            i = inputStream.read();
+            while (i != -1)
+            {
+                byteArrayOutputStream.write(i);
+                i = inputStream.read();
             }
+            inputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        audioPlayer.start();
+        txtView.setText(byteArrayOutputStream.toString());
+    }
+
+    public void play(View view) {
+        if (audioPlayer != null) {
+            if (audioPlayer.isPlaying()) {
+                audioPlayer.pause();
+                playButton.setImageResource(R.drawable.sharp_play_arrow_black_18dp);
+            } else {
+                audioPlayer.start();
+                playButton.setImageResource(R.drawable.sharp_pause_black_18dp);
+            }
+        } else {
+            initializePlayer();
+            audioPlayer.start();
+            playButton.setImageResource(R.drawable.sharp_pause_black_18dp);
+        }
     }
 
     private void stopPlayer() {
         if (audioPlayer != null) {
             audioPlayer.release();
             audioPlayer = null;
-
+            playButton.setImageResource(R.drawable.sharp_play_arrow_black_18dp);
         }
         handler.removeCallbacks(runnable);
     }
 
     @Override
     public void onStop() {
-        playButton.setImageResource(R.drawable.sharp_play_arrow_black_18dp);
         super.onStop();
         stopPlayer();
     }
 
+    public void initializePlayer() {
+        if (audioPlayer != null){
+            audioPlayer.release();
+        }
+        audioPlayer = MediaPlayer.create(getActivity(), R.raw.lacus_somniorum);
+        //audioPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        seekBar.setMax(audioPlayer.getDuration());
+        audioPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mediaPlayer) {
+                stopPlayer();
+            }
+        });
+        playing();
+    }
+
     public void playing() {
-            if (audioPlayer != null)
-                handler.postDelayed(updateTime, 100);
+        if (audioPlayer != null)
+            handler.postDelayed(updateTime, 100);
+
     }
 
     private Runnable updateTime = new Runnable() {
@@ -103,8 +139,6 @@ public class InfoTextsFragment extends Fragment {
 
     private class ImagePagerAdapter extends PagerAdapter {
         private int[] mImages = new int[] {R.drawable.captura_intromenu,R.drawable.default0};
-
-
         @Override
         public int getCount() {
             return mImages.length;
@@ -120,7 +154,7 @@ public class InfoTextsFragment extends Fragment {
             Context context = getActivity();
             ImageView imageView = new ImageView(context);
             int padding = context.getResources().getDimensionPixelSize(
-                    R.dimen.padding_medium);
+                    R.dimen.padding_small);
             imageView.setPadding(padding, padding, padding, padding);
             imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
             imageView.setImageResource(mImages[position]);

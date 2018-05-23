@@ -51,7 +51,7 @@
         <activity android:name=".Mapa" />
         <activity android:name=".Intro_activity"
             android:noHistory="true"/>
-
+        <activity android:name=".FullImageActivity"></activity>
     </application>
 
 </manifest>
