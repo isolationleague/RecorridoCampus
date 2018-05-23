@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,6 +50,7 @@ public class InfoTextsFragment extends Fragment {
             }
         });
         TextView txtview = view.findViewById(R.id.textView);
+        txtview.setMovementMethod(new ScrollingMovementMethod());
         loadTextView(txtview);
         return view;
     }

@@ -41,8 +41,6 @@ public class Intro_activity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intro_activity);
-
-
         bclose= (Button) findViewById(R.id.buttonClose);
         bclose.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
