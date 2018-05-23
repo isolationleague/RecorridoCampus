@@ -155,8 +155,8 @@ public class Tab1Fragment extends Fragment{
         GeoPoint pointB = new GeoPoint(9.9370,-84.0510);
 
         GeoPoint pointA = new GeoPoint(9.9380, -84.0510);
-        marcadores2.add(pointA);
-        marcadores2.add(pointB);
+        //marcadores2.add(pointA);
+        //marcadores2.add(pointB);
 
         sitios = new LinkedList<Marker>();
         Cursor c=db.obtenerLugares();
@@ -170,7 +170,7 @@ public class Tab1Fragment extends Fragment{
             } while(c.moveToNext());
 
 
-            roadManager = new OSRMRoadManager(getActivity());
+            /*roadManager = new OSRMRoadManager(getActivity());
             Road road = roadManager.getRoad(marcadores2);
             Polyline roadOverlay = RoadManager.buildRoadOverlay(road);
             map.getOverlays().add(roadOverlay);
@@ -192,7 +192,7 @@ public class Tab1Fragment extends Fragment{
                 Drawable icon = getResources().getDrawable(R.drawable.cat);
                 nodeMarker.setImage(icon);
 
-            }
+            }*/
 
         }
 
@@ -201,8 +201,8 @@ public class Tab1Fragment extends Fragment{
             public boolean onItemSingleTapUp(final int index, final OverlayItem item) {
                 //do something
                 Toast.makeText(getActivity(), item.getTitle(),Toast.LENGTH_LONG).show();
-                String distancia = Double.toString(user.distanceToAsDouble(user2));
-                Toast.makeText(getActivity(), distancia,Toast.LENGTH_LONG).show();
+                //String distancia = Double.toString(user.distanceToAsDouble(marcadores2.get(index)));
+                //Toast.makeText(getActivity(), distancia,Toast.LENGTH_LONG).show();
                 return true;
             }
             @Override
@@ -216,7 +216,7 @@ public class Tab1Fragment extends Fragment{
 
         map.getOverlays().add(mOverlay);
         marker= new Marker(map);
-        marker2= new Marker(map);
+        //marker2= new Marker(map);
 
 
 
@@ -410,13 +410,13 @@ public class Tab1Fragment extends Fragment{
         marker.setPosition(user);
         map.getOverlays().add(marker);
 
-        if (marker2 != null) {
+        /*if (marker2 != null) {
             marker2.remove(map);
         }
         user2= new GeoPoint(lat+0.001, lon+0.001);
         marker2.setTitle("PRUEBA");
         marker2.setPosition(user2);
-        map.getOverlays().add(marker2);
+        map.getOverlays().add(marker2);*/
 
         //mMap.animateCamera(miUbic);
     }
