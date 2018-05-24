@@ -29,9 +29,10 @@ public class InfoPicturesFragment extends Fragment {
 
         etiqueta = this.getArguments().getString("etiq");
         View view = inflater.inflate(R.layout.info_pictures_fragment, container, false);
-        grid00 = (GridView) view.findViewById(R.id.grid_images);ArrayList<String> fotos = new ArrayList<>();
+        grid00 = (GridView) view.findViewById(R.id.grid_images);
+        //ArrayList<String> fotos = new ArrayList<>();
         //se obtienen la lista de imagenes segun la etiqueta
-        db = BaseSitiosHelper.getInstance(this.getContext());
+        /*db = BaseSitiosHelper.getInstance(this.getContext());
         Cursor cursor = db.obtenerImagenesDeSitio(etiqueta);
 
         if (cursor.moveToFirst()) {
@@ -39,9 +40,9 @@ public class InfoPicturesFragment extends Fragment {
                 String nombreFoto = cursor.getString(0);
                 fotos.add(nombreFoto);
             } while (cursor.moveToNext());
-        }
+        }*/
 
-            grid00.setAdapter(new ImageAdapter(getActivity(), fotos));
+            grid00.setAdapter(new ImageAdapter(getActivity()/*, fotos*/));
             grid00.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 public void onItemClick(AdapterView<?> parent, View v,
                                         int position, long id) {

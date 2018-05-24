@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.Html;
 import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -69,8 +70,8 @@ public class InfoTextsFragment extends Fragment {
                     getResources().getIdentifier(/*"edificio_de_la_facultad_de_educacion"*/resc,
                             "raw", getContext().getPackageName()));
 
-            InputStreamReader reader= new InputStreamReader(ins); //"res\\raw\\textos\\"+etiqueta+".txt"
-            BufferedReader br= new BufferedReader(reader);
+            //InputStreamReader reader= new InputStreamReader(ins, "UTF-8"); //"res\\raw\\textos\\"+etiqueta+".txt"
+            BufferedReader br= new BufferedReader(new InputStreamReader(ins, "UTF-8"));
             String line = "";
             while((line= br.readLine()) !=null)
             {
@@ -81,7 +82,7 @@ public class InfoTextsFragment extends Fragment {
         {
             texto = "No hay texto definido para el siguiente sitio";
         }
-        txtView.setText(texto);
+        txtView.setText(Html.fromHtml(texto));
         /*InputStream inputStream = getResources().openRawResource(R.raw.lorem_ipsum);
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 

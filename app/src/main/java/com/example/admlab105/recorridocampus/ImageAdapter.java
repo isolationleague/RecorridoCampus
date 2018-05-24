@@ -15,10 +15,10 @@ import java.util.ArrayList;
 
 public class ImageAdapter extends BaseAdapter {
     private Context mContext;
-    private BaseSitiosHelper db;
+    //private BaseSitiosHelper db;
     // references to our images
     public  ArrayList<Integer> mThumbIds;
-    public ImageAdapter(Context c,ArrayList<String> fotos) {
+    public ImageAdapter(Context c/*,ArrayList<String> fotos*/) {
         mContext = c;
         mThumbIds= new ArrayList<Integer>();
         int marcador =0;
@@ -31,9 +31,9 @@ public class ImageAdapter extends BaseAdapter {
                 } while(cursor.moveToNext());
             }*/
 
-         for(int i=0;i<fotos.size();i++) {
+         /*for(int i=0;i<fotos.size();i++) {
               mThumbIds.add(mContext.getResources().getIdentifier(fotos.get(i), "drawable", mContext.getPackageName()));
-          }
+          }*/
     }
 
     public int getCount() {
