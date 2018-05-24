@@ -85,8 +85,5 @@ public class PruebadeBase extends AppCompatActivity {
             }
         });
 
-        */
-
-
     }
 }
