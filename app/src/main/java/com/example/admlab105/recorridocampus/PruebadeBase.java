@@ -17,15 +17,15 @@ public class PruebadeBase extends AppCompatActivity {
         final Context context=this;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pruebade_base);
-        final BaseSitiosHelper db = new BaseSitiosHelper(this);
+        final BaseSitiosHelper db =  BaseSitiosHelper.getInstance(this.getApplicationContext());
         final Button button = findViewById(R.id.button);
         final Button bcargar = findViewById(R.id.bcargar);
         final EditText text = findViewById(R.id.etext);
         final Button bAddU = findViewById(R.id.buttonaddU);
         final Button bconsultLugares = findViewById(R.id.bconsultarlugares);
 
-       /*boton agregar usuario*/
-       /*  bAddU.setOnClickListener(new View.OnClickListener() {
+        /*boton agregar usuario*/
+       /* bAddU.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Code here executes on main thread after user presses button
                db.agregarUsuario(text.getText().toString());
@@ -33,7 +33,6 @@ public class PruebadeBase extends AppCompatActivity {
             }
         });
         */
-
 
         /*Boton ver lugares*/
         bconsultLugares.setOnClickListener(new View.OnClickListener() {
@@ -59,7 +58,14 @@ public class PruebadeBase extends AppCompatActivity {
             }
         });
 
+        /*Boton cargar base*/
+        bcargar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
+               // db.cargar();
+            }
+        });
 
         /*Boton agregar usuario*/
        /* button.setOnClickListener(new View.OnClickListener() {
@@ -78,6 +84,9 @@ public class PruebadeBase extends AppCompatActivity {
                 Toast.makeText(context,nombre,Toast.LENGTH_SHORT).show();
             }
         });
+
         */
+
+
     }
 }
