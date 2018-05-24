@@ -15,17 +15,14 @@ import java.util.ArrayList;
 
 public class ImageAdapter extends BaseAdapter {
     private Context mContext;
-    private BaseSitiosHelper db;
+    //private BaseSitiosHelper db;
     // references to our images
     public  ArrayList<Integer> mThumbIds;
-    public ImageAdapter(Context c) {
+    public ImageAdapter(Context c/*,ArrayList<String> fotos*/) {
         mContext = c;
         mThumbIds= new ArrayList<Integer>();
         int marcador =0;
-      /* db = new BaseSitiosHelper(mContext);
-        Cursor cursor=db.obtenerLugares();
-*/
-        if(marcador==0){
+        mThumbIds.add(R.drawable.bird0);
           /*   cursor=mContext.;    btenerLugares();
             if (cursor.moveToFirst()) {
                 do {
@@ -34,16 +31,9 @@ public class ImageAdapter extends BaseAdapter {
                 } while(cursor.moveToNext());
             }*/
 
-            mThumbIds.add(R.drawable.bird0);
-            mThumbIds.add(R.drawable.bird1);
-            mThumbIds.add(R.drawable.bird2);
-            mThumbIds.add(R.drawable.bird3);
-        }else {
-            mThumbIds.add(R.drawable.car0);
-            mThumbIds.add(R.drawable.car1);
-            mThumbIds.add(R.drawable.car2);
-            mThumbIds.add(R.drawable.car3);
-        }
+         /*for(int i=0;i<fotos.size();i++) {
+              mThumbIds.add(mContext.getResources().getIdentifier(fotos.get(i), "drawable", mContext.getPackageName()));
+          }*/
     }
 
     public int getCount() {

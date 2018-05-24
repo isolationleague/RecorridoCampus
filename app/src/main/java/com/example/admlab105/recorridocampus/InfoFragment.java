@@ -5,11 +5,15 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 public class InfoFragment extends Fragment {
 
@@ -17,6 +21,7 @@ public class InfoFragment extends Fragment {
     private ViewPager mViewPager;
     private String etiqueta;
     private BaseSitiosHelper db;
+    private String texto;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -62,10 +67,36 @@ public class InfoFragment extends Fragment {
     }*/
 
     private void setupViewPager(ViewPager viewPager) {
+        Bundle arg = new Bundle();
+        arg.putString("etiq", etiqueta);
         SectionsPageAdapter adapter = new SectionsPageAdapter(getChildFragmentManager());
-        adapter.addFragment(new InfoTextsFragment(), "Textos");
-        adapter.addFragment(new InfoPicturesFragment(), "Fotos");
+        InfoTextsFragment fText= new InfoTextsFragment();
+        fText.setArguments(arg);
+        //
+        InfoPicturesFragment fPictures = new InfoPicturesFragment();
+        fPictures.setArguments(arg); // nuevo infoPictures que se le envia el parametro de la etiqueta
+        //
+        adapter.addFragment(fText, "Textos");
+        //adapter.addFragment(new InfoPicturesFragment(), "Fotos");
+        adapter.addFragment(fPictures, "Fotos");
         adapter.addFragment(new InfoLinksFragment(), "Enlaces");
         viewPager.setAdapter(adapter);
     }
+
+    /*private void setTexto(){
+        try
+        {
+            InputStreamReader reader= new InputStreamReader(getContext().openFileInput("res\\raw\\textos\\"+etiqueta+".txt"));
+            BufferedReader br= new BufferedReader(reader);
+            String texto = br.readLine();
+            while(texto!=null)
+            {
+                texto+=br.readLine();
+            }
+        }
+        catch (Exception ex)
+        {
+            texto = "No hay texto definido para el siguiente sitio";
+        }
+    }*/
 }

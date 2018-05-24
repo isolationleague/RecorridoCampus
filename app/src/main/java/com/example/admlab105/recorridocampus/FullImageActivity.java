@@ -8,6 +8,8 @@ import android.support.v4.app.Fragment;
 import android.view.MotionEvent;
 import android.widget.ImageView;
 
+import java.util.ArrayList;
+
 public class FullImageActivity extends Activity {
 
     @Override
@@ -20,7 +22,9 @@ public class FullImageActivity extends Activity {
 
         // Selected image id
         int position = i.getExtras().getInt("id");
-        ImageAdapter imageAdapter = new ImageAdapter(this);
+
+        ArrayList<String>fotos = new ArrayList<>();//***por ahora VACIO
+        ImageAdapter imageAdapter = new ImageAdapter(this/*,fotos*/);
 
         ImageView imageView = (ImageView) findViewById(R.id.full_image_view);
         imageView.setImageResource(imageAdapter.mThumbIds.get(position));
