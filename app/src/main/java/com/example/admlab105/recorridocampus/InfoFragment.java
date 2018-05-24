@@ -28,7 +28,6 @@ public class InfoFragment extends Fragment {
         super.onCreate(savedInstanceState);
         etiqueta = this.getArguments().getString("etiq");
         db = BaseSitiosHelper.getInstance(this.getContext());
-        setTexto();
 
         setRetainInstance(true);
     }
@@ -73,13 +72,18 @@ public class InfoFragment extends Fragment {
         SectionsPageAdapter adapter = new SectionsPageAdapter(getChildFragmentManager());
         InfoTextsFragment fText= new InfoTextsFragment();
         fText.setArguments(arg);
+        //
+        InfoPicturesFragment fPictures = new InfoPicturesFragment();
+        fPictures.setArguments(arg); // nuevo infoPictures que se le envia el parametro de la etiqueta
+        //
         adapter.addFragment(fText, "Textos");
-        adapter.addFragment(new InfoPicturesFragment(), "Fotos");
+        //adapter.addFragment(new InfoPicturesFragment(), "Fotos");
+        adapter.addFragment(fPictures, "Fotos");
         adapter.addFragment(new InfoLinksFragment(), "Enlaces");
         viewPager.setAdapter(adapter);
     }
 
-    private void setTexto(){
+    /*private void setTexto(){
         try
         {
             InputStreamReader reader= new InputStreamReader(getContext().openFileInput("res\\raw\\textos\\"+etiqueta+".txt"));
@@ -94,5 +98,5 @@ public class InfoFragment extends Fragment {
         {
             texto = "No hay texto definido para el siguiente sitio";
         }
-    }
+    }*/
 }

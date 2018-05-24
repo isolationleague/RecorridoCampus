@@ -29,6 +29,7 @@ public class InfoTextsFragment extends Fragment {
     SeekBar seekBar;
     Handler handler;
     Runnable runnable;
+    private BaseSitiosHelper db;
     private String etiqueta;
 
     @Nullable
@@ -36,6 +37,7 @@ public class InfoTextsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) { View view = inflater.inflate(R.layout.info_texts_fragment,container,false);
 
         etiqueta = this.getArguments().getString("etiq");
+        db = BaseSitiosHelper.getInstance(this.getContext());
 
         ViewPager viewPager = (ViewPager) view.findViewById(R.id.view_pager);
         ImagePagerAdapter adapter = new ImagePagerAdapter();
@@ -62,9 +64,11 @@ public class InfoTextsFragment extends Fragment {
         String texto = "";
         try
         {
+            String resc = db.obtengaTexto(etiqueta);
             InputStream ins = getResources().openRawResource(
-                    getResources().getIdentifier("edificio_de_la_facultad_de_educacion",
+                    getResources().getIdentifier(/*"edificio_de_la_facultad_de_educacion"*/resc,
                             "raw", getContext().getPackageName()));
+
             InputStreamReader reader= new InputStreamReader(ins); //"res\\raw\\textos\\"+etiqueta+".txt"
             BufferedReader br= new BufferedReader(reader);
             String line = "";
