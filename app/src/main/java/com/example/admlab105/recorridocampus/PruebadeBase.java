@@ -83,7 +83,7 @@ public class PruebadeBase extends AppCompatActivity {
                 }
                 Toast.makeText(context,nombre,Toast.LENGTH_SHORT).show();
             }
-        });
+        });*/
 
     }
 }
