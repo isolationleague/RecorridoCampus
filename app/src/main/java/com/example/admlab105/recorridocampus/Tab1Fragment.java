@@ -41,7 +41,10 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
+import org.osmdroid.views.overlay.ItemizedOverlay;
+import org.osmdroid.views.overlay.ItemizedOverlayControlView;
 import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
+import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.OverlayItem;
 
 import java.util.ArrayList;
@@ -63,7 +66,7 @@ import java.util.List;
 
 
 
-public class Tab1Fragment extends Fragment{
+public class Tab1Fragment extends Fragment {
     private MapView map;
     private MyLocationNewOverlay mMyLocationOverlay;
 
@@ -101,6 +104,7 @@ public class Tab1Fragment extends Fragment{
 
         //map = new MapView(getActivity());
         map =  view.findViewById(R.id.map);
+
 
         map.getTileProvider().setTileSource(TileSourceFactory.MAPNIK);
 
@@ -208,7 +212,8 @@ public class Tab1Fragment extends Fragment{
             }
             @Override
             public boolean onItemLongPress(final int index, final OverlayItem item) {
-                return false;
+               iniciarActivity(item);
+                return true;
             }
         };
         ItemizedIconOverlay<OverlayItem> mOverlay = new ItemizedIconOverlay<OverlayItem>(getActivity(),marcadores,gestureListener);
@@ -225,6 +230,18 @@ public class Tab1Fragment extends Fragment{
         //colocaSitios();
         return  view;
         //map;
+    }
+
+    public void iniciarActivity(final OverlayItem item){
+        Bundle arg = new Bundle();
+        arg.putString("etiq", item.getTitle());
+        InfoFragment fragment = new InfoFragment();
+        fragment.setArguments(arg);
+        //FragmentManager fm = getFragmentManager();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.frameLayout, fragment, "tag1");
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
     @Override
@@ -492,6 +509,20 @@ public class Tab1Fragment extends Fragment{
         map.getOverlays().add(anotherItemizedIconOverlay);
     }*/
 
+   /* @Override
+    public boolean onItemLongPress(Marker marker) {
+        Bundle arg = new Bundle();
+        arg.putString("etiq", marker.getTitle());
+        InfoFragment fragment = new InfoFragment();
+        fragment.setArguments(arg);
+        //FragmentManager fm = getFragmentManager();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.frameLayout, fragment, "tag1");
+        transaction.addToBackStack(null);
+        transaction.commit();
+        return false;
+    }*/
+
 
 
 
@@ -524,20 +555,9 @@ public class Tab1Fragment extends Fragment{
             } while(c.moveToNext());
         }
     }*/
-    /*
-    @Override
-    public void onInfoWindowClick(Marker marker) {
-        Bundle arg = new Bundle();
-        arg.putString("etiq", marker.getTitle());
-        InfoFragment fragment = new InfoFragment();
-        fragment.setArguments(arg);
-        //FragmentManager fm = getFragmentManager();
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.frameLayout, fragment, "tag1");
-        transaction.addToBackStack(null);
-        transaction.commit();
-    }
-    */
+
+
+
 
 
 // https://github.com/MKergall/osmbonuspack/wiki/features
