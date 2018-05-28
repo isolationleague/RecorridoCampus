@@ -155,7 +155,7 @@ public class Tab1Fragment extends Fragment {
 
         marcadores = new ArrayList<OverlayItem>();
 
-        marcadores2 = new ArrayList<GeoPoint>();
+        //marcadores2 = new ArrayList<GeoPoint>();
 
         GeoPoint pointB = new GeoPoint(9.9370,-84.0510);
 
@@ -206,8 +206,8 @@ public class Tab1Fragment extends Fragment {
             public boolean onItemSingleTapUp(final int index, final OverlayItem item) {
                 //do something
                 Toast.makeText(getActivity(), item.getTitle(),Toast.LENGTH_LONG).show();
-                //String distancia = Double.toString(user.distanceToAsDouble(marcadores2.get(index)));
-                //Toast.makeText(getActivity(), distancia,Toast.LENGTH_LONG).show();
+                String distancia = "Está a " + (int) user.distanceToAsDouble(item.getPoint()) + " mts. de distancia";
+                Toast.makeText(getActivity(), distancia,Toast.LENGTH_LONG).show();
                 return true;
             }
             @Override
