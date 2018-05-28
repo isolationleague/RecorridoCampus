@@ -212,7 +212,11 @@ public class Tab1Fragment extends Fragment {
             }
             @Override
             public boolean onItemLongPress(final int index, final OverlayItem item) {
-               iniciarActivity(item);
+               if (estaDentroDeRadio()) {
+                   iniciarActivity(item);
+               }else{
+
+               }
                 return true;
             }
         };
@@ -561,5 +565,8 @@ public class Tab1Fragment extends Fragment {
 
 
 // https://github.com/MKergall/osmbonuspack/wiki/features
+
+// mostrar cuadros de texto
+//https://help.openstreetmap.org/questions/61347/osmdroid-how-do-i-show-and-hide-markers-description-on-click
 
 
