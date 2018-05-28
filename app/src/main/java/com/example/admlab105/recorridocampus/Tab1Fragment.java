@@ -568,5 +568,6 @@ public class Tab1Fragment extends Fragment {
 
 // mostrar cuadros de texto
 //https://help.openstreetmap.org/questions/61347/osmdroid-how-do-i-show-and-hide-markers-description-on-click
+//https://stackoverflow.com/questions/23108709/show-marker-details-with-image-onclick-marker-openstreetmap?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
 
 
