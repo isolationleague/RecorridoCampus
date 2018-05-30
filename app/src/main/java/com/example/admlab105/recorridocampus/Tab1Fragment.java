@@ -75,6 +75,7 @@ public class Tab1Fragment extends Fragment {
     private Marker marker2;
     private LinkedList<Marker> sitios;
     private BaseSitiosHelper db;
+    private int RADIO = 3000;
 
     private static final int PERMISSIONS_REQUEST_LOCATION = 1;
 
@@ -212,10 +213,11 @@ public class Tab1Fragment extends Fragment {
             }
             @Override
             public boolean onItemLongPress(final int index, final OverlayItem item) {
-               if (estaDentroDeRadio()) {
+               if (estaDentroDeRadio(item)) {
                    iniciarActivity(item);
                }else{
-
+                   String mensaje = " Se encuentra muy lejos de este punto, acérquese más";
+                   Toast.makeText(getActivity(), mensaje,Toast.LENGTH_LONG).show();
                }
                 return true;
             }
@@ -234,6 +236,15 @@ public class Tab1Fragment extends Fragment {
         //colocaSitios();
         return  view;
         //map;
+    }
+
+    public boolean estaDentroDeRadio(OverlayItem item){
+        int distancia = (int) user.distanceToAsDouble(item.getPoint());
+
+        if (distancia > RADIO) {
+            return false;
+        }
+        return true;
     }
 
     public void iniciarActivity(final OverlayItem item){
