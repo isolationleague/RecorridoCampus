@@ -24,7 +24,7 @@ public class BaseSitiosHelper extends SQLiteOpenHelper {
 
     private static BaseSitiosHelper sInstance;
 
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "BaseSitios.db";
     Context context;
 //https://www.androiddesignpatterns.com/2012/05/correctly-managing-your-sqlite-database.html
@@ -61,7 +61,7 @@ public class BaseSitiosHelper extends SQLiteOpenHelper {
 
         dB.execSQL("CREATE TABLE " + BaseSitiosContract.Foto.TABLE_NAME + " (" +
                 BaseSitiosContract.Foto._ID + " INTEGER PRIMARY KEY," +
-                BaseSitiosContract.Foto.ID_SITIO + " INTEGER " + "," +
+                BaseSitiosContract.Foto.ID_SITIO + " TEXT " + "," +
                 BaseSitiosContract.Foto.RUTA + " TEXT " + " )");
 
         dB.execSQL("CREATE TABLE " + BaseSitiosContract.Video.TABLE_NAME + " (" +
@@ -76,7 +76,7 @@ public class BaseSitiosHelper extends SQLiteOpenHelper {
 
         dB.execSQL("CREATE TABLE " + BaseSitiosContract.Texto.TABLE_NAME + " (" +
                 BaseSitiosContract.Texto._ID + " INTEGER PRIMARY KEY," +
-                BaseSitiosContract.Texto.ID_SITIO + " INTEGER " + "," +
+                BaseSitiosContract.Texto.NOMBRE+ " TEXT" + "," +
                 BaseSitiosContract.Texto.RUTA + " TEXT " + " )");
 
         llenaBase(dB);
@@ -112,28 +112,34 @@ public class BaseSitiosHelper extends SQLiteOpenHelper {
             String linea ="";
             String[] sitioPartes = null;
             int count = 0;
-            while ((linea = br.readLine()) != null) {
-                sitioPartes = linea.split(",");    //nombre,coordenada x , coordenaday , numero de fotos, nombres de fotos..,
-                ContentValues values = new ContentValues();
-                values.put(BaseSitiosContract.SitioBase.COLUMN_NOMBRE, sitioPartes[0]);
-                values.put(BaseSitiosContract.SitioBase.COLUMN_COORDENADA_X, sitioPartes[1]);
-                values.put(BaseSitiosContract.SitioBase.COLUMN_COORDENADA_Y, sitioPartes[2]);
-                values.put(BaseSitiosContract.SitioBase.COLUMN_VISITADO, 0);
-                long newRowId = dB.insert(BaseSitiosContract.SitioBase.TABLE_NAME, null, values);
+                while ((linea = br.readLine()) != null) {
+                    sitioPartes = linea.split(",");    //nombre,coordenada x , coordenaday , numero de fotos, nombres de fotos..,
+                    ContentValues values = new ContentValues();
+                    values.put(BaseSitiosContract.SitioBase.COLUMN_NOMBRE, sitioPartes[0]);
+                    values.put(BaseSitiosContract.SitioBase.COLUMN_COORDENADA_X, sitioPartes[2]);
+                    values.put(BaseSitiosContract.SitioBase.COLUMN_COORDENADA_Y, sitioPartes[3]);
+                    values.put(BaseSitiosContract.SitioBase.COLUMN_VISITADO, 0);
+                    long newRowId = dB.insert(BaseSitiosContract.SitioBase.TABLE_NAME, null, values);
+                    String pp="0";
 
-                //carga las imagenes de cada sitio
-                /*int cantidadFotos = Integer.parseInt(sitioPartes[3]);
-                if(cantidadFotos>0) {
-                    for (int i = 0; i < cantidadFotos; i++) {
-                        values.put(BaseSitiosContract.Foto.ID_SITIO, newRowId);
-                        values.put(BaseSitiosContract.Foto.RUTA, sitioPartes[4+i]);
-                        Toast.makeText(context,sitioPartes[4+i],Toast.LENGTH_SHORT).show();
-                        long iRowId = dB.insert(BaseSitiosContract.Foto.TABLE_NAME, null, values);
+                    //carga las imagenes de cada siti mmnmo
+                    //int cantidadFotos = Integer.parseInt(sitioPartes[3]);
+                    if(Integer.parseInt(sitioPartes[4])>0) {
+                        for (int i = 0; i < Integer.parseInt(sitioPartes[4]); i++) {
+                            ContentValues values3 = new ContentValues();
+                            values3.put(BaseSitiosContract.Foto.ID_SITIO, sitioPartes[0]); //IMPORTANTE aqui en vez de un id va el nombre del sitio para mas facilidad
+                            values3.put(BaseSitiosContract.Foto.RUTA, sitioPartes[5+i]);
+                            //Toast.makeText(context,sitioPartes[4+i],Toast.LENGTH_SHORT).show();
+                            long iRowId = dB.insert(BaseSitiosContract.Foto.TABLE_NAME, null, values3);
+                        }
                     }
-                }
+                    ContentValues values2 = new ContentValues();
+                    values2.put(BaseSitiosContract.Texto.NOMBRE, sitioPartes[0]);
+                    values2.put(BaseSitiosContract.Texto.RUTA, sitioPartes[1]);
+                    long no = dB.insert(BaseSitiosContract.Texto.TABLE_NAME, null, values2);
 
-                count ++;*/
-            }
+
+                }
 
             fraw.close();
             br.close();
@@ -174,9 +180,34 @@ public class BaseSitiosHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
         Cursor c=null;
         if (db != null) {
-            c = db.rawQuery(" SELECT coordenadaY FROM sitio WHERE nombre = \""+s+"\"", null);
+            c = db.rawQuery("SELECT coordenadaY FROM sitio WHERE nombre = \"" + s + "\"" , null);
             c.moveToFirst();
         } return (c.getColumnCount()!=0)? c.getDouble(0): 99.0 ;
     }
+    public String obtengaTexto(String s){
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c=null;
+        if (db != null) {
+            c = db.rawQuery("SELECT ruta FROM Texto WHERE nombre = \""+s+"\"", null);
+            int o =0;
+            c.moveToFirst();
+        } return (c.getColumnCount()!=0)? c.getString(0): "edificio_de_la_facultad_de_educacion" ;
+    }
+
+
+    /**
+     * Devuelve un cursor con el nombre de las imagenes de el sitio indicado
+     * @param id_nombreSitio del sitio del cual se desean recuperar las imagenes
+     * @return c
+     */
+    public Cursor obtenerImagenesDeSitio(String id_nombreSitio) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c=null;
+        if (db != null) {
+            c = db.rawQuery(" SELECT ruta FROM Foto WHERE id_sitio = \"" + id_nombreSitio + "\"", null);
+        }
+        return c;
+    }
+
 
 }
