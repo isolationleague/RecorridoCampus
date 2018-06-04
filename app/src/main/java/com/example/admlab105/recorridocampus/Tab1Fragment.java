@@ -1,6 +1,7 @@
 package com.example.admlab105.recorridocampus;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -75,7 +76,7 @@ public class Tab1Fragment extends Fragment {
     private Marker marker2;
     private LinkedList<Marker> sitios;
     private BaseSitiosHelper db;
-    private int RADIO = 3000;
+    private int RADIO = 200;
 
     private static final int PERMISSIONS_REQUEST_LOCATION = 1;
 
@@ -121,13 +122,14 @@ public class Tab1Fragment extends Fragment {
         map.setMultiTouchControls(true);
 
 
-        Button btnUCR =  view.findViewById(R.id.btnUcr);
-        Button btnCat = view.findViewById(R.id.btnCat);
+        //Button btnUCR =  view.findViewById(R.id.btnUcr);
+        //Button btnCat = view.findViewById(R.id.btnCat);
 
         ImageButton btnCampus=view.findViewById(R.id.btnCampus);
         ImageButton btnUser=view.findViewById(R.id.btnUser);
+        ImageButton btnCerca=view.findViewById(R.id.btnCerca);
 
-        btnUCR.setOnClickListener(new View.OnClickListener() {
+        /*btnUCR.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 anadirMarcador();
@@ -138,7 +140,7 @@ public class Tab1Fragment extends Fragment {
             public void onClick(View v) {
                 anadirMarcador2();
             }
-        });
+        });*/
 
         btnUser.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -151,6 +153,13 @@ public class Tab1Fragment extends Fragment {
             @Override
             public void onClick(View v) {
                 volverCampus();
+            }
+        });
+
+        btnCerca.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                calculoCercania();
             }
         });
 
@@ -206,8 +215,15 @@ public class Tab1Fragment extends Fragment {
             @Override
             public boolean onItemSingleTapUp(final int index, final OverlayItem item) {
                 //do something
-                Toast.makeText(getActivity(), item.getTitle(),Toast.LENGTH_LONG).show();
-                String distancia = "Está a " + (int) user.distanceToAsDouble(item.getPoint()) + " mts. de distancia";
+                Marker mark = new Marker(map);
+                mark.setTitle(item.getTitle());
+                mark.setSnippet(item.getSnippet());
+                GeoPoint geo= new GeoPoint(item.getPoint().getLatitude(), item.getPoint().getLongitude());
+                mark.setPosition(geo);
+                mark.showInfoWindow();
+
+               // Toast.makeText(getActivity(), item.getTitle(),Toast.LENGTH_LONG).show();
+                String distancia = "Está a " + (int)user.distanceToAsDouble(item.getPoint()) + " mts. de distancia";
                 Toast.makeText(getActivity(), distancia,Toast.LENGTH_LONG).show();
                 return true;
             }
@@ -236,6 +252,21 @@ public class Tab1Fragment extends Fragment {
         //colocaSitios();
         return  view;
         //map;
+    }
+
+    public void calculoCercania(){
+       int cercania=(int)user.distanceToAsDouble(marcadores.get(0).getPoint());
+       System.out.println(cercania);
+       String nombre=marcadores.get(0).getTitle();
+        for(int i=1;i<marcadores.size();++i){
+            int cercania2=(int)user.distanceToAsDouble(marcadores.get(i).getPoint());
+            System.out.println(cercania2);
+            if(cercania2<cercania){
+            cercania=cercania2;
+            nombre=marcadores.get(i).getTitle();
+            }
+        }
+        Toast.makeText(getActivity(), "El sitio más cercano es "+nombre+" que esta a "+cercania+" mts. de usted",Toast.LENGTH_LONG).show();
     }
 
     public boolean estaDentroDeRadio(OverlayItem item){
