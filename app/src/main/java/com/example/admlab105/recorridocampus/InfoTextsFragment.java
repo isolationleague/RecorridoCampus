@@ -55,7 +55,7 @@ public class InfoTextsFragment extends Fragment {
             }
         });
         TextView txtview = view.findViewById(R.id.textView);
-        txtview.setMovementMethod(new ScrollingMovementMethod());
+
         loadTextView(txtview);
         return view;
     }
