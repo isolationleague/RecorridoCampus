@@ -45,13 +45,13 @@ public class InfoFragment extends Fragment {
         TextView tv = (TextView)view.findViewById(R.id.etqSitio);
         tv.setText(etiqueta);
 
-        ImageButton backButton = view.findViewById(R.id.backButton);
-        backButton.setOnClickListener(new View.OnClickListener() {
+        //ImageButton backButton = view.findViewById(R.id.backButton);
+       /* backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 getActivity().onBackPressed();
             }
-        });
+        });*/
         /*
         TextView tv2 = (TextView)view.findViewById(R.id.cX);
         tv2.setText(String.valueOf(db.obtengaX(etiqueta)));
