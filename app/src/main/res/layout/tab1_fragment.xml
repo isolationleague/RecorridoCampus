@@ -21,6 +21,34 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="match_parent"
+            android:layout_height="41dp"
+            android:src="@color/unselected"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/nombreSitioText"
+            android:layout_width="258dp"
+            android:layout_height="39dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:text=""
+            android:textSize="17dp"
+            app:layout_constraintStart_toEndOf="@+id/sitioCercanoText"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/sitioCercanoText"
+            android:layout_width="wrap_content"
+            android:layout_height="39dp"
+            android:text="Sitio Cercano:"
+            android:textSize="17dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <ImageButton
             android:id="@+id/btnCerca"
             android:layout_width="47dp"
