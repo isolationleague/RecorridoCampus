@@ -20,5 +20,6 @@ public class MenuPrincipal extends AppCompatActivity {
         progreso=(TextView) findViewById(R.id.textViewProgreso);
         usuario.setText("Sebastian");
         progreso.setText("Te faltan "+sitioRecorridos+" puntos por conocer");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
     }
 }
