@@ -95,7 +95,8 @@ public class Tab1Fragment extends Fragment {
 
         almacenar();// Petición de permiso para external storage
 
-        RoadManager roadManager = new MapQuestRoadManager("oDJQc4K80LIhYWgAFxit5ktTbWVBoYjy"); // API key en https://developer.mapquest.com/
+        final RoadManager roadManager;
+                roadManager = new MapQuestRoadManager("oDJQc4K80LIhYWgAFxit5ktTbWVBoYjy"); // API key en https://developer.mapquest.com/
         roadManager.addRequestOption("routeType=pedestrian");
 
 
@@ -170,7 +171,7 @@ public class Tab1Fragment extends Fragment {
 
         marcadores = new ArrayList<OverlayItem>();
 
-        //marcadores2 = new ArrayList<GeoPoint>();
+        marcadores2 = new ArrayList<GeoPoint>();
 
         GeoPoint pointB = new GeoPoint(9.9370,-84.0510);
 
@@ -222,14 +223,53 @@ public class Tab1Fragment extends Fragment {
                 //do something
                 Marker mark = new Marker(map);
                 mark.setTitle(item.getTitle());
-                mark.setSnippet(item.getSnippet());
+                String distancia = "Está a " + (int)user.distanceToAsDouble(item.getPoint()) + " mts. de distancia";
+                mark.setSnippet(/*item.getSnippet()*/distancia);
                 GeoPoint geo= new GeoPoint(item.getPoint().getLatitude(), item.getPoint().getLongitude());
                 mark.setPosition(geo);
                 mark.showInfoWindow();
 
                // Toast.makeText(getActivity(), item.getTitle(),Toast.LENGTH_LONG).show();
-                String distancia = "Está a " + (int)user.distanceToAsDouble(item.getPoint()) + " mts. de distancia";
-                Toast.makeText(getActivity(), distancia,Toast.LENGTH_LONG).show();
+                //String distancia = "Está a " + (int)user.distanceToAsDouble(item.getPoint()) + " mts. de distancia";
+                //mark.setSnippet(distancia);
+                //Toast.makeText(getActivity(), distancia,Toast.LENGTH_LONG).show();
+
+
+                marcadores2.add(user);
+                //GeoPoint endPoint = new GeoPoint(48.4, -1.9);
+                marcadores2.add(geo);
+
+                Road road = roadManager.getRoad(marcadores2);
+                Polyline roadOverlay = RoadManager.buildRoadOverlay(road);
+                map.getOverlays().add(roadOverlay);
+
+
+
+
+                map.invalidate();
+
+
+                Drawable nodeIcon = getResources().getDrawable(R.drawable.cat);
+                for (int i=0; i<road.mNodes.size(); i++){
+                    RoadNode node = road.mNodes.get(i);
+                    Marker nodeMarker = new Marker(map);
+                    nodeMarker.setPosition(node.mLocation);
+                    nodeMarker.setIcon(nodeIcon);
+                    nodeMarker.setTitle("Step "+i);
+                    map.getOverlays().add(nodeMarker);
+
+                    nodeMarker.setSnippet(node.mInstructions);
+                    nodeMarker.setSubDescription(Road.getLengthDurationText(getContext(), node.mLength, node.mDuration));
+                    Drawable icon = getResources().getDrawable(R.drawable.cat);
+                    nodeMarker.setImage(icon);
+
+                    nodeMarker.setSubDescription(node.mInstructions);
+                    nodeMarker.setSubDescription(Road.getLengthDurationText(getContext(), node.mLength, node.mDuration));
+                    icon = getResources().getDrawable(R.drawable.cat);
+                    nodeMarker.setImage(icon);
+
+
+                }
                 return true;
             }
             @Override
