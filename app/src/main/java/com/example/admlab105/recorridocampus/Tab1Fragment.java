@@ -95,13 +95,13 @@ public class Tab1Fragment extends Fragment {
 
         almacenar();// Petición de permiso para external storage
 
-        final RoadManager roadManager;
-                roadManager = new MapQuestRoadManager("oDJQc4K80LIhYWgAFxit5ktTbWVBoYjy"); // API key en https://developer.mapquest.com/
+       /* final RoadManager roadManager;
+        roadManager = new MapQuestRoadManager("oDJQc4K80LIhYWgAFxit5ktTbWVBoYjy"); // API key en https://developer.mapquest.com/
         roadManager.addRequestOption("routeType=pedestrian");
 
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
+        StrictMode.setThreadPolicy(policy);*/
 
 
         db = BaseSitiosHelper.getInstance(this.getContext().getApplicationContext());
@@ -185,7 +185,14 @@ public class Tab1Fragment extends Fragment {
 
         if (c.moveToFirst()) {
             do {
-                marcadores.add(new OverlayItem(c.getString(0), "", new GeoPoint(c.getDouble(1),c.getDouble(2))));
+
+                OverlayItem item = new OverlayItem(c.getString(0), "", new GeoPoint(c.getDouble(1),c.getDouble(2)));
+                //Drawable icon = this.getResources().getDrawable(R.drawable.sitio);
+                //item.setMarker(icon);
+
+                marcadores.add(item);
+
+                //marcadores.add(new OverlayItem(c.getString(0), "", new GeoPoint(c.getDouble(1),c.getDouble(2))));
                 //marcadores2.add(new GeoPoint(c.getDouble(1),c.getDouble(2)));
 
             } while(c.moveToNext());
@@ -227,7 +234,7 @@ public class Tab1Fragment extends Fragment {
                 mark.setSnippet(/*item.getSnippet()*/distancia);
                 GeoPoint geo= new GeoPoint(item.getPoint().getLatitude(), item.getPoint().getLongitude());
                 mark.setPosition(geo);
-                mark.showInfoWindow();
+                mark.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
 
                // Toast.makeText(getActivity(), item.getTitle(),Toast.LENGTH_LONG).show();
                 //String distancia = "Está a " + (int)user.distanceToAsDouble(item.getPoint()) + " mts. de distancia";
@@ -235,21 +242,18 @@ public class Tab1Fragment extends Fragment {
                 //Toast.makeText(getActivity(), distancia,Toast.LENGTH_LONG).show();
 
 
-                marcadores2.add(user);
+                /*marcadores2.add(user);
                 //GeoPoint endPoint = new GeoPoint(48.4, -1.9);
                 marcadores2.add(geo);
 
                 Road road = roadManager.getRoad(marcadores2);
                 Polyline roadOverlay = RoadManager.buildRoadOverlay(road);
-                map.getOverlays().add(roadOverlay);
+                map.getOverlays().add(roadOverlay);*/
 
 
 
 
-                map.invalidate();
-
-
-                Drawable nodeIcon = getResources().getDrawable(R.drawable.cat);
+               /* Drawable nodeIcon = getResources().getDrawable(R.drawable.cat);
                 for (int i=0; i<road.mNodes.size(); i++){
                     RoadNode node = road.mNodes.get(i);
                     Marker nodeMarker = new Marker(map);
@@ -269,17 +273,20 @@ public class Tab1Fragment extends Fragment {
                     nodeMarker.setImage(icon);
 
 
-                }
+                }*/
+                mark.showInfoWindow();
+                map.getOverlayManager().add(mark);
+                map.invalidate();
                 return true;
             }
             @Override
             public boolean onItemLongPress(final int index, final OverlayItem item) {
-               //if (estaDentroDeRadio(item)) {
+               if (estaDentroDeRadio(item)) {
                    iniciarActivity(item);
-              // }else{
+              }else{
                    String mensaje = " Se encuentra muy lejos de este punto, acérquese más";
                    Toast.makeText(getActivity(), mensaje,Toast.LENGTH_LONG).show();
-              // }
+              }
                 return true;
             }
         };
@@ -541,6 +548,7 @@ public class Tab1Fragment extends Fragment {
         user= new GeoPoint(lat, lon);
         marker.setTitle("Usuario");
         marker.setPosition(user);
+        //marker.setIcon(getResources().getDrawable(R.drawable.ubicacion));
         map.getOverlays().add(marker);
 
         /*if (marker2 != null) {

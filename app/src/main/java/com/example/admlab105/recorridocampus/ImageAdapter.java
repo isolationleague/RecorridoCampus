@@ -24,8 +24,9 @@ public class ImageAdapter extends BaseAdapter {
         lugar =l;
         mThumbIds= new ArrayList<Integer>();
         int marcador =0;
+        mThumbIds.add(R.drawable.cat);
         //mThumbIds.add(R.drawable.bird0);
-        switch (lugar){
+        /*switch (lugar){
             case "Edificio de la Facultad de Ciencias Económica":
                 mThumbIds.add(R.drawable.economicas1);
                 mThumbIds.add(R.drawable.economicas2);
@@ -109,7 +110,7 @@ public class ImageAdapter extends BaseAdapter {
 
                 break;
 
-        }
+        }*/
 
     }
 
