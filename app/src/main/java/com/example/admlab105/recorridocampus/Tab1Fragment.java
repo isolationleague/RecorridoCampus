@@ -30,6 +30,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.bonuspack.routing.MapQuestRoadManager;
@@ -83,8 +84,11 @@ public class Tab1Fragment extends Fragment {
     ArrayList<OverlayItem> marcadores;
     ArrayList<GeoPoint> marcadores2;
 
+
     GeoPoint user;
     GeoPoint user2;
+
+    TextView sitioCercano;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -128,6 +132,7 @@ public class Tab1Fragment extends Fragment {
         ImageButton btnCampus=view.findViewById(R.id.btnCampus);
         ImageButton btnUser=view.findViewById(R.id.btnUser);
         ImageButton btnCerca=view.findViewById(R.id.btnCerca);
+        sitioCercano=view.findViewById(R.id.nombreSitioText);
 
         /*btnUCR.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -229,12 +234,12 @@ public class Tab1Fragment extends Fragment {
             }
             @Override
             public boolean onItemLongPress(final int index, final OverlayItem item) {
-               if (estaDentroDeRadio(item)) {
+               //if (estaDentroDeRadio(item)) {
                    iniciarActivity(item);
-               }else{
+              // }else{
                    String mensaje = " Se encuentra muy lejos de este punto, acérquese más";
                    Toast.makeText(getActivity(), mensaje,Toast.LENGTH_LONG).show();
-               }
+              // }
                 return true;
             }
         };
@@ -269,6 +274,24 @@ public class Tab1Fragment extends Fragment {
         Toast.makeText(getActivity(), "El sitio más cercano es "+nombre+" que esta a "+cercania+" mts. de usted",Toast.LENGTH_LONG).show();
     }
 
+    public void cercaniaActiva(){
+       if(user!=null){
+        int cercania=(int)user.distanceToAsDouble(marcadores.get(0).getPoint());
+        System.out.println(cercania);
+        String nombre=marcadores.get(0).getTitle();
+        for(int i=1;i<marcadores.size();++i){
+            int cercania2=(int)user.distanceToAsDouble(marcadores.get(i).getPoint());
+            System.out.println(cercania2);
+            if(cercania2<cercania){
+                cercania=cercania2;
+                nombre=marcadores.get(i).getTitle();
+            }
+        }
+        sitioCercano.setText(nombre);
+    }
+    }
+
+
     public boolean estaDentroDeRadio(OverlayItem item){
         int distancia = (int) user.distanceToAsDouble(item.getPoint());
 
@@ -294,12 +317,18 @@ public class Tab1Fragment extends Fragment {
     public void onStart(){
         super.onStart();
         Handler handler = new Handler();
+        Handler cercania = new Handler();
         handler.postDelayed(new Runnable(){
             public void run(){
                 miUbic();
             }
         },10);
-
+        cercania.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                cercaniaActiva();
+            }
+        },10);
     }
 
     public void onClick(Marker mark){
@@ -548,30 +577,6 @@ public class Tab1Fragment extends Fragment {
         map.invalidate();
 
     }
-
-    /*public void addCicle(){
-        ItemizedIconOverlay<OverlayItem> anotherItemizedIconOverlay
-                = new ItemizedIconOverlay<OverlayItem>(getActivity(), anotherOverlayItemArray, null);
-        map.getOverlays().add(anotherItemizedIconOverlay);
-    }*/
-
-   /* @Override
-    public boolean onItemLongPress(Marker marker) {
-        Bundle arg = new Bundle();
-        arg.putString("etiq", marker.getTitle());
-        InfoFragment fragment = new InfoFragment();
-        fragment.setArguments(arg);
-        //FragmentManager fm = getFragmentManager();
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.frameLayout, fragment, "tag1");
-        transaction.addToBackStack(null);
-        transaction.commit();
-        return false;
-    }*/
-
-
-
-
 }
 
 // https://developers.google.com/maps/documentation/android-api/location?hl=es-419
@@ -601,6 +606,28 @@ public class Tab1Fragment extends Fragment {
             } while(c.moveToNext());
         }
     }*/
+
+
+    /*public void addCicle(){
+        ItemizedIconOverlay<OverlayItem> anotherItemizedIconOverlay
+                = new ItemizedIconOverlay<OverlayItem>(getActivity(), anotherOverlayItemArray, null);
+        map.getOverlays().add(anotherItemizedIconOverlay);
+    }*/
+
+   /* @Override
+    public boolean onItemLongPress(Marker marker) {
+        Bundle arg = new Bundle();
+        arg.putString("etiq", marker.getTitle());
+        InfoFragment fragment = new InfoFragment();
+        fragment.setArguments(arg);
+        //FragmentManager fm = getFragmentManager();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.frameLayout, fragment, "tag1");
+        transaction.addToBackStack(null);
+        transaction.commit();
+        return false;
+    }*/
+
 
 
 
