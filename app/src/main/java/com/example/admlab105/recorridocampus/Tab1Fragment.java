@@ -84,11 +84,13 @@ public class Tab1Fragment extends Fragment {
     ArrayList<OverlayItem> marcadores;
     ArrayList<GeoPoint> marcadores2;
 
+    TextView nombreSitioCercano;
+
+    Handler handler;
+    Handler cercania;
 
     GeoPoint user;
     GeoPoint user2;
-
-    TextView sitioCercano;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -110,7 +112,7 @@ public class Tab1Fragment extends Fragment {
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
 
         //map = new MapView(getActivity());
-        map =  view.findViewById(R.id.map);
+        map = view.findViewById(R.id.map);
 
 
         map.getTileProvider().setTileSource(TileSourceFactory.MAPNIK);
@@ -120,7 +122,7 @@ public class Tab1Fragment extends Fragment {
 
         IMapController mapController = map.getController();
         mapController.setZoom(17);
-        GeoPoint startPoint = new GeoPoint(9.9370,-84.0510);
+        GeoPoint startPoint = new GeoPoint(9.9370, -84.0510);
         mapController.setCenter(startPoint);
 
 
@@ -130,10 +132,10 @@ public class Tab1Fragment extends Fragment {
         //Button btnUCR =  view.findViewById(R.id.btnUcr);
         //Button btnCat = view.findViewById(R.id.btnCat);
 
-        ImageButton btnCampus=view.findViewById(R.id.btnCampus);
-        ImageButton btnUser=view.findViewById(R.id.btnUser);
-        ImageButton btnCerca=view.findViewById(R.id.btnCerca);
-        sitioCercano=view.findViewById(R.id.nombreSitioText);
+        ImageButton btnCampus = view.findViewById(R.id.btnCampus);
+        ImageButton btnUser = view.findViewById(R.id.btnUser);
+        ImageButton btnCerca = view.findViewById(R.id.btnCerca);
+        nombreSitioCercano = view.findViewById(R.id.nombreSitioText);
 
         /*btnUCR.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -173,20 +175,20 @@ public class Tab1Fragment extends Fragment {
 
         marcadores2 = new ArrayList<GeoPoint>();
 
-        GeoPoint pointB = new GeoPoint(9.9370,-84.0510);
+        GeoPoint pointB = new GeoPoint(9.9370, -84.0510);
 
         GeoPoint pointA = new GeoPoint(9.9380, -84.0510);
         //marcadores2.add(pointA);
         //marcadores2.add(pointB);
 
         sitios = new LinkedList<Marker>();
-        Cursor c=db.obtenerLugares();
+        Cursor c = db.obtenerLugares();
 
 
         if (c.moveToFirst()) {
             do {
 
-                OverlayItem item = new OverlayItem(c.getString(0), "", new GeoPoint(c.getDouble(1),c.getDouble(2)));
+                OverlayItem item = new OverlayItem(c.getString(0), "", new GeoPoint(c.getDouble(1), c.getDouble(2)));
                 //Drawable icon = this.getResources().getDrawable(R.drawable.sitio);
                 //item.setMarker(icon);
 
@@ -195,7 +197,7 @@ public class Tab1Fragment extends Fragment {
                 //marcadores.add(new OverlayItem(c.getString(0), "", new GeoPoint(c.getDouble(1),c.getDouble(2))));
                 //marcadores2.add(new GeoPoint(c.getDouble(1),c.getDouble(2)));
 
-            } while(c.moveToNext());
+            } while (c.moveToNext());
 
 
             /*roadManager = new OSRMRoadManager(getActivity());
@@ -230,13 +232,13 @@ public class Tab1Fragment extends Fragment {
                 //do something
                 Marker mark = new Marker(map);
                 mark.setTitle(item.getTitle());
-                String distancia = "Está a " + (int)user.distanceToAsDouble(item.getPoint()) + " mts. de distancia";
+                String distancia = "Está a " + (int) user.distanceToAsDouble(item.getPoint()) + " mts. de distancia";
                 mark.setSnippet(/*item.getSnippet()*/distancia);
-                GeoPoint geo= new GeoPoint(item.getPoint().getLatitude(), item.getPoint().getLongitude());
+                GeoPoint geo = new GeoPoint(item.getPoint().getLatitude(), item.getPoint().getLongitude());
                 mark.setPosition(geo);
                 mark.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
 
-               // Toast.makeText(getActivity(), item.getTitle(),Toast.LENGTH_LONG).show();
+                // Toast.makeText(getActivity(), item.getTitle(),Toast.LENGTH_LONG).show();
                 //String distancia = "Está a " + (int)user.distanceToAsDouble(item.getPoint()) + " mts. de distancia";
                 //mark.setSnippet(distancia);
                 //Toast.makeText(getActivity(), distancia,Toast.LENGTH_LONG).show();
@@ -276,43 +278,56 @@ public class Tab1Fragment extends Fragment {
                 }*/
                 mark.showInfoWindow();
                 map.getOverlayManager().add(mark);
-                map.invalidate();
+                //map.invalidate();
                 return true;
             }
+
             @Override
             public boolean onItemLongPress(final int index, final OverlayItem item) {
-               if (estaDentroDeRadio(item)) {
-                   iniciarActivity(item);
-              }else{
-                   String mensaje = " Se encuentra muy lejos de este punto, acérquese más";
-                   Toast.makeText(getActivity(), mensaje,Toast.LENGTH_LONG).show();
-              }
+                if (estaDentroDeRadio(item)) {
+                    iniciarActivity(item);
+                } else {
+                    String mensaje = " Se encuentra muy lejos de este punto, acérquese más";
+                    Toast.makeText(getActivity(), mensaje, Toast.LENGTH_LONG).show();
+                }
                 return true;
             }
         };
-        ItemizedIconOverlay<OverlayItem> mOverlay = new ItemizedIconOverlay<OverlayItem>(getActivity(),marcadores,gestureListener);
-
+        ItemizedIconOverlay<OverlayItem> mOverlay = new ItemizedIconOverlay<OverlayItem>(getActivity(), marcadores, gestureListener);
 
 
         map.getOverlays().add(mOverlay);
-        marker= new Marker(map);
+        marker = new Marker(map);
         //marker2= new Marker(map);
 
+      /* final Handler cercania = new Handler();
+       final Runnable actualizador = new Runnable() {
+            @Override
+            public void run() {
+                cercaniaActiva();
 
+            }
+        };
 
+        actualizador.run();*/
 
-        //colocaSitios();
+        Handler cercania = new Handler();
+        cercania.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                cercaniaActiva();
+            }
+        },10);
+
         return  view;
-        //map;
+
     }
 
     public void calculoCercania(){
        int cercania=(int)user.distanceToAsDouble(marcadores.get(0).getPoint());
-       System.out.println(cercania);
        String nombre=marcadores.get(0).getTitle();
         for(int i=1;i<marcadores.size();++i){
             int cercania2=(int)user.distanceToAsDouble(marcadores.get(i).getPoint());
-            System.out.println(cercania2);
             if(cercania2<cercania){
             cercania=cercania2;
             nombre=marcadores.get(i).getTitle();
@@ -322,21 +337,22 @@ public class Tab1Fragment extends Fragment {
     }
 
     public void cercaniaActiva(){
-       if(user!=null){
-        int cercania=(int)user.distanceToAsDouble(marcadores.get(0).getPoint());
-        System.out.println(cercania);
-        String nombre=marcadores.get(0).getTitle();
-        for(int i=1;i<marcadores.size();++i){
-            int cercania2=(int)user.distanceToAsDouble(marcadores.get(i).getPoint());
-            System.out.println(cercania2);
-            if(cercania2<cercania){
-                cercania=cercania2;
-                nombre=marcadores.get(i).getTitle();
+
+            System.out.println("Me estoy ejecutando");
+            if(user!=null){
+            int cercania=(int)user.distanceToAsDouble(marcadores.get(0).getPoint());
+            String nombre=marcadores.get(0).getTitle();
+            for(int i=1;i<marcadores.size();++i){
+                int cercania2=(int)user.distanceToAsDouble(marcadores.get(i).getPoint());
+                if(cercania2<cercania){
+                    cercania=cercania2;
+                    nombre=marcadores.get(i).getTitle();
+                }
             }
+            nombreSitioCercano.setText(nombre);
         }
-        sitioCercano.setText(nombre);
-    }
-    }
+        }
+
 
 
     public boolean estaDentroDeRadio(OverlayItem item){
@@ -363,8 +379,8 @@ public class Tab1Fragment extends Fragment {
     @Override
     public void onStart(){
         super.onStart();
-        Handler handler = new Handler();
-        Handler cercania = new Handler();
+        handler = new Handler();
+        cercania = new Handler();
         handler.postDelayed(new Runnable(){
             public void run(){
                 miUbic();
@@ -381,9 +397,6 @@ public class Tab1Fragment extends Fragment {
     public void onClick(Marker mark){
         Toast.makeText(getActivity(),mark.getTitle() ,
                 Toast.LENGTH_LONG).show();
-
-
-
     }
 
     private void volverCampus(){
@@ -438,6 +451,7 @@ public class Tab1Fragment extends Fragment {
                         @Override
                         public void onLocationChanged(Location location) {
                             actualizarUbic(location);
+
                         }
 
                         @Override
@@ -470,6 +484,7 @@ public class Tab1Fragment extends Fragment {
                             @Override
                             public void onLocationChanged(Location location) {
                                 actualizarUbic(location);
+
                             }
 
                             @Override
