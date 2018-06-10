@@ -12,9 +12,12 @@ import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.StrictMode;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.service.carrier.CarrierMessagingService;
 import android.support.annotation.Nullable;
@@ -65,7 +68,7 @@ import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 import java.util.LinkedList;
 import java.util.List;
 
-
+import static android.content.Context.VIBRATOR_SERVICE;
 
 
 public class Tab1Fragment extends Fragment {
@@ -96,6 +99,7 @@ public class Tab1Fragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         almacenar();// Petición de permiso para external storage
+        activarVibracion();
 
        /* final RoadManager roadManager;
         roadManager = new MapQuestRoadManager("oDJQc4K80LIhYWgAFxit5ktTbWVBoYjy"); // API key en https://developer.mapquest.com/
@@ -640,7 +644,17 @@ public class Tab1Fragment extends Fragment {
         map.invalidate();
 
     }
+
+    public void activarVibracion() {
+        if (Build.VERSION.SDK_INT >= 26) {
+            ((Vibrator) this.getContext().getSystemService(VIBRATOR_SERVICE)).vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+        } else {
+            ((Vibrator) this.getContext().getSystemService(VIBRATOR_SERVICE)).vibrate(1000);
+        }
+    }
 }
+
+
 
 // https://developers.google.com/maps/documentation/android-api/location?hl=es-419
 // RECORDAR SOLICITAR AL USUARIO LOS PERMISOS DE UBICACION
