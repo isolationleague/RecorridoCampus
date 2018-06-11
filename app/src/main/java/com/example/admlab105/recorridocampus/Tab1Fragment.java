@@ -474,7 +474,7 @@ public class Tab1Fragment extends Fragment {
         marker.setPosition(user);
         marker.setIcon(getResources().getDrawable(R.drawable.ubicacion));
         map.getOverlays().add(marker);
-
+        map.invalidate();
 
     }
 
