@@ -29,6 +29,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -86,6 +87,7 @@ public class Tab1Fragment extends Fragment {
 
     ArrayList<OverlayItem> marcadores;
     ArrayList<GeoPoint> marcadores2;
+    ArrayList<Marker> marcadores3;
 
     TextView nombreSitioCercano;
 
@@ -150,14 +152,8 @@ public class Tab1Fragment extends Fragment {
         });
 
         marcadores = new ArrayList<OverlayItem>();
-
         marcadores2 = new ArrayList<GeoPoint>();
-
-        GeoPoint pointB = new GeoPoint(9.9370, -84.0510);
-
-        GeoPoint pointA = new GeoPoint(9.9380, -84.0510);
-        //marcadores2.add(pointA);
-        //marcadores2.add(pointB);
+        marcadores3 = new ArrayList<Marker>();
 
         sitios = new LinkedList<Marker>();
         Cursor c = db.obtenerLugares();
@@ -170,63 +166,49 @@ public class Tab1Fragment extends Fragment {
                 Drawable newMarker = this.getResources().getDrawable(R.drawable.sitio);
                 item.setMarker(newMarker);
                 marcadores.add(item);
+
+               /* Marker marker = new Marker(map);
+                GeoPoint point = new GeoPoint(c.getDouble(1), c.getDouble(2));
+                marker.setPosition(point);
+                marker.setAnchor(Marker.ANCHOR_BOTTOM, Marker.ANCHOR_CENTER);
+                marker.setTitle(c.getString(0));
+                marker.setIcon(getResources().getDrawable(R.drawable.sitio));
+                map.getOverlays().add(marker);
+                map.invalidate();
+
+                marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
+                    @Override
+                    public boolean onMarkerClick(Marker marker, MapView mapView) {
+                        String distancia = "Está a " + (int) user.distanceToAsDouble(marker.getPosition()) + " mts. de distancia";
+                        marker.setSnippet(distancia);
+                        marker.showInfoWindow();
+                        return false;
+                    }
+                });
+
+
+                marcadores3.add(marker);*/
+
+
             } while (c.moveToNext());
 
         }
 
+
         ItemizedIconOverlay.OnItemGestureListener<OverlayItem> gestureListener = new OnItemGestureListener<OverlayItem>() {
             @Override
             public boolean onItemSingleTapUp(final int index, final OverlayItem item) {
-                //do something
+
                 Marker mark = new Marker(map);
                 mark.setTitle(item.getTitle());
                 String distancia = "Está a " + (int) user.distanceToAsDouble(item.getPoint()) + " mts. de distancia";
-                mark.setSnippet(/*item.getSnippet()*/distancia);
+                mark.setSnippet(distancia);
                 GeoPoint geo = new GeoPoint(item.getPoint().getLatitude(), item.getPoint().getLongitude());
                 mark.setPosition(geo);
                 mark.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
 
-                // Toast.makeText(getActivity(), item.getTitle(),Toast.LENGTH_LONG).show();
-                //String distancia = "Está a " + (int)user.distanceToAsDouble(item.getPoint()) + " mts. de distancia";
-                //mark.setSnippet(distancia);
-                //Toast.makeText(getActivity(), distancia,Toast.LENGTH_LONG).show();
-
-
-                /*marcadores2.add(user);
-                //GeoPoint endPoint = new GeoPoint(48.4, -1.9);
-                marcadores2.add(geo);
-
-                Road road = roadManager.getRoad(marcadores2);
-                Polyline roadOverlay = RoadManager.buildRoadOverlay(road);
-                map.getOverlays().add(roadOverlay);*/
-
-
-
-
-               /* Drawable nodeIcon = getResources().getDrawable(R.drawable.cat);
-                for (int i=0; i<road.mNodes.size(); i++){
-                    RoadNode node = road.mNodes.get(i);
-                    Marker nodeMarker = new Marker(map);
-                    nodeMarker.setPosition(node.mLocation);
-                    nodeMarker.setIcon(nodeIcon);
-                    nodeMarker.setTitle("Step "+i);
-                    map.getOverlays().add(nodeMarker);
-
-                    nodeMarker.setSnippet(node.mInstructions);
-                    nodeMarker.setSubDescription(Road.getLengthDurationText(getContext(), node.mLength, node.mDuration));
-                    Drawable icon = getResources().getDrawable(R.drawable.cat);
-                    nodeMarker.setImage(icon);
-
-                    nodeMarker.setSubDescription(node.mInstructions);
-                    nodeMarker.setSubDescription(Road.getLengthDurationText(getContext(), node.mLength, node.mDuration));
-                    icon = getResources().getDrawable(R.drawable.cat);
-                    nodeMarker.setImage(icon);
-
-
-                }*/
                 mark.showInfoWindow();
-                map.getOverlayManager().add(mark);
-                //map.invalidate();
+                map.invalidate();
                 return true;
             }
 
@@ -245,7 +227,9 @@ public class Tab1Fragment extends Fragment {
 
 
         map.getOverlays().add(mOverlay);
+        volverCampus();
         marker = new Marker(map);
+
         final Handler cercania = new Handler();
         final Runnable actualizador = new Runnable() {
             @Override
@@ -603,7 +587,6 @@ public class Tab1Fragment extends Fragment {
         // map.getOverlays().clear();
         map.getOverlays().add(marker);
         map.invalidate();
-
     }*/
 
 
@@ -629,3 +612,45 @@ public class Tab1Fragment extends Fragment {
         addCat(pointA);
     }*/
 
+// Toast.makeText(getActivity(), item.getTitle(),Toast.LENGTH_LONG).show();
+//String distancia = "Está a " + (int)user.distanceToAsDouble(item.getPoint()) + " mts. de distancia";
+//mark.setSnippet(distancia);
+//Toast.makeText(getActivity(), distancia,Toast.LENGTH_LONG).show();
+
+
+                /*marcadores2.add(user);
+                //GeoPoint endPoint = new GeoPoint(48.4, -1.9);
+                marcadores2.add(geo);
+
+                Road road = roadManager.getRoad(marcadores2);
+                Polyline roadOverlay = RoadManager.buildRoadOverlay(road);
+                map.getOverlays().add(roadOverlay);*/
+
+
+
+
+               /* Drawable nodeIcon = getResources().getDrawable(R.drawable.cat);
+                for (int i=0; i<road.mNodes.size(); i++){
+                    RoadNode node = road.mNodes.get(i);
+                    Marker nodeMarker = new Marker(map);
+                    nodeMarker.setPosition(node.mLocation);
+                    nodeMarker.setIcon(nodeIcon);
+                    nodeMarker.setTitle("Step "+i);
+                    map.getOverlays().add(nodeMarker);
+
+                    nodeMarker.setSnippet(node.mInstructions);
+                    nodeMarker.setSubDescription(Road.getLengthDurationText(getContext(), node.mLength, node.mDuration));
+                    Drawable icon = getResources().getDrawable(R.drawable.cat);
+                    nodeMarker.setImage(icon);
+
+                    nodeMarker.setSubDescription(node.mInstructions);
+                    nodeMarker.setSubDescription(Road.getLengthDurationText(getContext(), node.mLength, node.mDuration));
+                    icon = getResources().getDrawable(R.drawable.cat);
+                    nodeMarker.setImage(icon);
+
+
+                }*/
+ /* GeoPoint pointB = new GeoPoint(9.9370, -84.0510);
+        GeoPoint pointA = new GeoPoint(9.9380, -84.0510);
+        //marcadores2.add(pointA);
+        //marcadores2.add(pointB);*/
