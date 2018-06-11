@@ -81,7 +81,7 @@ public class Tab1Fragment extends Fragment {
     private Marker marker2;
     private LinkedList<Marker> sitios;
     private BaseSitiosHelper db;
-    private int RADIO = 200;
+    private int RADIO = 10000000;
 
     private static final int PERMISSIONS_REQUEST_LOCATION = 1;
 

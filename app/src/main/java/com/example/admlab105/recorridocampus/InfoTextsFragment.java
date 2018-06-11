@@ -171,8 +171,8 @@ public class InfoTextsFragment extends Fragment {
     private class ImagePagerAdapter extends PagerAdapter {
         //obener imagenes para el slideshow
 
-        ArrayList<String>fotos = db.obtenerImagenesDeSitio(etiqueta);
-        int  cantidad = fotos.size();
+        //ArrayList<String>fotos = db.obtenerImagenesDeSitio(etiqueta);
+        //int  cantidad = fotos.size();
         //for(int x=0;x<cantidad;i++){
 
         //}
