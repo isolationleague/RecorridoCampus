@@ -166,7 +166,7 @@ public class BaseSitiosHelper extends SQLiteOpenHelper {
         Cursor c=null;
 
         if (db != null) {
-            c = db.rawQuery(" SELECT nombre,coordenadaX,coordenadaY FROM sitio ", null);
+            c = db.rawQuery(" SELECT nombre,coordenadaX,coordenadaY,radio FROM sitio ", null);
         }
         return c;
     }

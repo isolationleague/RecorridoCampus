@@ -81,13 +81,16 @@ public class Tab1Fragment extends Fragment {
     private Marker marker2;
     private LinkedList<Marker> sitios;
     private BaseSitiosHelper db;
-    private int RADIO = 200;
+    //private int RADIO = 200;
 
     private static final int PERMISSIONS_REQUEST_LOCATION = 1;
 
     ArrayList<OverlayItem> marcadores;
     ArrayList<GeoPoint> marcadores2;
     ArrayList<Marker> marcadores3;
+
+    ArrayList<Double> radios;
+    boolean dentroDeRadio;
 
     TextView nombreSitioCercano;
 
@@ -154,6 +157,8 @@ public class Tab1Fragment extends Fragment {
         marcadores = new ArrayList<OverlayItem>();
         marcadores2 = new ArrayList<GeoPoint>();
         marcadores3 = new ArrayList<Marker>();
+        radios = new ArrayList<Double>();
+        dentroDeRadio= false;
 
         sitios = new LinkedList<Marker>();
         Cursor c = db.obtenerLugares();
@@ -163,6 +168,7 @@ public class Tab1Fragment extends Fragment {
             do {
 
                 OverlayItem item = new OverlayItem(c.getString(0), "", new GeoPoint(c.getDouble(1), c.getDouble(2)));
+                radios.add(c.getDouble(3));
                 Drawable newMarker = this.getResources().getDrawable(R.drawable.sitio);
                 item.setMarker(newMarker);
                 marcadores.add(item);
@@ -260,7 +266,7 @@ public class Tab1Fragment extends Fragment {
     }
 
     public void cercaniaActiva(){
-
+            OverlayItem aux=marcadores.get(0);
             System.out.println("Me estoy ejecutando");
             if(user!=null){
             int cercania=(int)user.distanceToAsDouble(marcadores.get(0).getPoint());
@@ -270,8 +276,12 @@ public class Tab1Fragment extends Fragment {
                 if(cercania2<cercania){
                     cercania=cercania2;
                     nombre=marcadores.get(i).getTitle();
+                    aux= marcadores.get(i);
                 }
             }
+            if(estaDentroDeRadio(aux) && !dentroDeRadio) {activarVibracion(); dentroDeRadio = true;}
+            if(!estaDentroDeRadio(aux)){dentroDeRadio=false;}
+
             nombreSitioCercano.setText(nombre);
         }
         }
@@ -281,7 +291,7 @@ public class Tab1Fragment extends Fragment {
     public boolean estaDentroDeRadio(OverlayItem item){
         int distancia = (int) user.distanceToAsDouble(item.getPoint());
 
-        if (distancia > RADIO) {
+        if (distancia > radios.get(marcadores.indexOf(item))) {
             return false;
         }
         return true;
@@ -474,6 +484,7 @@ public class Tab1Fragment extends Fragment {
         marker.setPosition(user);
         marker.setIcon(getResources().getDrawable(R.drawable.ubicacion));
         map.getOverlays().add(marker);
+        map.invalidate();
 
 
     }
