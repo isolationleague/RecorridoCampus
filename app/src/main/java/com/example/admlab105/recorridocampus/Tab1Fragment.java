@@ -12,9 +12,12 @@ import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.StrictMode;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.service.carrier.CarrierMessagingService;
 import android.support.annotation.Nullable;
@@ -26,10 +29,12 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.bonuspack.routing.MapQuestRoadManager;
@@ -64,7 +69,7 @@ import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 import java.util.LinkedList;
 import java.util.List;
 
-
+import static android.content.Context.VIBRATOR_SERVICE;
 
 
 public class Tab1Fragment extends Fragment {
@@ -82,6 +87,12 @@ public class Tab1Fragment extends Fragment {
 
     ArrayList<OverlayItem> marcadores;
     ArrayList<GeoPoint> marcadores2;
+    ArrayList<Marker> marcadores3;
+
+    TextView nombreSitioCercano;
+
+    Handler handler;
+    Handler cercania;
 
     GeoPoint user;
     GeoPoint user2;
@@ -90,22 +101,14 @@ public class Tab1Fragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         almacenar();// Petición de permiso para external storage
-
-        RoadManager roadManager = new MapQuestRoadManager("oDJQc4K80LIhYWgAFxit5ktTbWVBoYjy"); // API key en https://developer.mapquest.com/
-        roadManager.addRequestOption("routeType=pedestrian");
-
-
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
-
+        activarVibracion();
 
         db = BaseSitiosHelper.getInstance(this.getContext().getApplicationContext());
         View view = inflater.inflate(R.layout.tab1_fragment, container, false);
         Context ctx = getActivity();
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
 
-        //map = new MapView(getActivity());
-        map =  view.findViewById(R.id.map);
+        map = view.findViewById(R.id.map);
 
 
         map.getTileProvider().setTileSource(TileSourceFactory.MAPNIK);
@@ -115,32 +118,17 @@ public class Tab1Fragment extends Fragment {
 
         IMapController mapController = map.getController();
         mapController.setZoom(17);
-        GeoPoint startPoint = new GeoPoint(9.9370,-84.0510);
+        GeoPoint startPoint = new GeoPoint(9.9370, -84.0510);
         mapController.setCenter(startPoint);
 
 
         map.setMultiTouchControls(true);
 
+        ImageButton btnCampus = view.findViewById(R.id.btnCampus);
+        ImageButton btnUser = view.findViewById(R.id.btnUser);
+        ImageButton btnCerca = view.findViewById(R.id.btnCerca);
+        nombreSitioCercano = view.findViewById(R.id.nombreSitioText);
 
-        //Button btnUCR =  view.findViewById(R.id.btnUcr);
-        //Button btnCat = view.findViewById(R.id.btnCat);
-
-        ImageButton btnCampus=view.findViewById(R.id.btnCampus);
-        ImageButton btnUser=view.findViewById(R.id.btnUser);
-        ImageButton btnCerca=view.findViewById(R.id.btnCerca);
-
-        /*btnUCR.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                anadirMarcador();
-            }
-        });
-        btnCat.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                anadirMarcador2();
-            }
-        });*/
 
         btnUser.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -164,103 +152,105 @@ public class Tab1Fragment extends Fragment {
         });
 
         marcadores = new ArrayList<OverlayItem>();
-
-        //marcadores2 = new ArrayList<GeoPoint>();
-
-        GeoPoint pointB = new GeoPoint(9.9370,-84.0510);
-
-        GeoPoint pointA = new GeoPoint(9.9380, -84.0510);
-        //marcadores2.add(pointA);
-        //marcadores2.add(pointB);
+        marcadores2 = new ArrayList<GeoPoint>();
+        marcadores3 = new ArrayList<Marker>();
 
         sitios = new LinkedList<Marker>();
-        Cursor c=db.obtenerLugares();
+        Cursor c = db.obtenerLugares();
 
 
         if (c.moveToFirst()) {
             do {
-                marcadores.add(new OverlayItem(c.getString(0), "", new GeoPoint(c.getDouble(1),c.getDouble(2))));
-                //marcadores2.add(new GeoPoint(c.getDouble(1),c.getDouble(2)));
 
-            } while(c.moveToNext());
+                OverlayItem item = new OverlayItem(c.getString(0), "", new GeoPoint(c.getDouble(1), c.getDouble(2)));
+                Drawable newMarker = this.getResources().getDrawable(R.drawable.sitio);
+                item.setMarker(newMarker);
+                marcadores.add(item);
+
+               /* Marker marker = new Marker(map);
+                GeoPoint point = new GeoPoint(c.getDouble(1), c.getDouble(2));
+                marker.setPosition(point);
+                marker.setAnchor(Marker.ANCHOR_BOTTOM, Marker.ANCHOR_CENTER);
+                marker.setTitle(c.getString(0));
+                marker.setIcon(getResources().getDrawable(R.drawable.sitio));
+                map.getOverlays().add(marker);
+                map.invalidate();
+
+                marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
+                    @Override
+                    public boolean onMarkerClick(Marker marker, MapView mapView) {
+                        String distancia = "Está a " + (int) user.distanceToAsDouble(marker.getPosition()) + " mts. de distancia";
+                        marker.setSnippet(distancia);
+                        marker.showInfoWindow();
+                        return false;
+                    }
+                });
 
 
-            /*roadManager = new OSRMRoadManager(getActivity());
-            Road road = roadManager.getRoad(marcadores2);
-            Polyline roadOverlay = RoadManager.buildRoadOverlay(road);
-            map.getOverlays().add(roadOverlay);
-            map.invalidate();
+                marcadores3.add(marker);*/
 
 
-
-            Drawable nodeIcon = getResources().getDrawable(R.drawable.cat);
-            for (int i=0; i<road.mNodes.size(); i++){
-                RoadNode node = road.mNodes.get(i);
-                Marker nodeMarker = new Marker(map);
-                nodeMarker.setPosition(node.mLocation);
-                nodeMarker.setIcon(nodeIcon);
-                nodeMarker.setTitle("Step "+i);
-                map.getOverlays().add(nodeMarker);
-
-                nodeMarker.setSnippet(node.mInstructions);
-                nodeMarker.setSubDescription(Road.getLengthDurationText(getContext(), node.mLength, node.mDuration));
-                Drawable icon = getResources().getDrawable(R.drawable.cat);
-                nodeMarker.setImage(icon);
-
-            }*/
+            } while (c.moveToNext());
 
         }
+
 
         ItemizedIconOverlay.OnItemGestureListener<OverlayItem> gestureListener = new OnItemGestureListener<OverlayItem>() {
             @Override
             public boolean onItemSingleTapUp(final int index, final OverlayItem item) {
-                //do something
+
                 Marker mark = new Marker(map);
                 mark.setTitle(item.getTitle());
-                mark.setSnippet(item.getSnippet());
-                GeoPoint geo= new GeoPoint(item.getPoint().getLatitude(), item.getPoint().getLongitude());
+                String distancia = "Está a " + (int) user.distanceToAsDouble(item.getPoint()) + " mts. de distancia";
+                mark.setSnippet(distancia);
+                GeoPoint geo = new GeoPoint(item.getPoint().getLatitude(), item.getPoint().getLongitude());
                 mark.setPosition(geo);
-                mark.showInfoWindow();
+                mark.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
 
-               // Toast.makeText(getActivity(), item.getTitle(),Toast.LENGTH_LONG).show();
-                String distancia = "Está a " + (int)user.distanceToAsDouble(item.getPoint()) + " mts. de distancia";
-                Toast.makeText(getActivity(), distancia,Toast.LENGTH_LONG).show();
+                mark.showInfoWindow();
+                map.invalidate();
                 return true;
             }
+
             @Override
             public boolean onItemLongPress(final int index, final OverlayItem item) {
-               if (estaDentroDeRadio(item)) {
-                   iniciarActivity(item);
-               }else{
-                   String mensaje = " Se encuentra muy lejos de este punto, acérquese más";
-                   Toast.makeText(getActivity(), mensaje,Toast.LENGTH_LONG).show();
-               }
+                if (estaDentroDeRadio(item)) {
+                    iniciarActivity(item);
+                } else {
+                    String mensaje = " Se encuentra muy lejos de este punto, acérquese más";
+                    Toast.makeText(getActivity(), mensaje, Toast.LENGTH_LONG).show();
+                }
                 return true;
             }
         };
-        ItemizedIconOverlay<OverlayItem> mOverlay = new ItemizedIconOverlay<OverlayItem>(getActivity(),marcadores,gestureListener);
-
+        ItemizedIconOverlay<OverlayItem> mOverlay = new ItemizedIconOverlay<OverlayItem>(getActivity(), marcadores, gestureListener);
 
 
         map.getOverlays().add(mOverlay);
-        marker= new Marker(map);
-        //marker2= new Marker(map);
+        volverCampus();
+        marker = new Marker(map);
 
+        final Handler cercania = new Handler();
+        final Runnable actualizador = new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("El handler se ejecuto");
+                cercaniaActiva();
+                miUbic();
+                cercania.postDelayed(this, 1000);
+            }
+        };
+        actualizador.run();
 
-
-
-        //colocaSitios();
         return  view;
-        //map;
+
     }
 
     public void calculoCercania(){
        int cercania=(int)user.distanceToAsDouble(marcadores.get(0).getPoint());
-       System.out.println(cercania);
        String nombre=marcadores.get(0).getTitle();
         for(int i=1;i<marcadores.size();++i){
             int cercania2=(int)user.distanceToAsDouble(marcadores.get(i).getPoint());
-            System.out.println(cercania2);
             if(cercania2<cercania){
             cercania=cercania2;
             nombre=marcadores.get(i).getTitle();
@@ -268,6 +258,25 @@ public class Tab1Fragment extends Fragment {
         }
         Toast.makeText(getActivity(), "El sitio más cercano es "+nombre+" que esta a "+cercania+" mts. de usted",Toast.LENGTH_LONG).show();
     }
+
+    public void cercaniaActiva(){
+
+            System.out.println("Me estoy ejecutando");
+            if(user!=null){
+            int cercania=(int)user.distanceToAsDouble(marcadores.get(0).getPoint());
+            String nombre=marcadores.get(0).getTitle();
+            for(int i=1;i<marcadores.size();++i){
+                int cercania2=(int)user.distanceToAsDouble(marcadores.get(i).getPoint());
+                if(cercania2<cercania){
+                    cercania=cercania2;
+                    nombre=marcadores.get(i).getTitle();
+                }
+            }
+            nombreSitioCercano.setText(nombre);
+        }
+        }
+
+
 
     public boolean estaDentroDeRadio(OverlayItem item){
         int distancia = (int) user.distanceToAsDouble(item.getPoint());
@@ -290,24 +299,10 @@ public class Tab1Fragment extends Fragment {
         transaction.commit();
     }
 
-    @Override
-    public void onStart(){
-        super.onStart();
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable(){
-            public void run(){
-                miUbic();
-            }
-        },10);
-
-    }
 
     public void onClick(Marker mark){
         Toast.makeText(getActivity(),mark.getTitle() ,
                 Toast.LENGTH_LONG).show();
-
-
-
     }
 
     private void volverCampus(){
@@ -362,6 +357,9 @@ public class Tab1Fragment extends Fragment {
                         @Override
                         public void onLocationChanged(Location location) {
                             actualizarUbic(location);
+                            //fragment_updater();
+                            //cercaniaActiva();
+
                         }
 
                         @Override
@@ -394,6 +392,8 @@ public class Tab1Fragment extends Fragment {
                             @Override
                             public void onLocationChanged(Location location) {
                                 actualizarUbic(location);
+                                //fragment_updater();
+                                //cercaniaActiva();
                             }
 
                             @Override
@@ -472,31 +472,10 @@ public class Tab1Fragment extends Fragment {
         user= new GeoPoint(lat, lon);
         marker.setTitle("Usuario");
         marker.setPosition(user);
+        marker.setIcon(getResources().getDrawable(R.drawable.ubicacion));
         map.getOverlays().add(marker);
+        map.invalidate();
 
-        /*if (marker2 != null) {
-            marker2.remove(map);
-        }
-        user2= new GeoPoint(lat+0.001, lon+0.001);
-        marker2.setTitle("PRUEBA");
-        marker2.setPosition(user2);
-        map.getOverlays().add(marker2);*/
-
-        //mMap.animateCamera(miUbic);
-    }
-
-
-
-
-    public void anadirMarcador(){
-
-        GeoPoint pointB = new GeoPoint(9.9370,-84.0510);
-        addMarker(pointB);
-    }
-
-    public void anadirMarcador2(){
-        GeoPoint pointA = new GeoPoint(9.9380, -84.0510);
-        addCat(pointA);
     }
 
 
@@ -521,20 +500,6 @@ public class Tab1Fragment extends Fragment {
         map.onPause();  //needed for compass, my location overlays, v6.0.0 and up
     }
 
-    public void addCat(GeoPoint point){
-        org.osmdroid.views.overlay.Marker marker = new org.osmdroid.views.overlay.Marker(map);
-        marker.setPosition(point);
-        //marker.setAnchor(Marker.ANCHOR_BOTTOM, Marker.ANCHOR_CENTER);
-        marker.setTitle("Cat");
-        marker.setIcon(getResources().getDrawable(R.drawable.cat));
-        IMapController mapController = map.getController();
-        mapController.setCenter(point);
-        // map.getOverlays().clear();
-        map.getOverlays().add(marker);
-        map.invalidate();
-
-    }
-
     public void addMarker(GeoPoint point){
         org.osmdroid.views.overlay.Marker marker = new org.osmdroid.views.overlay.Marker(map);
         marker.setPosition(point);
@@ -549,30 +514,16 @@ public class Tab1Fragment extends Fragment {
 
     }
 
-    /*public void addCicle(){
-        ItemizedIconOverlay<OverlayItem> anotherItemizedIconOverlay
-                = new ItemizedIconOverlay<OverlayItem>(getActivity(), anotherOverlayItemArray, null);
-        map.getOverlays().add(anotherItemizedIconOverlay);
-    }*/
-
-   /* @Override
-    public boolean onItemLongPress(Marker marker) {
-        Bundle arg = new Bundle();
-        arg.putString("etiq", marker.getTitle());
-        InfoFragment fragment = new InfoFragment();
-        fragment.setArguments(arg);
-        //FragmentManager fm = getFragmentManager();
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.frameLayout, fragment, "tag1");
-        transaction.addToBackStack(null);
-        transaction.commit();
-        return false;
-    }*/
-
-
-
-
+    public void activarVibracion() {
+        if (Build.VERSION.SDK_INT >= 26) {
+            ((Vibrator) this.getContext().getSystemService(VIBRATOR_SERVICE)).vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+        } else {
+            ((Vibrator) this.getContext().getSystemService(VIBRATOR_SERVICE)).vibrate(1000);
+        }
+    }
 }
+
+
 
 // https://developers.google.com/maps/documentation/android-api/location?hl=es-419
 // RECORDAR SOLICITAR AL USUARIO LOS PERMISOS DE UBICACION
@@ -603,6 +554,40 @@ public class Tab1Fragment extends Fragment {
     }*/
 
 
+    /*public void addCicle(){
+        ItemizedIconOverlay<OverlayItem> anotherItemizedIconOverlay
+                = new ItemizedIconOverlay<OverlayItem>(getActivity(), anotherOverlayItemArray, null);
+        map.getOverlays().add(anotherItemizedIconOverlay);
+    }*/
+
+   /* @Override
+    public boolean onItemLongPress(Marker marker) {
+        Bundle arg = new Bundle();
+        arg.putString("etiq", marker.getTitle());
+        InfoFragment fragment = new InfoFragment();
+        fragment.setArguments(arg);
+        //FragmentManager fm = getFragmentManager();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.frameLayout, fragment, "tag1");
+        transaction.addToBackStack(null);
+        transaction.commit();
+        return false;
+    }*/
+
+
+
+  /*  public void addCat(GeoPoint point){
+        org.osmdroid.views.overlay.Marker marker = new org.osmdroid.views.overlay.Marker(map);
+        marker.setPosition(point);
+        //marker.setAnchor(Marker.ANCHOR_BOTTOM, Marker.ANCHOR_CENTER);
+        marker.setTitle("Cat");
+        marker.setIcon(getResources().getDrawable(R.drawable.cat));
+        IMapController mapController = map.getController();
+        mapController.setCenter(point);
+        // map.getOverlays().clear();
+        map.getOverlays().add(marker);
+        map.invalidate();
+    }*/
 
 
 
@@ -613,3 +598,59 @@ public class Tab1Fragment extends Fragment {
 //https://stackoverflow.com/questions/23108709/show-marker-details-with-image-onclick-marker-openstreetmap?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
 
 
+
+
+
+   /* public void anadirMarcador(){
+
+        GeoPoint pointB = new GeoPoint(9.9370,-84.0510);
+        addMarker(pointB);
+    }
+
+    public void anadirMarcador2(){
+        GeoPoint pointA = new GeoPoint(9.9380, -84.0510);
+        addCat(pointA);
+    }*/
+
+// Toast.makeText(getActivity(), item.getTitle(),Toast.LENGTH_LONG).show();
+//String distancia = "Está a " + (int)user.distanceToAsDouble(item.getPoint()) + " mts. de distancia";
+//mark.setSnippet(distancia);
+//Toast.makeText(getActivity(), distancia,Toast.LENGTH_LONG).show();
+
+
+                /*marcadores2.add(user);
+                //GeoPoint endPoint = new GeoPoint(48.4, -1.9);
+                marcadores2.add(geo);
+
+                Road road = roadManager.getRoad(marcadores2);
+                Polyline roadOverlay = RoadManager.buildRoadOverlay(road);
+                map.getOverlays().add(roadOverlay);*/
+
+
+
+
+               /* Drawable nodeIcon = getResources().getDrawable(R.drawable.cat);
+                for (int i=0; i<road.mNodes.size(); i++){
+                    RoadNode node = road.mNodes.get(i);
+                    Marker nodeMarker = new Marker(map);
+                    nodeMarker.setPosition(node.mLocation);
+                    nodeMarker.setIcon(nodeIcon);
+                    nodeMarker.setTitle("Step "+i);
+                    map.getOverlays().add(nodeMarker);
+
+                    nodeMarker.setSnippet(node.mInstructions);
+                    nodeMarker.setSubDescription(Road.getLengthDurationText(getContext(), node.mLength, node.mDuration));
+                    Drawable icon = getResources().getDrawable(R.drawable.cat);
+                    nodeMarker.setImage(icon);
+
+                    nodeMarker.setSubDescription(node.mInstructions);
+                    nodeMarker.setSubDescription(Road.getLengthDurationText(getContext(), node.mLength, node.mDuration));
+                    icon = getResources().getDrawable(R.drawable.cat);
+                    nodeMarker.setImage(icon);
+
+
+                }*/
+ /* GeoPoint pointB = new GeoPoint(9.9370, -84.0510);
+        GeoPoint pointA = new GeoPoint(9.9380, -84.0510);
+        //marcadores2.add(pointA);
+        //marcadores2.add(pointB);*/

@@ -57,6 +57,7 @@ public class BaseSitiosHelper extends SQLiteOpenHelper {
                 BaseSitiosContract.SitioBase.COLUMN_NOMBRE + " TEXT" + "," +
                 BaseSitiosContract.SitioBase.COLUMN_COORDENADA_X + " REAL" + "," +
                 BaseSitiosContract.SitioBase.COLUMN_COORDENADA_Y + " REAL" + "," +
+                BaseSitiosContract.SitioBase.COLUMN_RADIO + " REAL" + "," +
                 BaseSitiosContract.SitioBase.COLUMN_VISITADO + " INTEGER" + " )");
 
         dB.execSQL("CREATE TABLE " + BaseSitiosContract.Foto.TABLE_NAME + " (" +
@@ -118,17 +119,18 @@ public class BaseSitiosHelper extends SQLiteOpenHelper {
                     values.put(BaseSitiosContract.SitioBase.COLUMN_NOMBRE, sitioPartes[0]);
                     values.put(BaseSitiosContract.SitioBase.COLUMN_COORDENADA_X, sitioPartes[2]);
                     values.put(BaseSitiosContract.SitioBase.COLUMN_COORDENADA_Y, sitioPartes[3]);
+                    values.put(BaseSitiosContract.SitioBase.COLUMN_RADIO, sitioPartes[4]);
                     values.put(BaseSitiosContract.SitioBase.COLUMN_VISITADO, 0);
                     long newRowId = dB.insert(BaseSitiosContract.SitioBase.TABLE_NAME, null, values);
                     String pp="0";
 
                     //carga las imagenes de cada siti mmnmo
                     //int cantidadFotos = Integer.parseInt(sitioPartes[3]);
-                    if(Integer.parseInt(sitioPartes[4])>0) {
-                        for (int i = 0; i < Integer.parseInt(sitioPartes[4]); i++) {
+                    if(Integer.parseInt(sitioPartes[5])>0) {
+                        for (int i = 0; i < Integer.parseInt(sitioPartes[5]); i++) {
                             ContentValues values3 = new ContentValues();
                             values3.put(BaseSitiosContract.Foto.ID_SITIO, sitioPartes[0]); //IMPORTANTE aqui en vez de un id va el nombre del sitio para mas facilidad
-                            values3.put(BaseSitiosContract.Foto.RUTA, sitioPartes[5+i]);
+                            values3.put(BaseSitiosContract.Foto.RUTA, sitioPartes[6+i]);
                             //Toast.makeText(context,sitioPartes[4+i],Toast.LENGTH_SHORT).show();
                             long iRowId = dB.insert(BaseSitiosContract.Foto.TABLE_NAME, null, values3);
                         }

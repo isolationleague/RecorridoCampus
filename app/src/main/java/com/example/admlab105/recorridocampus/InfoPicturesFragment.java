@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ListAdapter;
 import android.widget.Toast;
 import android.database.Cursor;
 
@@ -42,13 +43,14 @@ public class InfoPicturesFragment extends Fragment {
             } while (cursor.moveToNext());
         }*/
 
-            grid00.setAdapter(new ImageAdapter(getActivity()/*, fotos*/));
+            grid00.setAdapter(new ImageAdapter(getActivity(),etiqueta));
             grid00.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 public void onItemClick(AdapterView<?> parent, View v,
                                         int position, long id) {
                     // Sending image id to FullScreenActivity
                     Intent i = new Intent(getActivity(), FullImageActivity.class);
                     // passing array index
+                    i.putExtra("etiq",etiqueta);
                     i.putExtra("id", position);
                     startActivity(i);
 

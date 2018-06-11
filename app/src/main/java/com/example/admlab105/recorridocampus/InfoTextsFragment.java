@@ -17,10 +17,13 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.database.Cursor;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+
 
 
 public class InfoTextsFragment extends Fragment {
@@ -41,6 +44,7 @@ public class InfoTextsFragment extends Fragment {
         db = BaseSitiosHelper.getInstance(this.getContext());
 
         ViewPager viewPager = (ViewPager) view.findViewById(R.id.view_pager);
+
         ImagePagerAdapter adapter = new ImagePagerAdapter();
         viewPager.setAdapter(adapter);
         playButton = view.findViewById(R.id.playButton);
@@ -165,7 +169,19 @@ public class InfoTextsFragment extends Fragment {
     };
 
     private class ImagePagerAdapter extends PagerAdapter {
+        //obener imagenes para el slideshow
+
+        ArrayList<String>fotos = db.obtenerImagenesDeSitio(etiqueta);
+        int  cantidad = fotos.size();
+        //for(int x=0;x<cantidad;i++){
+
+        //}
+
+
+
         private int[] mImages = new int[] {R.drawable.captura_intromenu,R.drawable.default0};
+
+
         @Override
         public int getCount() {
             return mImages.length;
