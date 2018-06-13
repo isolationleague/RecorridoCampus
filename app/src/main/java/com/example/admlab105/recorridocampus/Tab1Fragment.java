@@ -78,10 +78,8 @@ public class Tab1Fragment extends Fragment {
 
     double lat = 0.0, lon = 0.0;
     private Marker marker;
-    private Marker marker2;
     private LinkedList<Marker> sitios;
     private BaseSitiosHelper db;
-    //private int RADIO = 200;
 
     private static final int PERMISSIONS_REQUEST_LOCATION = 1;
 
@@ -98,13 +96,11 @@ public class Tab1Fragment extends Fragment {
     Handler cercania;
 
     GeoPoint user;
-    GeoPoint user2;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         almacenar();// Petición de permiso para external storage
-        activarVibracion();
 
         db = BaseSitiosHelper.getInstance(this.getContext().getApplicationContext());
         View view = inflater.inflate(R.layout.tab1_fragment, container, false);
@@ -173,30 +169,7 @@ public class Tab1Fragment extends Fragment {
                 item.setMarker(newMarker);
                 marcadores.add(item);
 
-               /* Marker marker = new Marker(map);
-                GeoPoint point = new GeoPoint(c.getDouble(1), c.getDouble(2));
-                marker.setPosition(point);
-                marker.setAnchor(Marker.ANCHOR_BOTTOM, Marker.ANCHOR_CENTER);
-                marker.setTitle(c.getString(0));
-                marker.setIcon(getResources().getDrawable(R.drawable.sitio));
-                map.getOverlays().add(marker);
-                map.invalidate();
-
-                marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
-                    @Override
-                    public boolean onMarkerClick(Marker marker, MapView mapView) {
-                        String distancia = "Está a " + (int) user.distanceToAsDouble(marker.getPosition()) + " mts. de distancia";
-                        marker.setSnippet(distancia);
-                        marker.showInfoWindow();
-                        return false;
-                    }
-                });
-
-
-                marcadores3.add(marker);*/
-
-
-            } while (c.moveToNext());
+             } while (c.moveToNext());
 
         }
 
@@ -240,7 +213,7 @@ public class Tab1Fragment extends Fragment {
         final Runnable actualizador = new Runnable() {
             @Override
             public void run() {
-                System.out.println("El handler se ejecuto");
+                //System.out.println("El handler se ejecuto");
                 cercaniaActiva();
                 miUbic();
                 cercania.postDelayed(this, 1000);
@@ -266,24 +239,32 @@ public class Tab1Fragment extends Fragment {
     }
 
     public void cercaniaActiva(){
-            OverlayItem aux=marcadores.get(0);
-            System.out.println("Me estoy ejecutando");
-            if(user!=null){
-            int cercania=(int)user.distanceToAsDouble(marcadores.get(0).getPoint());
-            String nombre=marcadores.get(0).getTitle();
-            for(int i=1;i<marcadores.size();++i){
-                int cercania2=(int)user.distanceToAsDouble(marcadores.get(i).getPoint());
-                if(cercania2<cercania){
-                    cercania=cercania2;
-                    nombre=marcadores.get(i).getTitle();
-                    aux= marcadores.get(i);
+            if (marcadores.size() != 0) {
+                OverlayItem aux = marcadores.get(0);
+
+                System.out.println("Me estoy ejecutando");
+                if (user != null) {
+                    int cercania = (int) user.distanceToAsDouble(marcadores.get(0).getPoint());
+                    String nombre = marcadores.get(0).getTitle();
+                    for (int i = 1; i < marcadores.size(); ++i) {
+                        int cercania2 = (int) user.distanceToAsDouble(marcadores.get(i).getPoint());
+                        if (cercania2 < cercania) {
+                            cercania = cercania2;
+                            nombre = marcadores.get(i).getTitle();
+                            aux = marcadores.get(i);
+                        }
+                    }
+                    if (estaDentroDeRadio(aux) && !dentroDeRadio) {
+                        activarVibracion();
+                        dentroDeRadio = true;
+                    }
+                    if (!estaDentroDeRadio(aux)) {
+                        dentroDeRadio = false;
+                    }
+
+                    nombreSitioCercano.setText(nombre);
                 }
             }
-            if(estaDentroDeRadio(aux) && !dentroDeRadio) {activarVibracion(); dentroDeRadio = true;}
-            if(!estaDentroDeRadio(aux)){dentroDeRadio=false;}
-
-            nombreSitioCercano.setText(nombre);
-        }
         }
 
 
@@ -333,18 +314,21 @@ public class Tab1Fragment extends Fragment {
 
     private void miUbic() {
 
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        try {
+            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
-            ActivityCompat.requestPermissions(getActivity(),
-                    new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION,
-                            android.Manifest.permission.ACCESS_FINE_LOCATION},
-                    PERMISSIONS_REQUEST_LOCATION);
-        }
+                ActivityCompat.requestPermissions(getActivity(),
+                        new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION,
+                                android.Manifest.permission.ACCESS_FINE_LOCATION},
+                        PERMISSIONS_REQUEST_LOCATION);
+            }
 
 
 
 
-        LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+
+            LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+
         Location location = null;
         try {
 
@@ -437,7 +421,10 @@ public class Tab1Fragment extends Fragment {
                     "Impossible to connect to LocationManager", e);
         }
 
+
         actualizarUbic(location);
+        } catch (NullPointerException npe) {}
+
 
     }
 
@@ -534,134 +521,8 @@ public class Tab1Fragment extends Fragment {
     }
 }
 
-
-
-// https://developers.google.com/maps/documentation/android-api/location?hl=es-419
-// RECORDAR SOLICITAR AL USUARIO LOS PERMISOS DE UBICACION
-//https://stackoverflow.com/questions/30253123/blue-dot-and-circle-is-not-shown-on-mylocation-using-android-fused-location-api/30255219#30255219
-
-//https://www.sitepoint.com/requesting-runtime-permissions-in-android-m-and-n/ (permisos)
-
-//https://stackoverflow.com/questions/14897143/integrating-osmdroid-with-fragments
-//http://devblog.blackberry.com/2013/03/android-map-blackberry-10/
-
-    /*private void colocaSitios(){
-
-        sitios = new LinkedList<Marker>();
-        Cursor c=db.obtenerLugares();
-        if (c.moveToFirst()) {
-            do {
-                org.osmdroid.views.overlay.Marker marker = new org.osmdroid.views.overlay.Marker(map);
-                lat=c.getDouble(1);
-                lon=c.getDouble(2);
-                GeoPoint sitio= new GeoPoint(lat,lon);
-                marker.setPosition(sitio);
-                marker.setTitle(c.getString(0));
-                map.getOverlays().add(marker);
-                map.invalidate();
-                //sitios.add(mMap.addMarker(new MarkerOptions().position(coord).title(c.getString(0))));
-            } while(c.moveToNext());
-        }
-    }*/
-
-
-    /*public void addCicle(){
-        ItemizedIconOverlay<OverlayItem> anotherItemizedIconOverlay
-                = new ItemizedIconOverlay<OverlayItem>(getActivity(), anotherOverlayItemArray, null);
-        map.getOverlays().add(anotherItemizedIconOverlay);
-    }*/
-
-   /* @Override
-    public boolean onItemLongPress(Marker marker) {
-        Bundle arg = new Bundle();
-        arg.putString("etiq", marker.getTitle());
-        InfoFragment fragment = new InfoFragment();
-        fragment.setArguments(arg);
-        //FragmentManager fm = getFragmentManager();
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.frameLayout, fragment, "tag1");
-        transaction.addToBackStack(null);
-        transaction.commit();
-        return false;
-    }*/
-
-
-
-  /*  public void addCat(GeoPoint point){
-        org.osmdroid.views.overlay.Marker marker = new org.osmdroid.views.overlay.Marker(map);
-        marker.setPosition(point);
-        //marker.setAnchor(Marker.ANCHOR_BOTTOM, Marker.ANCHOR_CENTER);
-        marker.setTitle("Cat");
-        marker.setIcon(getResources().getDrawable(R.drawable.cat));
-        IMapController mapController = map.getController();
-        mapController.setCenter(point);
-        // map.getOverlays().clear();
-        map.getOverlays().add(marker);
-        map.invalidate();
-    }*/
-
-
-
 // https://github.com/MKergall/osmbonuspack/wiki/features
 
 // mostrar cuadros de texto
 //https://help.openstreetmap.org/questions/61347/osmdroid-how-do-i-show-and-hide-markers-description-on-click
 //https://stackoverflow.com/questions/23108709/show-marker-details-with-image-onclick-marker-openstreetmap?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
-
-
-
-
-
-   /* public void anadirMarcador(){
-
-        GeoPoint pointB = new GeoPoint(9.9370,-84.0510);
-        addMarker(pointB);
-    }
-
-    public void anadirMarcador2(){
-        GeoPoint pointA = new GeoPoint(9.9380, -84.0510);
-        addCat(pointA);
-    }*/
-
-// Toast.makeText(getActivity(), item.getTitle(),Toast.LENGTH_LONG).show();
-//String distancia = "Está a " + (int)user.distanceToAsDouble(item.getPoint()) + " mts. de distancia";
-//mark.setSnippet(distancia);
-//Toast.makeText(getActivity(), distancia,Toast.LENGTH_LONG).show();
-
-
-                /*marcadores2.add(user);
-                //GeoPoint endPoint = new GeoPoint(48.4, -1.9);
-                marcadores2.add(geo);
-
-                Road road = roadManager.getRoad(marcadores2);
-                Polyline roadOverlay = RoadManager.buildRoadOverlay(road);
-                map.getOverlays().add(roadOverlay);*/
-
-
-
-
-               /* Drawable nodeIcon = getResources().getDrawable(R.drawable.cat);
-                for (int i=0; i<road.mNodes.size(); i++){
-                    RoadNode node = road.mNodes.get(i);
-                    Marker nodeMarker = new Marker(map);
-                    nodeMarker.setPosition(node.mLocation);
-                    nodeMarker.setIcon(nodeIcon);
-                    nodeMarker.setTitle("Step "+i);
-                    map.getOverlays().add(nodeMarker);
-
-                    nodeMarker.setSnippet(node.mInstructions);
-                    nodeMarker.setSubDescription(Road.getLengthDurationText(getContext(), node.mLength, node.mDuration));
-                    Drawable icon = getResources().getDrawable(R.drawable.cat);
-                    nodeMarker.setImage(icon);
-
-                    nodeMarker.setSubDescription(node.mInstructions);
-                    nodeMarker.setSubDescription(Road.getLengthDurationText(getContext(), node.mLength, node.mDuration));
-                    icon = getResources().getDrawable(R.drawable.cat);
-                    nodeMarker.setImage(icon);
-
-
-                }*/
- /* GeoPoint pointB = new GeoPoint(9.9370, -84.0510);
-        GeoPoint pointA = new GeoPoint(9.9380, -84.0510);
-        //marcadores2.add(pointA);
-        //marcadores2.add(pointB);*/
