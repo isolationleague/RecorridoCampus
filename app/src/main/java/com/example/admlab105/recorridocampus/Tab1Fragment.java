@@ -385,7 +385,9 @@ public class Tab1Fragment extends Fragment {
                         android.location.LocationListener locationListener2 = new android.location.LocationListener() {
                             @Override
                             public void onLocationChanged(Location location) {
-                                actualizarUbic(location);
+                                try {
+                                    actualizarUbic(location);
+                                }catch (IllegalStateException ise){}
                                 //fragment_updater();
                                 //cercaniaActiva();
                             }
