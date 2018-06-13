@@ -48,7 +48,7 @@ public class InfoLinksFragment extends Fragment {
                 if (i == 0xA) {
                     Text = Html.fromHtml(byteArrayOutputStream.toString());
                     txtView.setMovementMethod(LinkMovementMethod.getInstance());
-                    txtView.append("\u2022"+" ");
+                    txtView.append("\u2022" + " ");
                     txtView.append(Text);
                     txtView.append("\n\n");
                     byteArrayOutputStream.reset();

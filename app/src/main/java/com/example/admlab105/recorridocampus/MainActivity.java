@@ -92,6 +92,10 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Créditos", Toast.LENGTH_SHORT).show();
             return true;
         }
+        if (id == R.id.preferencias) {
+            Toast.makeText(this, "Preferencias", Toast.LENGTH_SHORT).show();
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 

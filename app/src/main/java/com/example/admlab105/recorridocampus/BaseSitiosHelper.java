@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * Esta clase se encargar de poblar la base de datos y prooveer metodos de acceso a la base.
@@ -57,6 +58,7 @@ public class BaseSitiosHelper extends SQLiteOpenHelper {
                 BaseSitiosContract.SitioBase.COLUMN_NOMBRE + " TEXT" + "," +
                 BaseSitiosContract.SitioBase.COLUMN_COORDENADA_X + " REAL" + "," +
                 BaseSitiosContract.SitioBase.COLUMN_COORDENADA_Y + " REAL" + "," +
+                BaseSitiosContract.SitioBase.COLUMN_RADIO + " REAL" + "," +
                 BaseSitiosContract.SitioBase.COLUMN_VISITADO + " INTEGER" + " )");
 
         dB.execSQL("CREATE TABLE " + BaseSitiosContract.Foto.TABLE_NAME + " (" +
@@ -118,17 +120,18 @@ public class BaseSitiosHelper extends SQLiteOpenHelper {
                     values.put(BaseSitiosContract.SitioBase.COLUMN_NOMBRE, sitioPartes[0]);
                     values.put(BaseSitiosContract.SitioBase.COLUMN_COORDENADA_X, sitioPartes[2]);
                     values.put(BaseSitiosContract.SitioBase.COLUMN_COORDENADA_Y, sitioPartes[3]);
+                    values.put(BaseSitiosContract.SitioBase.COLUMN_RADIO, sitioPartes[4]);
                     values.put(BaseSitiosContract.SitioBase.COLUMN_VISITADO, 0);
                     long newRowId = dB.insert(BaseSitiosContract.SitioBase.TABLE_NAME, null, values);
                     String pp="0";
 
                     //carga las imagenes de cada siti mmnmo
                     //int cantidadFotos = Integer.parseInt(sitioPartes[3]);
-                    if(Integer.parseInt(sitioPartes[4])>0) {
-                        for (int i = 0; i < Integer.parseInt(sitioPartes[4]); i++) {
+                    if(Integer.parseInt(sitioPartes[5])>0) {
+                        for (int i = 0; i < Integer.parseInt(sitioPartes[5]); i++) {
                             ContentValues values3 = new ContentValues();
                             values3.put(BaseSitiosContract.Foto.ID_SITIO, sitioPartes[0]); //IMPORTANTE aqui en vez de un id va el nombre del sitio para mas facilidad
-                            values3.put(BaseSitiosContract.Foto.RUTA, sitioPartes[5+i]);
+                            values3.put(BaseSitiosContract.Foto.RUTA, sitioPartes[6+i]);
                             //Toast.makeText(context,sitioPartes[4+i],Toast.LENGTH_SHORT).show();
                             long iRowId = dB.insert(BaseSitiosContract.Foto.TABLE_NAME, null, values3);
                         }
@@ -200,13 +203,20 @@ public class BaseSitiosHelper extends SQLiteOpenHelper {
      * @param id_nombreSitio del sitio del cual se desean recuperar las imagenes
      * @return c
      */
-    public Cursor obtenerImagenesDeSitio(String id_nombreSitio) {
+    public ArrayList<String> obtenerImagenesDeSitio(String id_nombreSitio) {
         SQLiteDatabase db = getReadableDatabase();
         Cursor c=null;
         if (db != null) {
             c = db.rawQuery(" SELECT ruta FROM Foto WHERE id_sitio = \"" + id_nombreSitio + "\"", null);
         }
-        return c;
+        ArrayList<String>fotos = new ArrayList<>();
+        if (c.moveToFirst()) {
+            do {
+                String nombreFoto = c.getString(0);
+                fotos.add(nombreFoto);
+            } while (c.moveToNext());
+        }
+        return fotos;
     }
 
 

@@ -25,7 +25,7 @@ public class ImageAdapter extends BaseAdapter {
         mThumbIds= new ArrayList<Integer>();
         int marcador =0;
         //mThumbIds.add(R.drawable.bird0);
-        switch (lugar) {
+        switch (lugar){
             case "Edificio de la Facultad de Ciencias Económicas":
                 mThumbIds.add(R.drawable.economicas1);
                 mThumbIds.add(R.drawable.economicas2);
@@ -57,8 +57,8 @@ public class ImageAdapter extends BaseAdapter {
             case "Fuente de cupido y el cisne":
                 mThumbIds.add(R.drawable.fuente1);
                 mThumbIds.add(R.drawable.fuente2);
-               /* mThumbIds.add(R.drawable.fuente3);
-                mThumbIds.add(R.drawable.fuente4);*/
+                mThumbIds.add(R.drawable.fuente3);
+                mThumbIds.add(R.drawable.fuente4);
                 break;
             case "Estatua de Rodrigo Facio Brenes":
                 mThumbIds.add(R.drawable.erodrigof);
@@ -109,9 +109,7 @@ public class ImageAdapter extends BaseAdapter {
 
                 break;
         }
-         /*for(int i=0;i<fotos.size();i++) {
-              mThumbIds.add(mContext.getResources().getIdentifier(fotos.get(i), "drawable", mContext.getPackageName()));
-          }*/
+
     }
 
     public int getCount() {

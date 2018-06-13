@@ -17,11 +17,13 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.database.Cursor;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+
 
 
 public class InfoTextsFragment extends Fragment {
@@ -42,10 +44,8 @@ public class InfoTextsFragment extends Fragment {
         db = BaseSitiosHelper.getInstance(this.getContext());
 
         ViewPager viewPager = (ViewPager) view.findViewById(R.id.view_pager);
-        ArrayList<Integer> mImages = new ArrayList<>();
-        mImages.add(R.drawable.default0);
-        mImages.add(R.drawable.captura_intromenu);
-        ImagePagerAdapter adapter = new ImagePagerAdapter(mImages);
+        ArrayList<String>fotos = db.obtenerImagenesDeSitio(etiqueta);
+        ImagePagerAdapter adapter = new ImagePagerAdapter(fotos);
         viewPager.setAdapter(adapter);
         playButton = view.findViewById(R.id.playButton);
         seekBar = view.findViewById(R.id.seekBar);
@@ -169,11 +169,21 @@ public class InfoTextsFragment extends Fragment {
     };
 
     private class ImagePagerAdapter extends PagerAdapter {
-        ArrayList<Integer> mImages = new ArrayList<>();
-        public  ImagePagerAdapter(ArrayList<Integer> mImagesget){
-            this.mImages=mImagesget;
-
+        //obener imagenes para el slideshow
+       //private int[] mImages;
+       private ArrayList<Integer> mImages= new ArrayList<Integer>();
+        private String nombreLugar="";
+        public ImagePagerAdapter(ArrayList<String> e){
+            ArrayList<Integer> fotos = new ArrayList<Integer>();
+           for(int i=0;i<e.size();i++){
+               String foto =e.get(i);
+              // fotos[i]= getResources().getIdentifier(foto , "drawable", getContext().getPackageName());
+              fotos.add(getResources().getIdentifier(foto , "drawable", getContext().getPackageName()));
+           }
+           mImages = fotos;
         }
+
+
         @Override
         public int getCount() {
             return mImages.size();
