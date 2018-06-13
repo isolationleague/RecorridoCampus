@@ -4,6 +4,7 @@ import android.app.ActionBar;
 import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -114,7 +115,16 @@ public class MainActivity extends AppCompatActivity {
             // do something with f
             /*((Tab1Fragment) currentFragment).doSomething();*/
             if (!isUserClickedBackButton) {
-                Toast.makeText(this,"Presione de nuevo para salir", Toast.LENGTH_LONG).show();
+                final Toast toast =Toast.makeText(this,"Presione de nuevo para salir", Toast.LENGTH_LONG);
+                toast.show();
+
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        toast.cancel();
+                    }
+                }, 500);
                 isUserClickedBackButton = true;
             } else {
                 super.onBackPressed();
