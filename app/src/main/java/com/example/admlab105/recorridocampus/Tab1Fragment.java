@@ -214,12 +214,12 @@ public class Tab1Fragment extends Fragment {
 
             @Override
             public boolean onItemLongPress(final int index, final OverlayItem item) {
-                if (estaDentroDeRadio(item)) {
+                //if (estaDentroDeRadio(item)) {
                     iniciarActivity(item);
-                } else {
+                /*} else {
                     String mensaje = " Se encuentra muy lejos de este punto, acérquese más";
                     Toast.makeText(getActivity(), mensaje, Toast.LENGTH_LONG).show();
-                }
+                }*/
                 return true;
             }
         };
@@ -450,6 +450,7 @@ public class Tab1Fragment extends Fragment {
             }
 
             // other 'case' lines to check for other
+
             // permissions this app might request.
         }
     }
@@ -472,14 +473,14 @@ public class Tab1Fragment extends Fragment {
         user= new GeoPoint(lat, lon);
         marker.setTitle("Usuario");
         marker.setPosition(user);
-        marker.setIcon(getResources().getDrawable(R.drawable.ubicacion));
+        if (getActivity() != null) {
+            marker.setIcon(getResources().getDrawable(R.drawable.ubicacion));
+        }
         map.getOverlays().add(marker);
         map.invalidate();
 
     }
-
-
-
+    
     @Override
     public void onResume(){
         super.onResume();
