@@ -82,6 +82,8 @@ public class Tab1Fragment extends Fragment {
     private LinkedList<Marker> sitios;
     private BaseSitiosHelper db;
 
+    private int ultimoMarcador;
+
     private static final int PERMISSIONS_REQUEST_LOCATION = 1;
 
     ArrayList<OverlayItem> marcadores;
@@ -91,7 +93,7 @@ public class Tab1Fragment extends Fragment {
     ArrayList<Double> radios;
     boolean dentroDeRadio;
 
-    TextView nombreSitioCercano;
+    //TextView nombreSitioCercano;
 
     Handler handler;
     Handler cercania;
@@ -101,6 +103,7 @@ public class Tab1Fragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
+
         almacenar();// Petición de permiso para external storage
 
         db = BaseSitiosHelper.getInstance(this.getContext().getApplicationContext());
@@ -109,7 +112,7 @@ public class Tab1Fragment extends Fragment {
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
 
         map = view.findViewById(R.id.map);
-
+        ultimoMarcador=0;
 
         map.getTileProvider().setTileSource(TileSourceFactory.MAPNIK);
 
@@ -127,7 +130,7 @@ public class Tab1Fragment extends Fragment {
         ImageButton btnCampus = view.findViewById(R.id.btnCampus);
         ImageButton btnUser = view.findViewById(R.id.btnUser);
         ImageButton btnCerca = view.findViewById(R.id.btnCerca);
-        nombreSitioCercano = view.findViewById(R.id.nombreSitioText);
+        //nombreSitioCercano = view.findViewById(R.id.nombreSitioText);
 
 
         btnUser.setOnClickListener(new View.OnClickListener() {
@@ -227,32 +230,41 @@ public class Tab1Fragment extends Fragment {
     }
 
     public void calculoCercania(){
-       int cercania=(int)user.distanceToAsDouble(marcadores.get(0).getPoint());
-       String nombre=marcadores.get(0).getTitle();
-        for(int i=1;i<marcadores.size();++i){
-            int cercania2=(int)user.distanceToAsDouble(marcadores.get(i).getPoint());
-            if(cercania2<cercania){
-            cercania=cercania2;
-            nombre=marcadores.get(i).getTitle();
+        if(user!=null){
+            int cercania=(int)user.distanceToAsDouble(marcadores.get(0).getPoint());
+            String nombre=marcadores.get(0).getTitle();
+            for(int i=1;i<marcadores.size();++i){
+                int cercania2=(int)user.distanceToAsDouble(marcadores.get(i).getPoint());
+                if(cercania2<cercania){
+                    cercania=cercania2;
+                    nombre=marcadores.get(i).getTitle();
+                }
             }
+            Toast.makeText(getActivity(), "El sitio más cercano es "+nombre+" que esta a "+cercania+" mts. de usted",Toast.LENGTH_LONG).show();
         }
-        Toast.makeText(getActivity(), "El sitio más cercano es "+nombre+" que esta a "+cercania+" mts. de usted",Toast.LENGTH_LONG).show();
     }
 
     public void cercaniaActiva(){
+
             if (marcadores.size() != 0) {
-                OverlayItem aux = marcadores.get(0);
+
+                Drawable grayMarker = this.getResources().getDrawable(R.drawable.sitio);
+                OverlayItem aux = marcadores.get(ultimoMarcador);
 
                 System.out.println("Me estoy ejecutando");
+
                 if (user != null) {
-                    int cercania = (int) user.distanceToAsDouble(marcadores.get(0).getPoint());
-                    String nombre = marcadores.get(0).getTitle();
-                    for (int i = 1; i < marcadores.size(); ++i) {
+                    int cercania = (int) user.distanceToAsDouble(marcadores.get(ultimoMarcador).getPoint());
+                   // String nombre = marcadores.get(0).getTitle();
+                    for (int i = 0; i < marcadores.size(); ++i) {
                         int cercania2 = (int) user.distanceToAsDouble(marcadores.get(i).getPoint());
                         if (cercania2 < cercania) {
+                            OverlayItem ultimo = marcadores.get(ultimoMarcador);
+                            ultimo.setMarker(grayMarker);
                             cercania = cercania2;
-                            nombre = marcadores.get(i).getTitle();
+                            //nombre = marcadores.get(i).getTitle();
                             aux = marcadores.get(i);
+                            ultimoMarcador=i;
                         }
                     }
                     if (estaDentroDeRadio(aux) && !dentroDeRadio) {
@@ -262,8 +274,10 @@ public class Tab1Fragment extends Fragment {
                     if (!estaDentroDeRadio(aux)) {
                         dentroDeRadio = false;
                     }
+                    Drawable newMarker = this.getResources().getDrawable(R.drawable.sitio_cercano);
+                    aux.setMarker(newMarker);
+                    //nombreSitioCercano.setText(nombre);
 
-                    nombreSitioCercano.setText(nombre);
                 }
             }
         }
@@ -477,7 +491,6 @@ public class Tab1Fragment extends Fragment {
         }
         map.getOverlays().add(marker);
         map.invalidate();
-
 
     }
 
