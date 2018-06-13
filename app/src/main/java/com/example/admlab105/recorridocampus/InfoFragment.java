@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,8 +29,8 @@ public class InfoFragment extends Fragment {
         super.onCreate(savedInstanceState);
         etiqueta = this.getArguments().getString("etiq");
         db = BaseSitiosHelper.getInstance(this.getContext());
-
         setRetainInstance(true);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
@@ -45,13 +46,13 @@ public class InfoFragment extends Fragment {
         TextView tv = (TextView)view.findViewById(R.id.etqSitio);
         tv.setText(etiqueta);
 
-        ImageButton backButton = view.findViewById(R.id.backButton);
-        backButton.setOnClickListener(new View.OnClickListener() {
+        //ImageButton backButton = view.findViewById(R.id.backButton);
+       /* backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 getActivity().onBackPressed();
             }
-        });
+        });*/
         /*
         TextView tv2 = (TextView)view.findViewById(R.id.cX);
         tv2.setText(String.valueOf(db.obtengaX(etiqueta)));

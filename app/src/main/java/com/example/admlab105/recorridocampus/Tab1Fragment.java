@@ -78,6 +78,7 @@ public class Tab1Fragment extends Fragment {
 
     double lat = 0.0, lon = 0.0;
     private Marker marker;
+    private Marker marker2;
     private LinkedList<Marker> sitios;
     private BaseSitiosHelper db;
 
@@ -471,7 +472,9 @@ public class Tab1Fragment extends Fragment {
         user= new GeoPoint(lat, lon);
         marker.setTitle("Usuario");
         marker.setPosition(user);
-        marker.setIcon(getResources().getDrawable(R.drawable.ubicacion));
+        if (getActivity() != null) {
+            marker.setIcon(getResources().getDrawable(R.drawable.ubicacion));
+        }
         map.getOverlays().add(marker);
         map.invalidate();
 

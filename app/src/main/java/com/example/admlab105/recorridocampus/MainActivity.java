@@ -1,6 +1,8 @@
 package com.example.admlab105.recorridocampus;
 
 import android.app.ActionBar;
+import android.app.TaskStackBuilder;
+import android.content.Context;
 import android.os.CountDownTimer;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -13,6 +15,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -45,10 +48,22 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(null);
-
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+       // getSupportActionBar().setDisplayShowHomeEnabled(false);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                onBackPressed();
+            }
+        });
+    }
 
+    @Override
+    public View onCreateView(String name, Context context, AttributeSet attrs) {
+        return super.onCreateView(name, context, attrs);
     }
 
     @Override
@@ -75,6 +90,10 @@ public class MainActivity extends AppCompatActivity {
         }
         if (id == R.id.credits) {
             Toast.makeText(this, "Créditos", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+        if (id == R.id.preferencias) {
+            Toast.makeText(this, "Preferencias", Toast.LENGTH_SHORT).show();
             return true;
         }
         return super.onOptionsItemSelected(item);

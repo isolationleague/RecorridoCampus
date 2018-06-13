@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * Esta clase se encargar de poblar la base de datos y prooveer metodos de acceso a la base.
@@ -202,13 +203,20 @@ public class BaseSitiosHelper extends SQLiteOpenHelper {
      * @param id_nombreSitio del sitio del cual se desean recuperar las imagenes
      * @return c
      */
-    public Cursor obtenerImagenesDeSitio(String id_nombreSitio) {
+    public ArrayList<String> obtenerImagenesDeSitio(String id_nombreSitio) {
         SQLiteDatabase db = getReadableDatabase();
         Cursor c=null;
         if (db != null) {
             c = db.rawQuery(" SELECT ruta FROM Foto WHERE id_sitio = \"" + id_nombreSitio + "\"", null);
         }
-        return c;
+        ArrayList<String>fotos = new ArrayList<>();
+        if (c.moveToFirst()) {
+            do {
+                String nombreFoto = c.getString(0);
+                fotos.add(nombreFoto);
+            } while (c.moveToNext());
+        }
+        return fotos;
     }
 
 
