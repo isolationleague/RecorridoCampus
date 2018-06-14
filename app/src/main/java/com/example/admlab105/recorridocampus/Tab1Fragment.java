@@ -89,6 +89,7 @@ public class Tab1Fragment extends Fragment {
     ArrayList<OverlayItem> marcadores;
     ArrayList<GeoPoint> marcadores2;
     ArrayList<Marker> marcadores3;
+    ArrayList<Marker> nodeMarkers;
 
     ArrayList<Double> radios;
     boolean dentroDeRadio;
@@ -102,6 +103,7 @@ public class Tab1Fragment extends Fragment {
 
     Polyline roadOverlay;
     Road road;
+    //Marker nodeMarker;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -109,8 +111,10 @@ public class Tab1Fragment extends Fragment {
 
         almacenar();// Petición de permiso para external storage
 
-        final RoadManager roadManager = new MapQuestRoadManager("oDJQc4K80LIhYWgAFxit5ktTbWVBoYjy");
-        roadManager.addRequestOption("routeType=pedestrian");
+        final RoadManager roadManager = new OSRMRoadManager(this.getContext());
+        //roadManager.addRequestOption("locale=de");
+        //final RoadManager roadManager = new MapQuestRoadManager("oDJQc4K80LIhYWgAFxit5ktTbWVBoYjy");
+        //roadManager.addRequestOption("routeType=bicycle");
 
         db = BaseSitiosHelper.getInstance(this.getContext().getApplicationContext());
         View view = inflater.inflate(R.layout.tab1_fragment, container, false);
@@ -126,7 +130,7 @@ public class Tab1Fragment extends Fragment {
         map.setMultiTouchControls(true);
 
         IMapController mapController = map.getController();
-        mapController.setZoom(17);
+        mapController.setZoom(17.0);
         GeoPoint startPoint = new GeoPoint(9.9370, -84.0510);
         mapController.setCenter(startPoint);
 
@@ -164,6 +168,7 @@ public class Tab1Fragment extends Fragment {
         marcadores2 = new ArrayList<GeoPoint>();
         marcadores3 = new ArrayList<Marker>();
         radios = new ArrayList<Double>();
+        nodeMarkers = new ArrayList<Marker>();
         dentroDeRadio= false;
 
         sitios = new LinkedList<Marker>();
@@ -188,13 +193,6 @@ public class Tab1Fragment extends Fragment {
         StrictMode.setThreadPolicy(policy);
 
 
-
-
-
-
-
-
-
         ItemizedIconOverlay.OnItemGestureListener<OverlayItem> gestureListener = new OnItemGestureListener<OverlayItem>() {
             @Override
             public boolean onItemSingleTapUp(final int index, final OverlayItem item) {
@@ -215,30 +213,44 @@ public class Tab1Fragment extends Fragment {
                 map.getOverlays().remove(roadOverlay);
                 map.invalidate();
                 road = roadManager.getRoad(marcadores2);
-                //roadOverlay.remove();
+                if (road.mStatus != Road.STATUS_OK){
+                    System.out.println("Error en getRoad");
+                }
                 roadOverlay = RoadManager.buildRoadOverlay(road);
                 map.getOverlays().add(roadOverlay);
 
 
-                //Drawable nodeIcon = getResources().getDrawable(R.drawable.marker_node);
+                //if (nodeMarkers != null) {
+                    nodeMarkers.clear();
+                //}
+                map.invalidate();
+
+                Drawable nodeIcon = getResources().getDrawable(R.drawable.moreinfo_arrow);
                 for (int i=0; i<road.mNodes.size(); i++){
                     RoadNode node = road.mNodes.get(i);
                     Marker nodeMarker = new Marker(map);
+
                     nodeMarker.setPosition(node.mLocation);
-                    //nodeMarker.setIcon(nodeIcon);
-                    nodeMarker.setTitle("Step "+i);
-                    map.getOverlays().add(nodeMarker);
-                    //node = null;
+                    nodeMarker.setIcon(nodeIcon);
+                    nodeMarker.setTitle("Paso "+i);
+
+
+                    nodeMarker.setSnippet(node.mInstructions);
+                    nodeMarker.setSubDescription(Road.getLengthDurationText(getContext(), node.mLength, node.mDuration));
+                    Drawable icon = getResources().getDrawable(R.drawable.osm_ic_follow_me);
+                    nodeMarker.setImage(icon);
+
+                    //map.getOverlays().add(nodeMarker);
+
+                    nodeMarkers.add(nodeMarker);
+                    //map.getOverlays().remove(nodeMarker);
+                    //nodeMarker = null;
                 }
 
                 marcadores2.clear();
-                //road = null;
-                //roadOverlay = null;
-
-
 
                 mark.showInfoWindow();
-                map.invalidate();
+                //map.invalidate();
 
                 return true;
             }
@@ -299,7 +311,7 @@ public class Tab1Fragment extends Fragment {
                 Drawable grayMarker = this.getResources().getDrawable(R.drawable.sitio);
                 OverlayItem aux = marcadores.get(ultimoMarcador);
 
-                System.out.println("Me estoy ejecutando");
+                //System.out.println("Me estoy ejecutando");
 
                 if (user != null) {
                     int cercania = (int) user.distanceToAsDouble(marcadores.get(ultimoMarcador).getPoint());
@@ -361,7 +373,7 @@ public class Tab1Fragment extends Fragment {
 
     private void volverCampus(){
         IMapController mapController = map.getController();
-        mapController.setZoom(17);
+        mapController.setZoom(17.0);
         GeoPoint startPoint = new GeoPoint(9.9370,-84.0510);
         mapController.setCenter(startPoint);
     }
