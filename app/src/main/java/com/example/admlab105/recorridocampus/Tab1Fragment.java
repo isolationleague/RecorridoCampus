@@ -100,11 +100,17 @@ public class Tab1Fragment extends Fragment {
 
     GeoPoint user;
 
+    Polyline roadOverlay;
+    Road road;
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
 
         almacenar();// Petición de permiso para external storage
+
+        final RoadManager roadManager = new MapQuestRoadManager("oDJQc4K80LIhYWgAFxit5ktTbWVBoYjy");
+        roadManager.addRequestOption("routeType=pedestrian");
 
         db = BaseSitiosHelper.getInstance(this.getContext().getApplicationContext());
         View view = inflater.inflate(R.layout.tab1_fragment, container, false);
@@ -178,6 +184,17 @@ public class Tab1Fragment extends Fragment {
         }
 
 
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+
+
+
+
+
+
+
+
         ItemizedIconOverlay.OnItemGestureListener<OverlayItem> gestureListener = new OnItemGestureListener<OverlayItem>() {
             @Override
             public boolean onItemSingleTapUp(final int index, final OverlayItem item) {
@@ -190,8 +207,39 @@ public class Tab1Fragment extends Fragment {
                 mark.setPosition(geo);
                 mark.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
 
+
+                marcadores2.add(user);
+                marcadores2.add(geo);
+
+                map.getOverlays().remove(road);
+                map.getOverlays().remove(roadOverlay);
+                map.invalidate();
+                road = roadManager.getRoad(marcadores2);
+                //roadOverlay.remove();
+                roadOverlay = RoadManager.buildRoadOverlay(road);
+                map.getOverlays().add(roadOverlay);
+
+
+                //Drawable nodeIcon = getResources().getDrawable(R.drawable.marker_node);
+                for (int i=0; i<road.mNodes.size(); i++){
+                    RoadNode node = road.mNodes.get(i);
+                    Marker nodeMarker = new Marker(map);
+                    nodeMarker.setPosition(node.mLocation);
+                    //nodeMarker.setIcon(nodeIcon);
+                    nodeMarker.setTitle("Step "+i);
+                    map.getOverlays().add(nodeMarker);
+                    //node = null;
+                }
+
+                marcadores2.clear();
+                //road = null;
+                //roadOverlay = null;
+
+
+
                 mark.showInfoWindow();
                 map.invalidate();
+
                 return true;
             }
 
