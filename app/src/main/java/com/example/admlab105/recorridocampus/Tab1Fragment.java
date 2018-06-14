@@ -221,9 +221,15 @@ public class Tab1Fragment extends Fragment {
 
 
                 //if (nodeMarkers != null) {
-                    nodeMarkers.clear();
+                    //nodeMarkers.clear();
+                    map.getOverlays().remove(nodeMarkers);
                 //}
-                map.invalidate();
+                for (Marker nodeMarker : nodeMarkers){
+                    nodeMarker.remove(map);
+                }
+                nodeMarkers.clear();
+
+                //map.invalidate();
 
                 Drawable nodeIcon = getResources().getDrawable(R.drawable.moreinfo_arrow);
                 for (int i=0; i<road.mNodes.size(); i++){
@@ -240,9 +246,9 @@ public class Tab1Fragment extends Fragment {
                     Drawable icon = getResources().getDrawable(R.drawable.osm_ic_follow_me);
                     nodeMarker.setImage(icon);
 
-                    //map.getOverlays().add(nodeMarker);
-
                     nodeMarkers.add(nodeMarker);
+                    map.getOverlays().add(nodeMarker);
+
                     //map.getOverlays().remove(nodeMarker);
                     //nodeMarker = null;
                 }
