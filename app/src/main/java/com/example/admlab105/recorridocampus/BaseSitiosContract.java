@@ -16,12 +16,7 @@ public final class BaseSitiosContract {
         public static final String COLUMN_VISITADO = "visitado";
     }
 
-    /*public static class Usuario implements  BaseColumns{
-        public static final String TABLE_NAME = "Usuario";
-        public static final String USUARIO_NOMBRE ="nombre";
-        public static final String USUARIO_PUNTOS ="puntos";
-    }
-    */
+
 
     public static class Foto implements BaseColumns{
         public static final String TABLE_NAME = "Foto";
@@ -45,8 +40,7 @@ public final class BaseSitiosContract {
 
     public static class Texto implements BaseColumns{
         public static final String TABLE_NAME = "Texto";
-        public static final String ID_SITIO = "id_sitio";
-        public static final String ID_TEXTO = "id_texto";
+        public static final String NOMBRE = "nombre";
         public static final String RUTA ="ruta";
     }
 

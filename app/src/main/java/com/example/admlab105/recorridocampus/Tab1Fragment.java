@@ -1,16 +1,21 @@
 package com.example.admlab105.recorridocampus;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.StrictMode;
+import android.preference.PreferenceManager;
 import android.service.carrier.CarrierMessagingService;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -26,129 +31,265 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
-
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-
-
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
-import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
-
+import org.osmdroid.api.IMapController;
+import org.osmdroid.bonuspack.routing.MapQuestRoadManager;
+import org.osmdroid.bonuspack.routing.OSRMRoadManager;
+import org.osmdroid.bonuspack.routing.Road;
+import org.osmdroid.bonuspack.routing.RoadManager;
+import org.osmdroid.bonuspack.routing.RoadNode;
+import org.osmdroid.config.Configuration;
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.ItemizedIconOverlay;
+import org.osmdroid.views.overlay.ItemizedOverlay;
+import org.osmdroid.views.overlay.ItemizedOverlayControlView;
+import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
+import org.osmdroid.views.overlay.Overlay;
+import org.osmdroid.views.overlay.OverlayItem;
 
 import java.util.ArrayList;
+
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.MapController;
+import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.Marker;
+import org.osmdroid.views.overlay.ItemizedIconOverlay;
+import org.osmdroid.views.overlay.ItemizedIconOverlay.OnItemGestureListener;
+import org.osmdroid.views.overlay.OverlayItem;
+import org.osmdroid.views.overlay.OverlayManager;
+import org.osmdroid.views.overlay.Polyline;
+import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
+import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 import java.util.LinkedList;
 import java.util.List;
 
-/*public class Tab1Fragment extends Fragment {
-    private static final String TAG = "Tab1Fragment";
-    private Button btn;
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.tab1_fragment,container,false);
-        btn = (Button) view.findViewById(R.id.btn);
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(getActivity(), "TESTING BUTTON CLICK 1",Toast.LENGTH_SHORT).show();
-            }
-        });
-        return view;
-    }
-}*/
 
 
-public class Tab1Fragment extends Fragment implements OnMapReadyCallback {
 
-    private GoogleMap mMap;
-    SupportMapFragment mapFragment;
-    int puntos = 10;
+public class Tab1Fragment extends Fragment {
+    private MapView map;
+    private MyLocationNewOverlay mMyLocationOverlay;
 
     double lat = 0.0, lon = 0.0;
     private Marker marker;
+    private Marker marker2;
     private LinkedList<Marker> sitios;
     private BaseSitiosHelper db;
+    private int RADIO = 200;
 
     private static final int PERMISSIONS_REQUEST_LOCATION = 1;
 
-    public Tab1Fragment() {
+    ArrayList<OverlayItem> marcadores;
+    ArrayList<GeoPoint> marcadores2;
 
-    }
-
-    /*@Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_mapaframe);
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-    }*/
+    GeoPoint user;
+    GeoPoint user2;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
+        almacenar();// Petición de permiso para external storage
 
-        db = new BaseSitiosHelper(this.getContext());
+        RoadManager roadManager = new MapQuestRoadManager("oDJQc4K80LIhYWgAFxit5ktTbWVBoYjy"); // API key en https://developer.mapquest.com/
+        roadManager.addRequestOption("routeType=pedestrian");
+
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+
+        db = BaseSitiosHelper.getInstance(this.getContext().getApplicationContext());
         View view = inflater.inflate(R.layout.tab1_fragment, container, false);
-        ImageButton btnCoor =  view.findViewById(R.id.btnCoor);
-        ImageButton btnCampus= view.findViewById(R.id.btnCampus);
+        Context ctx = getActivity();
+        Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
 
-        btnCoor.setOnClickListener(new View.OnClickListener() {
+        //map = new MapView(getActivity());
+        map =  view.findViewById(R.id.map);
+
+
+        map.getTileProvider().setTileSource(TileSourceFactory.MAPNIK);
+
+        map.setBuiltInZoomControls(false);
+        map.setMultiTouchControls(true);
+
+        IMapController mapController = map.getController();
+        mapController.setZoom(17);
+        GeoPoint startPoint = new GeoPoint(9.9370,-84.0510);
+        mapController.setCenter(startPoint);
+
+
+        map.setMultiTouchControls(true);
+
+
+        //Button btnUCR =  view.findViewById(R.id.btnUcr);
+        //Button btnCat = view.findViewById(R.id.btnCat);
+
+        ImageButton btnCampus=view.findViewById(R.id.btnCampus);
+        ImageButton btnUser=view.findViewById(R.id.btnUser);
+        ImageButton btnCerca=view.findViewById(R.id.btnCerca);
+
+        /*btnUCR.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                anadirMarcador();
+            }
+        });
+        btnCat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                anadirMarcador2();
+            }
+        });*/
+
+        btnUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 miUbic();
             }
         });
+
         btnCampus.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) { volverCampus();
+            public void onClick(View v) {
+                volverCampus();
             }
         });
 
-        mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-        if (mapFragment == null) {
-            FragmentManager fm = getFragmentManager();
-            FragmentTransaction ft = fm.beginTransaction();
-            mapFragment = SupportMapFragment.newInstance();
-            ft.replace(R.id.map, mapFragment).commit();
+        btnCerca.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                calculoCercania();
+            }
+        });
+
+        marcadores = new ArrayList<OverlayItem>();
+
+        //marcadores2 = new ArrayList<GeoPoint>();
+
+        GeoPoint pointB = new GeoPoint(9.9370,-84.0510);
+
+        GeoPoint pointA = new GeoPoint(9.9380, -84.0510);
+        //marcadores2.add(pointA);
+        //marcadores2.add(pointB);
+
+        sitios = new LinkedList<Marker>();
+        Cursor c=db.obtenerLugares();
+
+
+        if (c.moveToFirst()) {
+            do {
+                marcadores.add(new OverlayItem(c.getString(0), "", new GeoPoint(c.getDouble(1),c.getDouble(2))));
+                //marcadores2.add(new GeoPoint(c.getDouble(1),c.getDouble(2)));
+
+            } while(c.moveToNext());
+
+
+            /*roadManager = new OSRMRoadManager(getActivity());
+            Road road = roadManager.getRoad(marcadores2);
+            Polyline roadOverlay = RoadManager.buildRoadOverlay(road);
+            map.getOverlays().add(roadOverlay);
+            map.invalidate();
+
+
+
+            Drawable nodeIcon = getResources().getDrawable(R.drawable.cat);
+            for (int i=0; i<road.mNodes.size(); i++){
+                RoadNode node = road.mNodes.get(i);
+                Marker nodeMarker = new Marker(map);
+                nodeMarker.setPosition(node.mLocation);
+                nodeMarker.setIcon(nodeIcon);
+                nodeMarker.setTitle("Step "+i);
+                map.getOverlays().add(nodeMarker);
+
+                nodeMarker.setSnippet(node.mInstructions);
+                nodeMarker.setSubDescription(Road.getLengthDurationText(getContext(), node.mLength, node.mDuration));
+                Drawable icon = getResources().getDrawable(R.drawable.cat);
+                nodeMarker.setImage(icon);
+
+            }*/
+
         }
-        mapFragment.getMapAsync(this);
-        //mapFragment.getMapAsync(this);
-        return view;
+
+        ItemizedIconOverlay.OnItemGestureListener<OverlayItem> gestureListener = new OnItemGestureListener<OverlayItem>() {
+            @Override
+            public boolean onItemSingleTapUp(final int index, final OverlayItem item) {
+                //do something
+                Marker mark = new Marker(map);
+                mark.setTitle(item.getTitle());
+                mark.setSnippet(item.getSnippet());
+                GeoPoint geo= new GeoPoint(item.getPoint().getLatitude(), item.getPoint().getLongitude());
+                mark.setPosition(geo);
+                mark.showInfoWindow();
+
+               // Toast.makeText(getActivity(), item.getTitle(),Toast.LENGTH_LONG).show();
+                String distancia = "Está a " + (int)user.distanceToAsDouble(item.getPoint()) + " mts. de distancia";
+                Toast.makeText(getActivity(), distancia,Toast.LENGTH_LONG).show();
+                return true;
+            }
+            @Override
+            public boolean onItemLongPress(final int index, final OverlayItem item) {
+               //if (estaDentroDeRadio(item)) {
+                   iniciarActivity(item);
+              // }else{
+                   String mensaje = " Se encuentra muy lejos de este punto, acérquese más";
+                   Toast.makeText(getActivity(), mensaje,Toast.LENGTH_LONG).show();
+              // }
+                return true;
+            }
+        };
+        ItemizedIconOverlay<OverlayItem> mOverlay = new ItemizedIconOverlay<OverlayItem>(getActivity(),marcadores,gestureListener);
+
+
+
+        map.getOverlays().add(mOverlay);
+        marker= new Marker(map);
+        //marker2= new Marker(map);
+
+
+
+
+        //colocaSitios();
+        return  view;
+        //map;
     }
 
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-
-        mMap = googleMap;
-
-        colocaSitios();
-
-        List<LatLng> sitios = new ArrayList<LatLng>();
-        volverCampus();
-
-       /* for (int i = 0; i < puntos; i++) {
-            //sitios.set(i, new LatLng(-34, 151)); // Tomar coordenadas de la base
-            sitios.add(new LatLng(3 * i, 3 * i)); // Tomar coordenadas de la base
-
-            // Título de cada marcador (Tomar nombre de cada sitio de la base)
-            mMap.addMarker(new MarkerOptions().position(sitios.get(i)).title(String.valueOf(i + 1)));
-
-            //mMap.moveCamera(CameraUpdateFactory.newLatLng(sitios.get(i)));
-        }*/
-
+    public void calculoCercania(){
+       int cercania=(int)user.distanceToAsDouble(marcadores.get(0).getPoint());
+       System.out.println(cercania);
+       String nombre=marcadores.get(0).getTitle();
+        for(int i=1;i<marcadores.size();++i){
+            int cercania2=(int)user.distanceToAsDouble(marcadores.get(i).getPoint());
+            System.out.println(cercania2);
+            if(cercania2<cercania){
+            cercania=cercania2;
+            nombre=marcadores.get(i).getTitle();
+            }
+        }
+        Toast.makeText(getActivity(), "El sitio más cercano es "+nombre+" que esta a "+cercania+" mts. de usted",Toast.LENGTH_LONG).show();
     }
+
+    public boolean estaDentroDeRadio(OverlayItem item){
+        int distancia = (int) user.distanceToAsDouble(item.getPoint());
+
+        if (distancia > RADIO) {
+            return false;
+        }
+        return true;
+    }
+
+    public void iniciarActivity(final OverlayItem item){
+        Bundle arg = new Bundle();
+        arg.putString("etiq", item.getTitle());
+        InfoFragment fragment = new InfoFragment();
+        fragment.setArguments(arg);
+        //FragmentManager fm = getFragmentManager();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.frameLayout, fragment, "tag1");
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
     @Override
     public void onStart(){
         super.onStart();
@@ -161,37 +302,41 @@ public class Tab1Fragment extends Fragment implements OnMapReadyCallback {
 
     }
 
+    public void onClick(Marker mark){
+        Toast.makeText(getActivity(),mark.getTitle() ,
+                Toast.LENGTH_LONG).show();
 
-    public void onLocationChanged(Location location){
-        double latitude = location.getLatitude();
-        double longitude = location.getLongitude();
-        LatLng latLng = new LatLng(latitude, longitude);
+
+
     }
 
+    private void volverCampus(){
+        IMapController mapController = map.getController();
+        mapController.setZoom(17);
+        GeoPoint startPoint = new GeoPoint(9.9370,-84.0510);
+        mapController.setCenter(startPoint);
+    }
 
-
+    private void almacenar() {
+        int check = ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (check == PackageManager.PERMISSION_GRANTED) {
+            //Do something
+        } else {
+            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1024);
+        }
+    }
 
     private void miUbic() {
 
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-          /*  ActivityCompat.requestPermissions(
-                    this,
-                    new String[] { Manifest.permission.ACCESS_FINE_LOCATION },
-                    999
-            );
-            return;*/
+
             ActivityCompat.requestPermissions(getActivity(),
                     new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION,
                             android.Manifest.permission.ACCESS_FINE_LOCATION},
                     PERMISSIONS_REQUEST_LOCATION);
         }
+
+
 
 
         LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
@@ -231,7 +376,7 @@ public class Tab1Fragment extends Fragment implements OnMapReadyCallback {
                         public void onProviderDisabled(String s) {
                         }
                     };
-                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,1000,1f,locationListener1 );;
+                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,1000,1f,locationListener1 );
 
                     Log.d("GPS Enabled", "GPS Enabled");
 
@@ -309,12 +454,6 @@ public class Tab1Fragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    private void volverCampus(){
-        LatLng coord = new LatLng(9.9370, -84.0506);
-        float zoomLevel = 15.8f; //This goes up to 21
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(coord, zoomLevel));
-    }
-
     private void actualizarUbic(Location location) {
         if (location != null) {
             lat = location.getLatitude();
@@ -324,41 +463,153 @@ public class Tab1Fragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void agregarMarcador(double la, double lo) {
-        LatLng coord = new LatLng(la, lo);
+        lat=la;
+        lon=lo;
         //CameraUpdate miUbic = CameraUpdateFactory.newLatLngZoom(coord, 16f);
-        if (marker != null) marker.remove();
-        marker = mMap.addMarker(new MarkerOptions().position(coord).title("Usuario").icon(BitmapDescriptorFactory
-                .defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
-        /*.icon(BitmapDescriptorFactory.fromResource(R.mipmap.cueva8bit)).draggable(true)*/;
+        if (marker != null) {
+            marker.remove(map);
+        }
+        user= new GeoPoint(lat, lon);
+        marker.setTitle("Usuario");
+        marker.setPosition(user);
+        map.getOverlays().add(marker);
+
+        /*if (marker2 != null) {
+            marker2.remove(map);
+        }
+        user2= new GeoPoint(lat+0.001, lon+0.001);
+        marker2.setTitle("PRUEBA");
+        marker2.setPosition(user2);
+        map.getOverlays().add(marker2);*/
 
         //mMap.animateCamera(miUbic);
     }
 
-    public BitmapDescriptor getMarkerIcon(String color) {
-        float[] hsv = new float[3];
-        Color.colorToHSV(Color.parseColor(color), hsv);
-        return BitmapDescriptorFactory.defaultMarker(hsv[0]);
+
+
+
+    public void anadirMarcador(){
+
+        GeoPoint pointB = new GeoPoint(9.9370,-84.0510);
+        addMarker(pointB);
+    }
+
+    public void anadirMarcador2(){
+        GeoPoint pointA = new GeoPoint(9.9380, -84.0510);
+        addCat(pointA);
     }
 
 
-    private void colocaSitios(){
-        sitios = new LinkedList<Marker>();
-        Cursor c=db.obtenerLugares();
-        if (c.moveToFirst()) {
-            do {
-                LatLng coord = new LatLng(c.getDouble(1), c.getDouble(2));
-                sitios.add(mMap.addMarker(new MarkerOptions().position(coord).title(c.getString(0))));
-            } while(c.moveToNext());
-        }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        //this will refresh the osmdroid configuration on resuming.
+        //if you make changes to the configuration, use
+        //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        //Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this));
+        map.onResume(); //needed for compass, my location overlays, v6.0.0 and up
     }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+        //this will refresh the osmdroid configuration on resuming.
+        //if you make changes to the configuration, use
+        //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        //Configuration.getInstance().save(this, prefs);
+        map.onPause();  //needed for compass, my location overlays, v6.0.0 and up
+    }
+
+    public void addCat(GeoPoint point){
+        org.osmdroid.views.overlay.Marker marker = new org.osmdroid.views.overlay.Marker(map);
+        marker.setPosition(point);
+        //marker.setAnchor(Marker.ANCHOR_BOTTOM, Marker.ANCHOR_CENTER);
+        marker.setTitle("Cat");
+        marker.setIcon(getResources().getDrawable(R.drawable.cat));
+        IMapController mapController = map.getController();
+        mapController.setCenter(point);
+        // map.getOverlays().clear();
+        map.getOverlays().add(marker);
+        map.invalidate();
+
+    }
+
+    public void addMarker(GeoPoint point){
+        org.osmdroid.views.overlay.Marker marker = new org.osmdroid.views.overlay.Marker(map);
+        marker.setPosition(point);
+        //marker.setAnchor(Marker.ANCHOR_BOTTOM, Marker.ANCHOR_CENTER);
+        marker.setTitle("UCR");
+        //marker.setIcon(getResources().getDrawable(R.drawable.cat));
+        IMapController mapController = map.getController();
+        mapController.setCenter(point);
+        //map.getOverlays().clear();
+        map.getOverlays().add(marker);
+        map.invalidate();
+
+    }
+
+    /*public void addCicle(){
+        ItemizedIconOverlay<OverlayItem> anotherItemizedIconOverlay
+                = new ItemizedIconOverlay<OverlayItem>(getActivity(), anotherOverlayItemArray, null);
+        map.getOverlays().add(anotherItemizedIconOverlay);
+    }*/
+
+   /* @Override
+    public boolean onItemLongPress(Marker marker) {
+        Bundle arg = new Bundle();
+        arg.putString("etiq", marker.getTitle());
+        InfoFragment fragment = new InfoFragment();
+        fragment.setArguments(arg);
+        //FragmentManager fm = getFragmentManager();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.frameLayout, fragment, "tag1");
+        transaction.addToBackStack(null);
+        transaction.commit();
+        return false;
+    }*/
+
+
+
+
 }
 
 // https://developers.google.com/maps/documentation/android-api/location?hl=es-419
-// RECORDAR SOLICITAR AL USUARIO LOS PERMISOS DE UBICACIÓN
+// RECORDAR SOLICITAR AL USUARIO LOS PERMISOS DE UBICACION
 //https://stackoverflow.com/questions/30253123/blue-dot-and-circle-is-not-shown-on-mylocation-using-android-fused-location-api/30255219#30255219
 
 //https://www.sitepoint.com/requesting-runtime-permissions-in-android-m-and-n/ (permisos)
 
+//https://stackoverflow.com/questions/14897143/integrating-osmdroid-with-fragments
+//http://devblog.blackberry.com/2013/03/android-map-blackberry-10/
 
+    /*private void colocaSitios(){
+
+        sitios = new LinkedList<Marker>();
+        Cursor c=db.obtenerLugares();
+        if (c.moveToFirst()) {
+            do {
+                org.osmdroid.views.overlay.Marker marker = new org.osmdroid.views.overlay.Marker(map);
+                lat=c.getDouble(1);
+                lon=c.getDouble(2);
+                GeoPoint sitio= new GeoPoint(lat,lon);
+                marker.setPosition(sitio);
+                marker.setTitle(c.getString(0));
+                map.getOverlays().add(marker);
+                map.invalidate();
+                //sitios.add(mMap.addMarker(new MarkerOptions().position(coord).title(c.getString(0))));
+            } while(c.moveToNext());
+        }
+    }*/
+
+
+
+
+
+// https://github.com/MKergall/osmbonuspack/wiki/features
+
+// mostrar cuadros de texto
+//https://help.openstreetmap.org/questions/61347/osmdroid-how-do-i-show-and-hide-markers-description-on-click
+//https://stackoverflow.com/questions/23108709/show-marker-details-with-image-onclick-marker-openstreetmap?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
 
 
