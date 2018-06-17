@@ -105,15 +105,21 @@ public class Tab1Fragment extends Fragment {
     Road road;
     //Marker nodeMarker;
 
+    /**
+     * Creación del mapa, y cargado de puntos de interés con la
+     * información de la base de datos
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
 
         almacenar();// Petición de permiso para external storage
 
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
         final RoadManager roadManager = new OSRMRoadManager(this.getContext());
         //roadManager.addRequestOption("locale=de");
-        //final RoadManager roadManager = new MapQuestRoadManager("oDJQc4K80LIhYWgAFxit5ktTbWVBoYjy");
+        //final RoadManager roadManager = new MapQuestRoadManager("abFjCNXvcQZoTpxMEDe0G2blJqvzroOg");
         //roadManager.addRequestOption("routeType=bicycle");
 
         db = BaseSitiosHelper.getInstance(this.getContext().getApplicationContext());
@@ -189,11 +195,14 @@ public class Tab1Fragment extends Fragment {
         }
 
 
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
+
 
 
         ItemizedIconOverlay.OnItemGestureListener<OverlayItem> gestureListener = new OnItemGestureListener<OverlayItem>() {
+            /**
+             * Evento de tap en un punto de interés
+             * @param item punto de interés presionado
+             */
             @Override
             public boolean onItemSingleTapUp(final int index, final OverlayItem item) {
 
@@ -261,6 +270,10 @@ public class Tab1Fragment extends Fragment {
                 return true;
             }
 
+            /**
+             * Evento de presionado por largo tiempo un punto de interés
+             * @param item punto de interés
+             */
             @Override
             public boolean onItemLongPress(final int index, final OverlayItem item) {
                 if (estaDentroDeRadio(item)) {
@@ -295,6 +308,10 @@ public class Tab1Fragment extends Fragment {
 
     }
 
+    /**
+     * Cacula cuál punto de interés es el más cercano al dispositivo
+     * comparando las distancias de todos con respecto al usuario
+     */
     public void calculoCercania(){
         if(user!=null){
             int cercania=(int)user.distanceToAsDouble(marcadores.get(0).getPoint());
@@ -310,6 +327,10 @@ public class Tab1Fragment extends Fragment {
         }
     }
 
+    /**
+     * Detecta si el dispositivo está suficientemente
+     * cerca de un punto de interés
+     */
     public void cercaniaActiva(){
 
             if (marcadores.size() != 0) {
@@ -349,7 +370,11 @@ public class Tab1Fragment extends Fragment {
         }
 
 
-
+    /**
+     * Decide si se está dentro o no del radio de un punto de interés
+     * @param item punto de interés
+     * @return true si se está dentro del radio, false si se está fuera
+     */
     public boolean estaDentroDeRadio(OverlayItem item){
         int distancia = (int) user.distanceToAsDouble(item.getPoint());
 
@@ -359,6 +384,10 @@ public class Tab1Fragment extends Fragment {
         return true;
     }
 
+    /**
+     * Accede al contenido de cada punto de interés en el mapa
+     * @param item punto de interés seleccionado
+     */
     public void iniciarActivity(final OverlayItem item){
         Bundle arg = new Bundle();
         arg.putString("etiq", item.getTitle());
@@ -372,11 +401,15 @@ public class Tab1Fragment extends Fragment {
     }
 
 
+
     public void onClick(Marker mark){
         Toast.makeText(getActivity(),mark.getTitle() ,
                 Toast.LENGTH_LONG).show();
     }
 
+    /**
+     * Coloca la vista del mapa en el campus de la UCR
+     */
     private void volverCampus(){
         IMapController mapController = map.getController();
         mapController.setZoom(17.0);
@@ -384,6 +417,9 @@ public class Tab1Fragment extends Fragment {
         mapController.setCenter(startPoint);
     }
 
+    /**
+     * Solicita permisos para almacenamiento externo en el dispositivo
+     */
     private void almacenar() {
         int check = ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
         if (check == PackageManager.PERMISSION_GRANTED) {
@@ -393,6 +429,9 @@ public class Tab1Fragment extends Fragment {
         }
     }
 
+    /**
+     * Obtiene la ubicación del dispositivo
+     */
     private void miUbic() {
 
         try {
@@ -534,6 +573,10 @@ public class Tab1Fragment extends Fragment {
         }
     }
 
+    /**
+     * Actualiza la ubicación GPS del dispositivo en el mapa
+     * @param location localización del dispositivo
+     */
     private void actualizarUbic(Location location) {
         if (location != null) {
             lat = location.getLatitude();
@@ -582,6 +625,10 @@ public class Tab1Fragment extends Fragment {
         map.onPause();  //needed for compass, my location overlays, v6.0.0 and up
     }
 
+    /**
+     * Agrega un Marker al mapa
+     * @param point sitio donde se va a colocar el Marker
+     */
     public void addMarker(GeoPoint point){
         org.osmdroid.views.overlay.Marker marker = new org.osmdroid.views.overlay.Marker(map);
         marker.setPosition(point);
@@ -595,7 +642,9 @@ public class Tab1Fragment extends Fragment {
         map.invalidate();
 
     }
-
+    /**
+     * Activa la vibración del dispositivo durante 1 segundo
+     */
     public void activarVibracion() {
         if (Build.VERSION.SDK_INT >= 26) {
             ((Vibrator) this.getContext().getSystemService(VIBRATOR_SERVICE)).vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
