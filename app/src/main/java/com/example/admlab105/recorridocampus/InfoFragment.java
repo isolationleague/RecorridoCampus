@@ -24,6 +24,11 @@ public class InfoFragment extends Fragment {
     private BaseSitiosHelper db;
     private String texto;
 
+    /**
+     * Crea la vista principal para el despliegue de informacion de los sitios
+     *
+     * @param savedInstanceState: para paso de informacion entre fragmnets.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +38,12 @@ public class InfoFragment extends Fragment {
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    /**
+     * Despliegue de la vista principal para el despliegue de informacion de los sitios
+     * Dentro de esta vista se despliega el tab layout para informacion general, fotos
+     * y enlaces externos de los sitios.
+     * @param savedInstanceState: para paso de informacion entre fragmnets.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -67,6 +78,11 @@ public class InfoFragment extends Fragment {
         getActivity().getSupportFragmentManager().beginTransaction().remove(getParentFragment()).commit();
     }*/
 
+    /**
+     * Se agrgan los fragments correspondientes a las vistas de informacion general, imagenes y
+     * enlaces externos de los sitios
+     * @param viewPager vista para el despliegue de los fragments
+     */
     private void setupViewPager(ViewPager viewPager) {
         Bundle arg = new Bundle();
         arg.putString("etiq", etiqueta);

@@ -24,6 +24,10 @@ public class InfoPicturesFragment extends Fragment {
     private String etiqueta;
     private BaseSitiosHelper db;
 
+    /**
+     * Despliegue de las imagenes del sitio en una vista de Grid, las imagenes son seleccionables
+     * y desplegables a pantalla completa
+     */
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

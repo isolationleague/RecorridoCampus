@@ -26,6 +26,9 @@ public class InfoLinksFragment extends Fragment {
 
     private Button btnTEST;
 
+    /**
+     * Crea e inicializa la vista de los enlaces de interes para los sitios visitados
+     */
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -35,6 +38,10 @@ public class InfoLinksFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Lectura de los enlaces de la base de datos y despliegue de los mismos n vietas
+     * @param txtView: vista donde se despliegan los enlaces
+     */
     public void loadTextView (TextView txtView) {
         InputStream inputStream = getResources().openRawResource(R.raw.links);
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();

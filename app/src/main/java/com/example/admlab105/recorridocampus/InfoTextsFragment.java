@@ -36,6 +36,12 @@ public class InfoTextsFragment extends Fragment {
     private BaseSitiosHelper db;
     private String etiqueta;
 
+    /**
+     * Crea la vista principal para el despliegue de informacion general
+     * portada, audios y textos de los sitios
+     * Inicializa los elementos de la vista como el audio player, etc
+     * @param savedInstanceState: para paso de informacion entre fragmnets.
+     */
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) { View view = inflater.inflate(R.layout.info_texts_fragment,container,false);
@@ -64,6 +70,11 @@ public class InfoTextsFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Lectura de los archivos de texto de la base de datos para su despliegue enu el Textview
+     *
+     * @param txtView: vista para mostrar la informacion textual de los sitios.
+     */
     public void loadTextView (TextView txtView) {
         String texto = "";
         try
@@ -104,6 +115,11 @@ public class InfoTextsFragment extends Fragment {
         txtView.setText(byteArrayOutputStream.toString());*/
     }
 
+    /**
+     * Configuracion del boton play del audio player, reproduccion y pausa de los archivos de audio
+     * Cambio de imagen del boton al pulsarlo.
+     * @param view
+     */
     public void play(View view) {
         if (audioPlayer != null) {
             if (audioPlayer.isPlaying()) {
@@ -122,6 +138,9 @@ public class InfoTextsFragment extends Fragment {
         }
     }
 
+    /**
+     * Detencion del evento de monitoreo de reproduccion del audio al terminar de reproducirse.
+     */
     private void stopPlayer() {
         if (audioPlayer != null) {
             audioPlayer.release();
@@ -131,12 +150,18 @@ public class InfoTextsFragment extends Fragment {
         handler.removeCallbacks(runnable);
     }
 
+    /**
+     * Detiene el audio player al terminar ejecucion
+     */
     @Override
     public void onStop() {
         super.onStop();
         stopPlayer();
     }
 
+    /**
+     * Inicializacion del audio player, asignacion del audio correspondiente al sitio visitado
+     */
     public void initializePlayer() {
         if (audioPlayer != null){
             audioPlayer.release();
@@ -152,12 +177,18 @@ public class InfoTextsFragment extends Fragment {
         });
     }
 
+    /**
+     * Monitoreo del audio en reproduccion de acuerdo a su tiempo de duracion
+     */
     public void playing() {
         if (audioPlayer != null && audioPlayer.isPlaying() == true)
             handler.postDelayed(updateTime, 100);
 
     }
 
+    /**
+     * Monitoreo continuo de reproduccion cada 100ms para la barra de avance del audio reproducido
+     */
     private Runnable updateTime = new Runnable() {
         @Override
         public void run() {
@@ -168,6 +199,9 @@ public class InfoTextsFragment extends Fragment {
         }
     };
 
+    /**
+     * Clase que implementa el slideshow para mostrar imagenes en la vista de informacion general del sitio
+     */
     private class ImagePagerAdapter extends PagerAdapter {
         //obener imagenes para el slideshow
        //private int[] mImages;
@@ -188,7 +222,10 @@ public class InfoTextsFragment extends Fragment {
            mImages = fotos;
         }
 
-
+        /**
+         *
+         * @return Cantidad de imagenes de un sitio especifico
+         */
         @Override
         public int getCount() {
             return mImages.size();
@@ -199,6 +236,12 @@ public class InfoTextsFragment extends Fragment {
             return view == ((ImageView) object);
         }
 
+        /**
+         * Define el formato de el slideshow para el muestreo de las im'agenes
+         * @param container
+         * @param position
+         * @return
+         */
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
             Context context = getActivity();
@@ -212,6 +255,12 @@ public class InfoTextsFragment extends Fragment {
             return imageView;
         }
 
+        /**
+         * Destructor del slideshow
+         * @param container
+         * @param position
+         * @param object
+         */
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
             ((ViewPager) container).removeView((ImageView) object);
