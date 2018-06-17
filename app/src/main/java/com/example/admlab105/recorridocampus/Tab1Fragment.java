@@ -72,6 +72,11 @@ import java.util.List;
 import static android.content.Context.VIBRATOR_SERVICE;
 
 
+/**
+ * Esta es la tab de mapa donde se pasa la mayor parte del tiempo.
+ * Esta se llama como un fragment.
+ */
+
 public class Tab1Fragment extends Fragment {
     private MapView map;
     private MyLocationNewOverlay mMyLocationOverlay;
@@ -88,7 +93,7 @@ public class Tab1Fragment extends Fragment {
 
     ArrayList<OverlayItem> marcadores;
     ArrayList<GeoPoint> marcadores2;
-    ArrayList<Marker> marcadores3;
+
     ArrayList<Marker> nodeMarkers;
 
     ArrayList<Double> radios;
@@ -108,6 +113,8 @@ public class Tab1Fragment extends Fragment {
     /**
      * Creación del mapa, y cargado de puntos de interés con la
      * información de la base de datos
+     * Crea handler y listener para los eventos continuos y los ontaps
+     * devuelve la vista inflada
      */
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -172,7 +179,6 @@ public class Tab1Fragment extends Fragment {
 
         marcadores = new ArrayList<OverlayItem>();
         marcadores2 = new ArrayList<GeoPoint>();
-        marcadores3 = new ArrayList<Marker>();
         radios = new ArrayList<Double>();
         nodeMarkers = new ArrayList<Marker>();
         dentroDeRadio= false;
@@ -201,6 +207,7 @@ public class Tab1Fragment extends Fragment {
         ItemizedIconOverlay.OnItemGestureListener<OverlayItem> gestureListener = new OnItemGestureListener<OverlayItem>() {
             /**
              * Evento de tap en un punto de interés
+             * Devuelve información acerca del punto
              * @param item punto de interés presionado
              */
             @Override
@@ -272,6 +279,7 @@ public class Tab1Fragment extends Fragment {
 
             /**
              * Evento de presionado por largo tiempo un punto de interés
+             * Abre la ventana de información del punto
              * @param item punto de interés
              */
             @Override
@@ -431,6 +439,8 @@ public class Tab1Fragment extends Fragment {
 
     /**
      * Obtiene la ubicación del dispositivo
+     * Pide los permisos del usuario y aprovecha de los listeners para ejecutar el
+     * actualizar ubicacion
      */
     private void miUbic() {
 
@@ -442,14 +452,8 @@ public class Tab1Fragment extends Fragment {
                                 android.Manifest.permission.ACCESS_FINE_LOCATION},
                         PERMISSIONS_REQUEST_LOCATION);
             }
-
-
-
-
-
             LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-
-        Location location = null;
+            Location location = null;
         try {
 
             // getting GPS status
@@ -550,7 +554,12 @@ public class Tab1Fragment extends Fragment {
 
     }
 
-
+    /**
+     * Manejador de permiso
+     * @param requestCode codigo de permiso
+     * @param permissions lista de permisos
+     * @param grantResults resultados de la peticion
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
@@ -584,6 +593,12 @@ public class Tab1Fragment extends Fragment {
             agregarMarcador(lat, lon);
         }
     }
+
+    /**
+     * Crea el marcador de usuario. Llamado por actualizarUbic
+     * @param la Latitud del usuario
+     * @param lo Longitud del usuario
+     */
 
     private void agregarMarcador(double la, double lo) {
         lat=la;
