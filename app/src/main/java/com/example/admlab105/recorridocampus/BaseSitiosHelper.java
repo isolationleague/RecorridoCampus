@@ -199,9 +199,9 @@ public class BaseSitiosHelper extends SQLiteOpenHelper {
 
 
     /**
-     * Devuelve un cursor con el nombre de las imagenes de el sitio indicado
+     * Devuelve un arraylist con el nombre de las imagenes de el sitio indicado
      * @param id_nombreSitio del sitio del cual se desean recuperar las imagenes
-     * @return c
+     * @return fotos
      */
     public ArrayList<String> obtenerImagenesDeSitio(String id_nombreSitio) {
         SQLiteDatabase db = getReadableDatabase();

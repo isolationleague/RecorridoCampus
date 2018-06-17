@@ -173,6 +173,11 @@ public class InfoTextsFragment extends Fragment {
        //private int[] mImages;
        private ArrayList<Integer> mImages= new ArrayList<Integer>();
         private String nombreLugar="";
+
+        /**
+         * Inicializa los valores del pageadapter y recibe como parametro los nombres de   imagenes que debe mostrar
+         * @param e arraylist con los nombres de imagenes
+         */
         public ImagePagerAdapter(ArrayList<String> e){
             ArrayList<Integer> fotos = new ArrayList<Integer>();
            for(int i=0;i<e.size();i++){
