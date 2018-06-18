@@ -13,6 +13,7 @@ public final class BaseSitiosContract {
         public static final String COLUMN_NOMBRE = "nombre";
         public static final String COLUMN_COORDENADA_X = "coordenadaX";
         public static final String COLUMN_COORDENADA_Y = "coordenadaY";
+        public static final String COLUMN_RADIO = "radio";
         public static final String COLUMN_VISITADO = "visitado";
     }
 

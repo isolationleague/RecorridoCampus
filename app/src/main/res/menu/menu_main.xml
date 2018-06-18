@@ -17,4 +17,9 @@
         android:orderInCategory="100"
         android:title="Créditos"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/preferencias"
+        android:orderInCategory="100"
+        android:title="Preferencias"
+        app:showAsAction="never" />
 </menu>

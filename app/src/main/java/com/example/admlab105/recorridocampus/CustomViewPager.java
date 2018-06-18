@@ -5,10 +5,19 @@ import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
+/**
+ * Clase extension de ViewPager para cancelar la funcionalidad de transici'on entre tabs
+ * en el evento de desplazar (swipe)
+ */
 public class CustomViewPager extends ViewPager {
 
     private boolean enabled;
 
+    /**
+     * constructor
+     * @param context contexto
+     * @param attrs atributos
+     */
     public CustomViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.enabled = false;

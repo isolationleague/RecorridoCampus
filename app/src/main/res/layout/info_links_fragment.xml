@@ -17,6 +17,7 @@
         android:layout_marginStart="30dp"
         android:layout_marginTop="30dp"
         android:linksClickable="true"
+        android:textColorLink="#3366BB"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
