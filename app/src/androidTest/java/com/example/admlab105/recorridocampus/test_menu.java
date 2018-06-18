@@ -20,21 +20,22 @@ import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
-import static android.support.test.espresso.action.ViewActions.replaceText;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.is;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class StartScreenTest {
+public class test_menu {
 
     @Rule
     public ActivityTestRule<StartScreen> mActivityTestRule = new ActivityTestRule<>(StartScreen.class);
 
     @Test
-    public void startScreenTest() {
+    public void test_menu() {
         // Added a sleep statement to match the app's execution delay.
         // The recommended way to handle such scenarios is to use Espresso idling resources:
         // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
@@ -44,87 +45,55 @@ public class StartScreenTest {
             e.printStackTrace();
         }
 
-        ViewInteraction button = onView(
+        ViewInteraction appCompatButton = onView(
                 allOf(withId(R.id.buttonClose),
                         childAtPosition(
                                 childAtPosition(
-                                        withId(android.R.id.content),
+                                        withClassName(is("android.widget.LinearLayout")),
                                         0),
-                                2),
+                                1),
                         isDisplayed()));
-        button.perform(click());
+        appCompatButton.perform(click());
+
+        // Added a sleep statement to match the app's execution delay.
+        // The recommended way to handle such scenarios is to use Espresso idling resources:
+        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         ViewInteraction tabView = onView(
-                allOf(childAtPosition(
-                        childAtPosition(
-                                withId(R.id.info_tabLayout),
-                                0),
-                        1),
-                        isDisplayed()));
-        tabView.perform(click());
-
-        ViewInteraction appCompatTextView = onView(
-                allOf(withId(R.id.linksView), isDisplayed()));
-        appCompatTextView.perform(replaceText("Escuela de Ciencias de la Computación e Informatica \n\nOficina de Registro e Informacion \n\nMuseo +UCR \n\n"), closeSoftKeyboard());
-
-        ViewInteraction tabView2 = onView(
-                allOf(childAtPosition(
-                        childAtPosition(
-                                withId(R.id.info_tabLayout),
-                                0),
-                        1),
-                        isDisplayed()));
-        tabView2.perform(click());
-
-        ViewInteraction tabView3 = onView(
-                allOf(childAtPosition(
-                        childAtPosition(
-                                withId(R.id.info_tabLayout),
-                                0),
-                        1),
-                        isDisplayed()));
-        tabView3.perform(click());
-
-        ViewInteraction tabView4 = onView(
-                allOf(childAtPosition(
-                        childAtPosition(
-                                withId(R.id.info_tabLayout),
-                                0),
-                        2),
-                        isDisplayed()));
-        tabView4.perform(click());
-
-        ViewInteraction tabView5 = onView(
                 allOf(childAtPosition(
                         childAtPosition(
                                 withId(R.id.tabs),
                                 0),
                         1),
                         isDisplayed()));
-        tabView5.perform(click());
+        tabView.perform(click());
 
         openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
 
-        ViewInteraction tabView6 = onView(
+        ViewInteraction appCompatTextView = onView(
+                allOf(withId(R.id.title), withText("Tutorial"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withClassName(is("android.support.v7.view.menu.ListMenuItemView")),
+                                        0),
+                                0),
+                        isDisplayed()));
+        appCompatTextView.perform(click());
+
+        ViewInteraction tabView2 = onView(
                 allOf(childAtPosition(
                         childAtPosition(
                                 withId(R.id.tabs),
                                 0),
                         0),
                         isDisplayed()));
-        tabView6.perform(click());
+        tabView2.perform(click());
 
-      /*  ViewInteraction appCompatImageButton = onView(
-                allOf(withId(R.id.backButton),
-                        childAtPosition(
-                                allOf(withId(R.id.linearLayout),
-                                        childAtPosition(
-                                                withId(R.id.info_content),
-                                                0)),
-                                0),
-                        isDisplayed()));
-        appCompatImageButton.perform(click());
-*/
     }
 
     private static Matcher<View> childAtPosition(

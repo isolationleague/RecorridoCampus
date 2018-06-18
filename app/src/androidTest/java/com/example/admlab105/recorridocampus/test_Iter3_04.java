@@ -16,25 +16,23 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
-import static android.support.test.espresso.action.ViewActions.replaceText;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static org.hamcrest.Matchers.allOf;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class StartScreenTest {
+public class test_Iter3_04 {
 
     @Rule
     public ActivityTestRule<StartScreen> mActivityTestRule = new ActivityTestRule<>(StartScreen.class);
 
     @Test
-    public void startScreenTest() {
+    public void test_Iter3_04() {
         // Added a sleep statement to match the app's execution delay.
         // The recommended way to handle such scenarios is to use Espresso idling resources:
         // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
@@ -54,77 +52,66 @@ public class StartScreenTest {
                         isDisplayed()));
         button.perform(click());
 
-        ViewInteraction tabView = onView(
-                allOf(childAtPosition(
+        // Added a sleep statement to match the app's execution delay.
+        // The recommended way to handle such scenarios is to use Espresso idling resources:
+        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        ViewInteraction imageButton = onView(
+                allOf(withContentDescription("Navegar hacia arriba"),
                         childAtPosition(
-                                withId(R.id.info_tabLayout),
-                                0),
-                        1),
-                        isDisplayed()));
-        tabView.perform(click());
-
-        ViewInteraction appCompatTextView = onView(
-                allOf(withId(R.id.linksView), isDisplayed()));
-        appCompatTextView.perform(replaceText("Escuela de Ciencias de la Computación e Informatica \n\nOficina de Registro e Informacion \n\nMuseo +UCR \n\n"), closeSoftKeyboard());
-
-        ViewInteraction tabView2 = onView(
-                allOf(childAtPosition(
-                        childAtPosition(
-                                withId(R.id.info_tabLayout),
-                                0),
-                        1),
-                        isDisplayed()));
-        tabView2.perform(click());
-
-        ViewInteraction tabView3 = onView(
-                allOf(childAtPosition(
-                        childAtPosition(
-                                withId(R.id.info_tabLayout),
-                                0),
-                        1),
-                        isDisplayed()));
-        tabView3.perform(click());
-
-        ViewInteraction tabView4 = onView(
-                allOf(childAtPosition(
-                        childAtPosition(
-                                withId(R.id.info_tabLayout),
-                                0),
-                        2),
-                        isDisplayed()));
-        tabView4.perform(click());
-
-        ViewInteraction tabView5 = onView(
-                allOf(childAtPosition(
-                        childAtPosition(
-                                withId(R.id.tabs),
-                                0),
-                        1),
-                        isDisplayed()));
-        tabView5.perform(click());
-
-        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
-
-        ViewInteraction tabView6 = onView(
-                allOf(childAtPosition(
-                        childAtPosition(
-                                withId(R.id.tabs),
-                                0),
-                        0),
-                        isDisplayed()));
-        tabView6.perform(click());
-
-      /*  ViewInteraction appCompatImageButton = onView(
-                allOf(withId(R.id.backButton),
-                        childAtPosition(
-                                allOf(withId(R.id.linearLayout),
+                                allOf(withId(R.id.toolbar),
                                         childAtPosition(
-                                                withId(R.id.info_content),
+                                                withId(R.id.appbar),
                                                 0)),
                                 0),
                         isDisplayed()));
+        imageButton.check(matches(isDisplayed()));
+
+        // Added a sleep statement to match the app's execution delay.
+        // The recommended way to handle such scenarios is to use Espresso idling resources:
+        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        ViewInteraction appCompatImageButton = onView(
+                allOf(withContentDescription("Navegar hacia arriba"),
+                        childAtPosition(
+                                allOf(withId(R.id.toolbar),
+                                        childAtPosition(
+                                                withId(R.id.appbar),
+                                                0)),
+                                2),
+                        isDisplayed()));
         appCompatImageButton.perform(click());
-*/
+
+        // Added a sleep statement to match the app's execution delay.
+        // The recommended way to handle such scenarios is to use Espresso idling resources:
+        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        ViewInteraction imageButton2 = onView(
+                allOf(withContentDescription("Navegar hacia arriba"),
+                        childAtPosition(
+                                allOf(withId(R.id.toolbar),
+                                        childAtPosition(
+                                                withId(R.id.appbar),
+                                                0)),
+                                0),
+                        isDisplayed()));
+        imageButton2.check(matches(isDisplayed()));
+
     }
 
     private static Matcher<View> childAtPosition(

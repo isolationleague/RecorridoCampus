@@ -20,21 +20,24 @@ import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
-import static android.support.test.espresso.action.ViewActions.replaceText;
+import static android.support.test.espresso.action.ViewActions.swipeLeft;
+import static android.support.test.espresso.action.ViewActions.swipeRight;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.is;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class StartScreenTest {
+public class StartScreenTest2 {
 
     @Rule
     public ActivityTestRule<StartScreen> mActivityTestRule = new ActivityTestRule<>(StartScreen.class);
 
     @Test
-    public void startScreenTest() {
+    public void startScreenTest2() {
         // Added a sleep statement to match the app's execution delay.
         // The recommended way to handle such scenarios is to use Espresso idling resources:
         // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
@@ -54,77 +57,94 @@ public class StartScreenTest {
                         isDisplayed()));
         button.perform(click());
 
+        // Added a sleep statement to match the app's execution delay.
+        // The recommended way to handle such scenarios is to use Espresso idling resources:
+        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         ViewInteraction tabView = onView(
-                allOf(childAtPosition(
-                        childAtPosition(
-                                withId(R.id.info_tabLayout),
-                                0),
-                        1),
-                        isDisplayed()));
-        tabView.perform(click());
-
-        ViewInteraction appCompatTextView = onView(
-                allOf(withId(R.id.linksView), isDisplayed()));
-        appCompatTextView.perform(replaceText("Escuela de Ciencias de la Computación e Informatica \n\nOficina de Registro e Informacion \n\nMuseo +UCR \n\n"), closeSoftKeyboard());
-
-        ViewInteraction tabView2 = onView(
-                allOf(childAtPosition(
-                        childAtPosition(
-                                withId(R.id.info_tabLayout),
-                                0),
-                        1),
-                        isDisplayed()));
-        tabView2.perform(click());
-
-        ViewInteraction tabView3 = onView(
-                allOf(childAtPosition(
-                        childAtPosition(
-                                withId(R.id.info_tabLayout),
-                                0),
-                        1),
-                        isDisplayed()));
-        tabView3.perform(click());
-
-        ViewInteraction tabView4 = onView(
-                allOf(childAtPosition(
-                        childAtPosition(
-                                withId(R.id.info_tabLayout),
-                                0),
-                        2),
-                        isDisplayed()));
-        tabView4.perform(click());
-
-        ViewInteraction tabView5 = onView(
                 allOf(childAtPosition(
                         childAtPosition(
                                 withId(R.id.tabs),
                                 0),
                         1),
                         isDisplayed()));
-        tabView5.perform(click());
+        tabView.perform(click());
+
+        ViewInteraction customViewPager = onView(
+                allOf(withId(R.id.container),
+                        childAtPosition(
+                                allOf(withId(R.id.main_content),
+                                        childAtPosition(
+                                                withId(android.R.id.content),
+                                                0)),
+                                1),
+                        isDisplayed()));
+        customViewPager.perform(swipeLeft());
+
+        // Added a sleep statement to match the app's execution delay.
+        // The recommended way to handle such scenarios is to use Espresso idling resources:
+        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
 
-        ViewInteraction tabView6 = onView(
+        // Added a sleep statement to match the app's execution delay.
+        // The recommended way to handle such scenarios is to use Espresso idling resources:
+        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        ViewInteraction appCompatTextView = onView(
+                allOf(withId(R.id.title), withText("Tutorial"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withClassName(is("android.support.v7.view.menu.ListMenuItemView")),
+                                        0),
+                                0),
+                        isDisplayed()));
+        appCompatTextView.perform(click());
+
+        // Added a sleep statement to match the app's execution delay.
+        // The recommended way to handle such scenarios is to use Espresso idling resources:
+        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        ViewInteraction tabView2 = onView(
                 allOf(childAtPosition(
                         childAtPosition(
                                 withId(R.id.tabs),
                                 0),
                         0),
                         isDisplayed()));
-        tabView6.perform(click());
+        tabView2.perform(click());
 
-      /*  ViewInteraction appCompatImageButton = onView(
-                allOf(withId(R.id.backButton),
+        ViewInteraction customViewPager2 = onView(
+                allOf(withId(R.id.container),
                         childAtPosition(
-                                allOf(withId(R.id.linearLayout),
+                                allOf(withId(R.id.main_content),
                                         childAtPosition(
-                                                withId(R.id.info_content),
+                                                withId(android.R.id.content),
                                                 0)),
-                                0),
+                                1),
                         isDisplayed()));
-        appCompatImageButton.perform(click());
-*/
+        customViewPager2.perform(swipeRight());
+
     }
 
     private static Matcher<View> childAtPosition(
