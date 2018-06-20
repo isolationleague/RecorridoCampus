@@ -72,6 +72,11 @@ import java.util.List;
 import static android.content.Context.VIBRATOR_SERVICE;
 
 
+/**
+ * Esta es la tab de mapa donde se pasa la mayor parte del tiempo.
+ * Esta se llama como un fragment.
+ */
+
 public class Tab1Fragment extends Fragment {
     private MapView map;
     private MyLocationNewOverlay mMyLocationOverlay;
@@ -82,26 +87,47 @@ public class Tab1Fragment extends Fragment {
     private LinkedList<Marker> sitios;
     private BaseSitiosHelper db;
 
+    private int ultimoMarcador;
+
     private static final int PERMISSIONS_REQUEST_LOCATION = 1;
 
     ArrayList<OverlayItem> marcadores;
     ArrayList<GeoPoint> marcadores2;
-    ArrayList<Marker> marcadores3;
+
+    ArrayList<Marker> nodeMarkers;
 
     ArrayList<Double> radios;
     boolean dentroDeRadio;
 
-    TextView nombreSitioCercano;
+    //TextView nombreSitioCercano;
 
     Handler handler;
     Handler cercania;
 
     GeoPoint user;
 
+    Polyline roadOverlay;
+    Road road;
+    //Marker nodeMarker;
+
+    /**
+     * Creación del mapa, y cargado de puntos de interés con la
+     * información de la base de datos
+     * Crea handler y listener para los eventos continuos y los ontaps
+     * devuelve la vista inflada
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
+
         almacenar();// Petición de permiso para external storage
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+        final RoadManager roadManager = new OSRMRoadManager(this.getContext());
+        //roadManager.addRequestOption("locale=de");
+        //final RoadManager roadManager = new MapQuestRoadManager("abFjCNXvcQZoTpxMEDe0G2blJqvzroOg");
+        //roadManager.addRequestOption("routeType=bicycle");
 
         db = BaseSitiosHelper.getInstance(this.getContext().getApplicationContext());
         View view = inflater.inflate(R.layout.tab1_fragment, container, false);
@@ -109,7 +135,7 @@ public class Tab1Fragment extends Fragment {
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
 
         map = view.findViewById(R.id.map);
-
+        ultimoMarcador=0;
 
         map.getTileProvider().setTileSource(TileSourceFactory.MAPNIK);
 
@@ -117,7 +143,7 @@ public class Tab1Fragment extends Fragment {
         map.setMultiTouchControls(true);
 
         IMapController mapController = map.getController();
-        mapController.setZoom(17);
+        mapController.setZoom(17.0);
         GeoPoint startPoint = new GeoPoint(9.9370, -84.0510);
         mapController.setCenter(startPoint);
 
@@ -127,7 +153,7 @@ public class Tab1Fragment extends Fragment {
         ImageButton btnCampus = view.findViewById(R.id.btnCampus);
         ImageButton btnUser = view.findViewById(R.id.btnUser);
         ImageButton btnCerca = view.findViewById(R.id.btnCerca);
-        nombreSitioCercano = view.findViewById(R.id.nombreSitioText);
+        //nombreSitioCercano = view.findViewById(R.id.nombreSitioText);
 
 
         btnUser.setOnClickListener(new View.OnClickListener() {
@@ -153,8 +179,8 @@ public class Tab1Fragment extends Fragment {
 
         marcadores = new ArrayList<OverlayItem>();
         marcadores2 = new ArrayList<GeoPoint>();
-        marcadores3 = new ArrayList<Marker>();
         radios = new ArrayList<Double>();
+        nodeMarkers = new ArrayList<Marker>();
         dentroDeRadio= false;
 
         sitios = new LinkedList<Marker>();
@@ -175,7 +201,15 @@ public class Tab1Fragment extends Fragment {
         }
 
 
+
+
+
         ItemizedIconOverlay.OnItemGestureListener<OverlayItem> gestureListener = new OnItemGestureListener<OverlayItem>() {
+            /**
+             * Evento de tap en un punto de interés
+             * Devuelve información acerca del punto
+             * @param item punto de interés presionado
+             */
             @Override
             public boolean onItemSingleTapUp(final int index, final OverlayItem item) {
 
@@ -187,11 +221,67 @@ public class Tab1Fragment extends Fragment {
                 mark.setPosition(geo);
                 mark.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
 
-                mark.showInfoWindow();
+
+                marcadores2.add(user);
+                marcadores2.add(geo);
+
+                map.getOverlays().remove(road);
+                map.getOverlays().remove(roadOverlay);
                 map.invalidate();
+                road = roadManager.getRoad(marcadores2);
+                if (road.mStatus != Road.STATUS_OK){
+                    System.out.println("Error en getRoad");
+                }
+                roadOverlay = RoadManager.buildRoadOverlay(road);
+                map.getOverlays().add(roadOverlay);
+
+
+                //if (nodeMarkers != null) {
+                    //nodeMarkers.clear();
+                    map.getOverlays().remove(nodeMarkers);
+                //}
+                for (Marker nodeMarker : nodeMarkers){
+                    nodeMarker.remove(map);
+                }
+                nodeMarkers.clear();
+
+                //map.invalidate();
+
+                Drawable nodeIcon = getResources().getDrawable(R.drawable.moreinfo_arrow);
+                for (int i=0; i<road.mNodes.size(); i++){
+                    RoadNode node = road.mNodes.get(i);
+                    Marker nodeMarker = new Marker(map);
+
+                    nodeMarker.setPosition(node.mLocation);
+                    nodeMarker.setIcon(nodeIcon);
+                    nodeMarker.setTitle("Paso "+i);
+
+
+                    nodeMarker.setSnippet(node.mInstructions);
+                    nodeMarker.setSubDescription(Road.getLengthDurationText(getContext(), node.mLength, node.mDuration));
+                    Drawable icon = getResources().getDrawable(R.drawable.osm_ic_follow_me);
+                    nodeMarker.setImage(icon);
+
+                    nodeMarkers.add(nodeMarker);
+                    map.getOverlays().add(nodeMarker);
+
+                    //map.getOverlays().remove(nodeMarker);
+                    //nodeMarker = null;
+                }
+
+                marcadores2.clear();
+
+                mark.showInfoWindow();
+                //map.invalidate();
+
                 return true;
             }
 
+            /**
+             * Evento de presionado por largo tiempo un punto de interés
+             * Abre la ventana de información del punto
+             * @param item punto de interés
+             */
             @Override
             public boolean onItemLongPress(final int index, final OverlayItem item) {
                 if (estaDentroDeRadio(item)) {
@@ -226,33 +316,50 @@ public class Tab1Fragment extends Fragment {
 
     }
 
+    /**
+     * Cacula cuál punto de interés es el más cercano al dispositivo
+     * comparando las distancias de todos con respecto al usuario
+     */
     public void calculoCercania(){
-       int cercania=(int)user.distanceToAsDouble(marcadores.get(0).getPoint());
-       String nombre=marcadores.get(0).getTitle();
-        for(int i=1;i<marcadores.size();++i){
-            int cercania2=(int)user.distanceToAsDouble(marcadores.get(i).getPoint());
-            if(cercania2<cercania){
-            cercania=cercania2;
-            nombre=marcadores.get(i).getTitle();
+        if(user!=null){
+            int cercania=(int)user.distanceToAsDouble(marcadores.get(0).getPoint());
+            String nombre=marcadores.get(0).getTitle();
+            for(int i=1;i<marcadores.size();++i){
+                int cercania2=(int)user.distanceToAsDouble(marcadores.get(i).getPoint());
+                if(cercania2<cercania){
+                    cercania=cercania2;
+                    nombre=marcadores.get(i).getTitle();
+                }
             }
+            Toast.makeText(getActivity(), "El sitio más cercano es "+nombre+" que esta a "+cercania+" mts. de usted",Toast.LENGTH_LONG).show();
         }
-        Toast.makeText(getActivity(), "El sitio más cercano es "+nombre+" que esta a "+cercania+" mts. de usted",Toast.LENGTH_LONG).show();
     }
 
+    /**
+     * Detecta si el dispositivo está suficientemente
+     * cerca de un punto de interés
+     */
     public void cercaniaActiva(){
-            if (marcadores.size() != 0) {
-                OverlayItem aux = marcadores.get(0);
 
-                System.out.println("Me estoy ejecutando");
+            if (marcadores.size() != 0) {
+
+                Drawable grayMarker = this.getResources().getDrawable(R.drawable.sitio);
+                OverlayItem aux = marcadores.get(ultimoMarcador);
+
+                //System.out.println("Me estoy ejecutando");
+
                 if (user != null) {
-                    int cercania = (int) user.distanceToAsDouble(marcadores.get(0).getPoint());
-                    String nombre = marcadores.get(0).getTitle();
-                    for (int i = 1; i < marcadores.size(); ++i) {
+                    int cercania = (int) user.distanceToAsDouble(marcadores.get(ultimoMarcador).getPoint());
+                   // String nombre = marcadores.get(0).getTitle();
+                    for (int i = 0; i < marcadores.size(); ++i) {
                         int cercania2 = (int) user.distanceToAsDouble(marcadores.get(i).getPoint());
                         if (cercania2 < cercania) {
+                            OverlayItem ultimo = marcadores.get(ultimoMarcador);
+                            ultimo.setMarker(grayMarker);
                             cercania = cercania2;
-                            nombre = marcadores.get(i).getTitle();
+                            //nombre = marcadores.get(i).getTitle();
                             aux = marcadores.get(i);
+                            ultimoMarcador=i;
                         }
                     }
                     if (estaDentroDeRadio(aux) && !dentroDeRadio) {
@@ -262,14 +369,20 @@ public class Tab1Fragment extends Fragment {
                     if (!estaDentroDeRadio(aux)) {
                         dentroDeRadio = false;
                     }
+                    Drawable newMarker = this.getResources().getDrawable(R.drawable.sitio_cercano);
+                    aux.setMarker(newMarker);
+                    //nombreSitioCercano.setText(nombre);
 
-                    nombreSitioCercano.setText(nombre);
                 }
             }
         }
 
 
-
+    /**
+     * Decide si se está dentro o no del radio de un punto de interés
+     * @param item punto de interés
+     * @return true si se está dentro del radio, false si se está fuera
+     */
     public boolean estaDentroDeRadio(OverlayItem item){
         int distancia = (int) user.distanceToAsDouble(item.getPoint());
 
@@ -279,6 +392,10 @@ public class Tab1Fragment extends Fragment {
         return true;
     }
 
+    /**
+     * Accede al contenido de cada punto de interés en el mapa
+     * @param item punto de interés seleccionado
+     */
     public void iniciarActivity(final OverlayItem item){
         Bundle arg = new Bundle();
         arg.putString("etiq", item.getTitle());
@@ -292,18 +409,25 @@ public class Tab1Fragment extends Fragment {
     }
 
 
+
     public void onClick(Marker mark){
         Toast.makeText(getActivity(),mark.getTitle() ,
                 Toast.LENGTH_LONG).show();
     }
 
+    /**
+     * Coloca la vista del mapa en el campus de la UCR
+     */
     private void volverCampus(){
         IMapController mapController = map.getController();
-        mapController.setZoom(17);
+        mapController.setZoom(17.0);
         GeoPoint startPoint = new GeoPoint(9.9370,-84.0510);
         mapController.setCenter(startPoint);
     }
 
+    /**
+     * Solicita permisos para almacenamiento externo en el dispositivo
+     */
     private void almacenar() {
         int check = ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
         if (check == PackageManager.PERMISSION_GRANTED) {
@@ -313,6 +437,11 @@ public class Tab1Fragment extends Fragment {
         }
     }
 
+    /**
+     * Obtiene la ubicación del dispositivo
+     * Pide los permisos del usuario y aprovecha de los listeners para ejecutar el
+     * actualizar ubicacion
+     */
     private void miUbic() {
 
         try {
@@ -323,14 +452,8 @@ public class Tab1Fragment extends Fragment {
                                 android.Manifest.permission.ACCESS_FINE_LOCATION},
                         PERMISSIONS_REQUEST_LOCATION);
             }
-
-
-
-
-
             LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-
-        Location location = null;
+            Location location = null;
         try {
 
             // getting GPS status
@@ -431,7 +554,12 @@ public class Tab1Fragment extends Fragment {
 
     }
 
-
+    /**
+     * Manejador de permiso
+     * @param requestCode codigo de permiso
+     * @param permissions lista de permisos
+     * @param grantResults resultados de la peticion
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
@@ -454,6 +582,10 @@ public class Tab1Fragment extends Fragment {
         }
     }
 
+    /**
+     * Actualiza la ubicación GPS del dispositivo en el mapa
+     * @param location localización del dispositivo
+     */
     private void actualizarUbic(Location location) {
         if (location != null) {
             lat = location.getLatitude();
@@ -461,6 +593,12 @@ public class Tab1Fragment extends Fragment {
             agregarMarcador(lat, lon);
         }
     }
+
+    /**
+     * Crea el marcador de usuario. Llamado por actualizarUbic
+     * @param la Latitud del usuario
+     * @param lo Longitud del usuario
+     */
 
     private void agregarMarcador(double la, double lo) {
         lat=la;
@@ -477,7 +615,6 @@ public class Tab1Fragment extends Fragment {
         }
         map.getOverlays().add(marker);
         map.invalidate();
-
 
     }
 
@@ -503,6 +640,10 @@ public class Tab1Fragment extends Fragment {
         map.onPause();  //needed for compass, my location overlays, v6.0.0 and up
     }
 
+    /**
+     * Agrega un Marker al mapa
+     * @param point sitio donde se va a colocar el Marker
+     */
     public void addMarker(GeoPoint point){
         org.osmdroid.views.overlay.Marker marker = new org.osmdroid.views.overlay.Marker(map);
         marker.setPosition(point);
@@ -516,7 +657,9 @@ public class Tab1Fragment extends Fragment {
         map.invalidate();
 
     }
-
+    /**
+     * Activa la vibración del dispositivo durante 1 segundo
+     */
     public void activarVibracion() {
         if (Build.VERSION.SDK_INT >= 26) {
             ((Vibrator) this.getContext().getSystemService(VIBRATOR_SERVICE)).vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));

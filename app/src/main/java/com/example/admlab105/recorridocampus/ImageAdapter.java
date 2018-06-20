@@ -19,6 +19,12 @@ public class ImageAdapter extends BaseAdapter {
     //private BaseSitiosHelper db;
     // references to our images
     public  ArrayList<Integer> mThumbIds;
+
+    /**
+     * Inicializa los valores del contenedor de imagenes
+     * @param c contexto de la aplicacion
+     * @param l String que es el nombre del lugar del cual se deben cargar las imagenes
+     */
     public ImageAdapter(Context c,String l) {
         mContext = c;
         lugar =l;

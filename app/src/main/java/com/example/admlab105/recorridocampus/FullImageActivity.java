@@ -12,6 +12,11 @@ import java.util.ArrayList;
 
 public class FullImageActivity extends Activity {
 
+    /**
+     * Funcion de despliegue en pantalla completa de una imagen seleccionada en el grid de
+     * imagenes del sitio seleccionado
+     * @param savedInstanceState estado de instanciacion
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,6 +37,11 @@ public class FullImageActivity extends Activity {
 
     }
 
+    /**
+     * Al tocar la imagen desplegada en pantalla completa, retorna a la vista del Grid
+     * @param event evento de toque de la imagen
+     * @return retorna a la actividad anterior
+     */
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         this.finish();
