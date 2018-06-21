@@ -133,10 +133,11 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-        final RoadManager roadManager = new /*GraphHopperRoadManager("abFjCNXvcQZoTpxMEDe0G2blJqvzroOg", true);*/OSRMRoadManager(this.getContext());
-        //roadManager.addRequestOption("locale=de");
+        final RoadManager roadManager = new OSRMRoadManager(this.getContext());
         //final RoadManager roadManager = new MapQuestRoadManager("abFjCNXvcQZoTpxMEDe0G2blJqvzroOg");
-        //roadManager.addRequestOption("routeType=pedestrian");
+        //final RoadManager roadManager = new GraphHopperRoadManager("0c6678b7-2d7f-41d2-9ddc-4a8487d4df7b", true);
+        //roadManager.addRequestOption("locale=es");
+        //roadManager.addRequestOption("vehicle=foot");
 
 
 
@@ -218,10 +219,6 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
 
             @Override
             public boolean onScroll(ScrollEvent paramScrollEvent) {
-                // public boolean onDrag(boolean b) {
-                //IGeoPoint ij = map.getMapCenter();
-                //Double lat = ij.getLatitude();
-                //Double lon = ij.getLongitude();
                 InfoWindow.closeAllInfoWindowsOn(map);
                 //Toast.makeText(getContext(), "drag", Toast.LENGTH_SHORT).show();
 
@@ -273,11 +270,10 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
                 roadOverlay = RoadManager.buildRoadOverlay(road);
                 map.getOverlays().add(roadOverlay);
 
-
-                //if (nodeMarkers != null) {
-                    //nodeMarkers.clear();
+                if (nodeMarkers != null) {
+                    nodeMarkers.clear();
                     map.getOverlays().remove(nodeMarkers);
-                //}
+                }
                 for (Marker nodeMarker : nodeMarkers){
                     nodeMarker.remove(map);
                 }
