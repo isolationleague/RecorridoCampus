@@ -112,6 +112,14 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         if (id == R.id.preferencias) {
+            /*MenuPreferencias menu = new MenuPreferencias();
+            android.app.FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            transaction.replace(R.id.frameLayout, menu, "tag1");
+            transaction.addToBackStack(null);
+            transaction.commit();*/
+            //Fragment currentFragment = this.getSupportFragmentManager().findFragmentById(R.id.frameLayout);
+            Intent i = new Intent(MainActivity.this, MenuPreferencias.class);
+            startActivity(i);
             Toast.makeText(this, "Preferencias", Toast.LENGTH_SHORT).show();
             return true;
         }

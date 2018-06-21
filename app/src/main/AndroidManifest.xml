@@ -51,7 +51,7 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBAoSBVrfD75NvXO9y6j5KLsVJzKmhy1ws" />
-
+        <activity android:name=".MenuPreferencias" />
         <activity android:name=".Mapa" />
         <activity
             android:name=".Intro_activity"
