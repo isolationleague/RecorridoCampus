@@ -199,11 +199,6 @@ public class Tab1Fragment extends Fragment {
              } while (c.moveToNext());
 
         }
-
-
-
-
-
         ItemizedIconOverlay.OnItemGestureListener<OverlayItem> gestureListener = new OnItemGestureListener<OverlayItem>() {
             /**
              * Evento de tap en un punto de interés
@@ -284,12 +279,12 @@ public class Tab1Fragment extends Fragment {
              */
             @Override
             public boolean onItemLongPress(final int index, final OverlayItem item) {
-                if (estaDentroDeRadio(item)) {
+                ///if (estaDentroDeRadio(item)) {
                     iniciarActivity(item);
-                } else {
+                /*} else {
                     String mensaje = " Se encuentra muy lejos de este punto, acérquese más";
                     Toast.makeText(getActivity(), mensaje, Toast.LENGTH_LONG).show();
-                }
+                }*/
                 return true;
             }
         };
