@@ -159,7 +159,7 @@ public class Tab1Fragment extends Fragment {
         btnUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                miUbic();
+                miUbic(true);
             }
         });
 
@@ -306,7 +306,7 @@ public class Tab1Fragment extends Fragment {
             public void run() {
                 //System.out.println("El handler se ejecuto");
                 cercaniaActiva();
-                miUbic();
+                miUbic(false);
                 cercania.postDelayed(this, 1000);
             }
         };
@@ -442,7 +442,7 @@ public class Tab1Fragment extends Fragment {
      * Pide los permisos del usuario y aprovecha de los listeners para ejecutar el
      * actualizar ubicacion
      */
-    private void miUbic() {
+    private void miUbic(final boolean zoom) {
 
         try {
             if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -474,7 +474,7 @@ public class Tab1Fragment extends Fragment {
                     android.location.LocationListener locationListener1 = new android.location.LocationListener() {
                         @Override
                         public void onLocationChanged(Location location) {
-                            actualizarUbic(location);
+                            actualizarUbic(location, zoom);
                             //fragment_updater();
                             //cercaniaActiva();
 
@@ -510,7 +510,7 @@ public class Tab1Fragment extends Fragment {
                             @Override
                             public void onLocationChanged(Location location) {
                                 try {
-                                    actualizarUbic(location);
+                                    actualizarUbic(location, zoom);
                                 }catch (IllegalStateException ise){}
                                 //fragment_updater();
                                 //cercaniaActiva();
@@ -548,7 +548,7 @@ public class Tab1Fragment extends Fragment {
         }
 
 
-        actualizarUbic(location);
+        actualizarUbic(location, zoom);
         } catch (NullPointerException npe) {}
 
 
@@ -586,11 +586,11 @@ public class Tab1Fragment extends Fragment {
      * Actualiza la ubicación GPS del dispositivo en el mapa
      * @param location localización del dispositivo
      */
-    private void actualizarUbic(Location location) {
+    private void actualizarUbic(Location location, boolean zoom) {
         if (location != null) {
             lat = location.getLatitude();
             lon = location.getLongitude();
-            agregarMarcador(lat, lon);
+            agregarMarcador(lat, lon, zoom);
         }
     }
 
@@ -600,7 +600,7 @@ public class Tab1Fragment extends Fragment {
      * @param lo Longitud del usuario
      */
 
-    private void agregarMarcador(double la, double lo) {
+    private void agregarMarcador(double la, double lo, boolean zoom) {
         lat=la;
         lon=lo;
         //CameraUpdate miUbic = CameraUpdateFactory.newLatLngZoom(coord, 16f);
@@ -614,6 +614,14 @@ public class Tab1Fragment extends Fragment {
             marker.setIcon(getResources().getDrawable(R.drawable.ubicacion));
         }
         map.getOverlays().add(marker);
+
+        if(zoom==true){
+            IMapController mapController = map.getController();
+            mapController.setZoom(17.0);
+            GeoPoint markerLocale = new GeoPoint(lat,lon);
+            mapController.setCenter(markerLocale);
+        }
+
         map.invalidate();
 
     }

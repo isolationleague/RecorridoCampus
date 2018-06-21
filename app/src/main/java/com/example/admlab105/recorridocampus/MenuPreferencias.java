@@ -18,10 +18,18 @@ import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 public class MenuPreferencias extends AppCompatActivity{
 
     Button btnPref;
-
+    String line;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,10 +42,10 @@ public class MenuPreferencias extends AppCompatActivity{
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(b==true){
-                    prueba();
+                    writeToFile("1");
                 }
                 else {
-                    prueba();
+                    writeToFile("0");
                 }
             }
         });
@@ -47,7 +55,9 @@ public class MenuPreferencias extends AppCompatActivity{
         btnPref.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(vibracion.isChecked()){
+                String res=ReadFile();
+                System.out.println(res);
+                if(res.equals("1")){
                     prueba();
                 }
                 else {
@@ -69,6 +79,68 @@ public class MenuPreferencias extends AppCompatActivity{
 
     }
 
+    public String ReadFile(){
+
+
+        try {
+            FileInputStream fileInputStream = new FileInputStream (new File(getFilesDir()+ File.separator+"preferencias/" + "preferencias.txt"));
+
+            File lugar = new File (getFilesDir()+ File.separator+"preferencias/" + "preferencias.txt");
+
+            if(lugar.exists()){
+                System.err.println("Existo");
+            }
+
+            InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            StringBuilder stringBuilder = new StringBuilder();
+
+            while ( (line = bufferedReader.readLine()) != null )
+            {
+                stringBuilder.append(line);// + System.getProperty("line.separator"));
+            }
+            fileInputStream.close();
+            line = stringBuilder.toString();
+
+            bufferedReader.close();
+        }
+        catch(FileNotFoundException ex) {
+            //Log.d(TAG, ex.getMessage());
+        }
+        catch(IOException ex) {
+            //Log.d(TAG, ex.getMessage());
+        }
+        System.out.println("Es un "+line);
+        return line;
+    }
+
+
+    private void writeToFile(String data) {
+
+        File folder = new File(getFilesDir() + File.separator + "preferencias");
+
+        if(!folder.exists()){
+            System.err.println("Se hizo el folder");
+            folder.mkdir();
+        }
+
+
+        File archivoimagen=new File(folder,"preferencias.txt");
+
+        if(archivoimagen.exists()){
+            System.out.println("El archivo existe");
+        }
+
+        FileWriter writer = null;
+        try {
+            writer = new FileWriter(archivoimagen);
+            writer.append(data);
+            //writer.flush();
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
 /*
 package com.example.jay.myapplication;
