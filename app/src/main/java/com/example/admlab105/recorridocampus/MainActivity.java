@@ -4,6 +4,7 @@ import android.app.ActionBar;
 import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -35,6 +36,12 @@ public class MainActivity extends AppCompatActivity {
     public ViewPager mViewPager;
     private boolean isUserClickedBackButton = false;
     public int marcador=0;
+
+    /**
+     * Creacion de la vista principal de la aplicacion
+     * Define los fragments para el despliegue del mapa, y el de la informacion del recorrido
+     *  y la barra pprincipal de la aplicacion
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,11 +68,18 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Inicializaci'on y despliegue de la vista principal
+     */
     @Override
     public View onCreateView(String name, Context context, AttributeSet attrs) {
         return super.onCreateView(name, context, attrs);
     }
 
+    /**
+     * Creacion del menu de opciones
+     * @param menu: menu de opciones
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -73,6 +87,11 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Creacion de las opciones del menu(de acuerdo al xml) y definicion de los eventos para cuando una opcion
+     * es seleccionada
+     * @param item: opcion del menu seleccionada
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -99,6 +118,11 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Agrega las vistas apropiadas para el despliegue de las opciones del tab en el menu principal
+     * (Mapa y recorrido)
+     * @param viewPager: vista para el despliegue de los fragments mapa o recorrido
+     */
     private void setupViewPager(ViewPager viewPager) {
         SectionsPageAdapter adapter = new SectionsPageAdapter(getSupportFragmentManager());
         adapter.addFragment(new Tab1Fragment(), "Mapa");
@@ -106,7 +130,11 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(adapter);
     }
 
-
+    /**
+     * Manejo del evento de presionar atr'as en el telefono
+     * Retorna a vistas anteriores dentro de la plicacion al presionar
+     * al presionar atras dos veces desde la vista principal sale de la aplicaci'on
+     */
     @Override
     public void onBackPressed() {
         Fragment currentFragment = this.getSupportFragmentManager().findFragmentById(R.id.frameLayout);
@@ -114,7 +142,16 @@ public class MainActivity extends AppCompatActivity {
             // do something with f
             /*((Tab1Fragment) currentFragment).doSomething();*/
             if (!isUserClickedBackButton) {
-                Toast.makeText(this,"Presione de nuevo para salir", Toast.LENGTH_LONG).show();
+                final Toast toast =Toast.makeText(this,"Presione de nuevo para salir", Toast.LENGTH_LONG);
+                toast.show();
+
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        toast.cancel();
+                    }
+                }, 500);
                 isUserClickedBackButton = true;
             } else {
                 super.onBackPressed();

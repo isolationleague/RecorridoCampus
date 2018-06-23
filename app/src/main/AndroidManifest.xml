@@ -25,7 +25,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"
-            android:label="Un Recorrido por el Campus"
+            android:label="@string/app_name"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"></activity>
@@ -57,7 +57,7 @@
             android:name=".Intro_activity"
             android:noHistory="true" />
         <activity android:name=".FullImageActivity" />
-        <activity android:name=".MenuPreferencias"></activity>
+        <!--<activity android:name=".MenuPreferencias"></activity>-->
     </application>
 
 </manifest>
