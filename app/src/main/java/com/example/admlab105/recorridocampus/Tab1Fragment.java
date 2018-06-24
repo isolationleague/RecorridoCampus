@@ -91,7 +91,6 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
 
     double lat = 0.0, lon = 0.0;
     private Marker marker;
-    private Marker marker2;
     private LinkedList<Marker> sitios;
     private BaseSitiosHelper db;
     MapEventsOverlay mapEventsOverlay;
@@ -101,23 +100,15 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
     private static final int PERMISSIONS_REQUEST_LOCATION = 1;
 
     ArrayList<OverlayItem> marcadores;
-    ArrayList<GeoPoint> marcadores2;
 
     ArrayList<Marker> nodeMarkers;
 
     ArrayList<Double> radios;
     boolean dentroDeRadio;
 
-    //TextView nombreSitioCercano;
-
-    Handler handler;
-    Handler cercania;
 
     GeoPoint user;
 
-    Polyline roadOverlay;
-    Road road;
-    //Marker nodeMarker;
 
     /**
      * Creación del mapa, y cargado de puntos de interés con la
@@ -130,16 +121,6 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
 
 
         almacenar();// Petición de permiso para external storage
-
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
-        final RoadManager roadManager = new /*GraphHopperRoadManager("abFjCNXvcQZoTpxMEDe0G2blJqvzroOg", true);*/OSRMRoadManager(this.getContext());
-        //roadManager.addRequestOption("locale=de");
-        //final RoadManager roadManager = new MapQuestRoadManager("abFjCNXvcQZoTpxMEDe0G2blJqvzroOg");
-        //roadManager.addRequestOption("routeType=pedestrian");
-
-
-
 
         db = BaseSitiosHelper.getInstance(this.getContext().getApplicationContext());
         View view = inflater.inflate(R.layout.tab1_fragment, container, false);
@@ -190,7 +171,6 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
         });
 
         marcadores = new ArrayList<OverlayItem>();
-        marcadores2 = new ArrayList<GeoPoint>();
         radios = new ArrayList<Double>();
         nodeMarkers = new ArrayList<Marker>();
         dentroDeRadio= false;
@@ -212,9 +192,7 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
 
         }
 
-
-
-        map.setMapListener(new DelayedMapListener(new MapListener() {
+         map.setMapListener(new DelayedMapListener(new MapListener() {
 
             @Override
             public boolean onScroll(ScrollEvent paramScrollEvent) {
@@ -239,9 +217,6 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
 
         }));
 
-
-
-
         ItemizedIconOverlay.OnItemGestureListener<OverlayItem> gestureListener = new OnItemGestureListener<OverlayItem>() {
             /**
              * Evento de tap en un punto de interés
@@ -260,20 +235,6 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
                 mark.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
 
 
-                marcadores2.add(user);
-                marcadores2.add(geo);
-
-                map.getOverlays().remove(road);
-                map.getOverlays().remove(roadOverlay);
-                map.invalidate();
-                road = roadManager.getRoad(marcadores2);
-                if (road.mStatus != Road.STATUS_OK){
-                    System.out.println("Error en getRoad");
-                }
-                roadOverlay = RoadManager.buildRoadOverlay(road);
-                map.getOverlays().add(roadOverlay);
-
-
                 //if (nodeMarkers != null) {
                     //nodeMarkers.clear();
                     map.getOverlays().remove(nodeMarkers);
@@ -283,34 +244,7 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
                 }
                 nodeMarkers.clear();
 
-                //map.invalidate();
-
-                Drawable nodeIcon = getResources().getDrawable(R.drawable.moreinfo_arrow);
-                for (int i=0; i<road.mNodes.size(); i++){
-                    RoadNode node = road.mNodes.get(i);
-                    Marker nodeMarker = new Marker(map);
-
-                    nodeMarker.setPosition(node.mLocation);
-                    nodeMarker.setIcon(nodeIcon);
-                    nodeMarker.setTitle("Paso "+i);
-
-
-                    nodeMarker.setSnippet(node.mInstructions);
-                    nodeMarker.setSubDescription(Road.getLengthDurationText(getContext(), node.mLength, node.mDuration));
-                    Drawable icon = getResources().getDrawable(R.drawable.osm_ic_follow_me);
-                    nodeMarker.setImage(icon);
-
-                    nodeMarkers.add(nodeMarker);
-                    map.getOverlays().add(nodeMarker);
-
-                    //map.getOverlays().remove(nodeMarker);
-                    //nodeMarker = null;
-                }
-
-                marcadores2.clear();
-
                 mark.showInfoWindow();
-                //map.invalidate();
 
                 return true;
             }
@@ -715,7 +649,6 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
         marker.setPosition(point);
         //marker.setAnchor(Marker.ANCHOR_BOTTOM, Marker.ANCHOR_CENTER);
         marker.setTitle("UCR");
-        //marker.setIcon(getResources().getDrawable(R.drawable.cat));
         IMapController mapController = map.getController();
         mapController.setCenter(point);
         //map.getOverlays().clear();
@@ -734,13 +667,3 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
         }
     }
 }
-
-// https://github.com/MKergall/osmbonuspack/wiki/features
-
-// mostrar cuadros de texto
-//https://help.openstreetmap.org/questions/61347/osmdroid-how-do-i-show-and-hide-markers-description-on-click
-//https://stackoverflow.com/questions/23108709/show-marker-details-with-image-onclick-marker-openstreetmap?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
-
-
-//https://www.programcreek.com/java-api-examples/?class=org.osmdroid.bonuspack.routing.RoadManager&method=getRoad
-//https://stackoverflow.com/questions/46191243/how-to-set-drag-start-and-end-listener-on-my-custom-osmdroid-map
