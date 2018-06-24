@@ -21,6 +21,7 @@ import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.service.carrier.CarrierMessagingService;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresPermission;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -53,6 +54,12 @@ import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
 import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.OverlayItem;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import org.osmdroid.util.GeoPoint;
@@ -98,6 +105,8 @@ public class Tab1Fragment extends Fragment {
 
     ArrayList<Double> radios;
     boolean dentroDeRadio;
+
+    String line;
 
     //TextView nombreSitioCercano;
 
@@ -363,7 +372,10 @@ public class Tab1Fragment extends Fragment {
                         }
                     }
                     if (estaDentroDeRadio(aux) && !dentroDeRadio) {
+
+                        if(ReadFile().equals("1")){
                         activarVibracion();
+                        }
                         dentroDeRadio = true;
                     }
                     if (!estaDentroDeRadio(aux)) {
@@ -407,6 +419,42 @@ public class Tab1Fragment extends Fragment {
         transaction.addToBackStack(null);
         transaction.commit();
     }
+
+
+    public String ReadFile(){
+
+        File lugar = new File (getContext().getFilesDir()+ File.separator+"preferencias/" + "preferencias.txt");
+        if(!lugar.exists()){
+            return null;
+        }
+        else{
+            try {
+            FileInputStream fileInputStream = new FileInputStream (new File(getContext().getFilesDir()+ File.separator+"preferencias/" + "preferencias.txt"));
+
+
+
+            InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            StringBuilder stringBuilder = new StringBuilder();
+
+            while ( (line = bufferedReader.readLine()) != null )
+            {
+                stringBuilder.append(line);// + System.getProperty("line.separator"));
+            }
+            fileInputStream.close();
+            line = stringBuilder.toString();
+
+            bufferedReader.close();
+        }
+        catch(FileNotFoundException ex) {
+            //Log.d(TAG, ex.getMessage());
+        }
+        catch(IOException ex) {
+            //Log.d(TAG, ex.getMessage());
+        }
+        System.out.println("Es un "+line);
+        return line;
+    }}
 
 
 
