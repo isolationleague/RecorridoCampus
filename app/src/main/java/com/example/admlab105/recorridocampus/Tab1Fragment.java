@@ -1,50 +1,31 @@
 package com.example.admlab105.recorridocampus;
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.StrictMode;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
-import android.service.carrier.CarrierMessagingService;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.TextView;
 import android.widget.Toast;
 import org.osmdroid.api.IMapController;
-import org.osmdroid.bonuspack.routing.MapQuestRoadManager;
-import org.osmdroid.bonuspack.routing.OSRMRoadManager;
-import org.osmdroid.bonuspack.routing.GraphHopperRoadManager;
-import org.osmdroid.bonuspack.routing.Road;
-import org.osmdroid.bonuspack.routing.RoadManager;
-import org.osmdroid.bonuspack.routing.RoadNode;
 import org.osmdroid.config.Configuration;
-import org.osmdroid.events.DelayedMapListener;
 import org.osmdroid.events.MapEventsReceiver;
 import org.osmdroid.events.MapListener;
 import org.osmdroid.events.ScrollEvent;
@@ -53,29 +34,15 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
-import org.osmdroid.views.overlay.ItemizedOverlay;
-import org.osmdroid.views.overlay.ItemizedOverlayControlView;
-import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
 import org.osmdroid.views.overlay.MapEventsOverlay;
-import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.OverlayItem;
-
 import java.util.ArrayList;
-
-import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.MapController;
-import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
-import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.ItemizedIconOverlay.OnItemGestureListener;
-import org.osmdroid.views.overlay.OverlayItem;
-import org.osmdroid.views.overlay.OverlayManager;
-import org.osmdroid.views.overlay.Polyline;
 import org.osmdroid.views.overlay.infowindow.InfoWindow;
-import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
-import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
+//import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 import java.util.LinkedList;
-import java.util.List;
+import java.util.Objects;
 
 import static android.content.Context.VIBRATOR_SERVICE;
 
@@ -87,7 +54,7 @@ import static android.content.Context.VIBRATOR_SERVICE;
 
 public class Tab1Fragment extends Fragment implements MapEventsReceiver{
     private MapView map;
-    private MyLocationNewOverlay mMyLocationOverlay;
+    //private MyLocationNewOverlay mMyLocationOverlay;
 
     double lat = 0.0, lon = 0.0;
     private Marker marker;
@@ -192,18 +159,11 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
 
         }
 
-         map.setMapListener(new DelayedMapListener(new MapListener() {
+         map.addMapListener((new MapListener() {
 
             @Override
             public boolean onScroll(ScrollEvent paramScrollEvent) {
-                // public boolean onDrag(boolean b) {
-                //IGeoPoint ij = map.getMapCenter();
-                //Double lat = ij.getLatitude();
-                //Double lon = ij.getLongitude();
                 InfoWindow.closeAllInfoWindowsOn(map);
-                //Toast.makeText(getContext(), "drag", Toast.LENGTH_SHORT).show();
-
-
                 return true;
             }
 
@@ -211,7 +171,6 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
             @Override
             public boolean onZoom(ZoomEvent event) {
                 InfoWindow.closeAllInfoWindowsOn(map);
-                //Toast.makeText(getContext(), "zoom", Toast.LENGTH_SHORT).show();
                 return false;
             }
 
@@ -346,14 +305,13 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
 
                 if (user != null) {
                     int cercania = (int) user.distanceToAsDouble(marcadores.get(ultimoMarcador).getPoint());
-                   // String nombre = marcadores.get(0).getTitle();
+
                     for (int i = 0; i < marcadores.size(); ++i) {
                         int cercania2 = (int) user.distanceToAsDouble(marcadores.get(i).getPoint());
                         if (cercania2 < cercania) {
                             OverlayItem ultimo = marcadores.get(ultimoMarcador);
                             ultimo.setMarker(grayMarker);
                             cercania = cercania2;
-                            //nombre = marcadores.get(i).getTitle();
                             aux = marcadores.get(i);
                             ultimoMarcador=i;
                         }
@@ -398,7 +356,6 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
         arg.putString("etiq", item.getTitle());
         InfoFragment fragment = new InfoFragment();
         fragment.setArguments(arg);
-        //FragmentManager fm = getFragmentManager();
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.frameLayout, fragment, "tag1");
         transaction.addToBackStack(null);
@@ -559,7 +516,7 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
      */
     @Override
     public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
+                                           @NonNull String permissions[], int[] grantResults) {
         switch (requestCode) {
             case PERMISSIONS_REQUEST_LOCATION: {
                 // If request is cancelled, the result arrays are empty.
@@ -571,7 +528,6 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
                 }
-                return;
             }
 
             // other 'case' lines to check for other
@@ -661,9 +617,7 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
      */
     public void activarVibracion() {
         if (Build.VERSION.SDK_INT >= 26) {
-            ((Vibrator) this.getContext().getSystemService(VIBRATOR_SERVICE)).vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
-        } else {
-            ((Vibrator) this.getContext().getSystemService(VIBRATOR_SERVICE)).vibrate(1000);
-        }
+            ((Vibrator) Objects.requireNonNull(this.getContext().getSystemService(VIBRATOR_SERVICE))).vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+        } else ((Vibrator) this.getContext().getSystemService(VIBRATOR_SERVICE)).vibrate(1000);
     }
 }
