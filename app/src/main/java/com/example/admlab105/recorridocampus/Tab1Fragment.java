@@ -579,9 +579,6 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
         }
     }
 
-
-
-
     /**
      * Actualiza la ubicación GPS del dispositivo en el mapa
      * @param location localización del dispositivo
@@ -649,6 +646,7 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
         marker.setPosition(point);
         //marker.setAnchor(Marker.ANCHOR_BOTTOM, Marker.ANCHOR_CENTER);
         marker.setTitle("UCR");
+        //marker.setIcon(getResources().getDrawable(R.drawable.cat));
         IMapController mapController = map.getController();
         mapController.setCenter(point);
         //map.getOverlays().clear();
@@ -667,3 +665,9 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
         }
     }
 }
+
+// https://github.com/MKergall/osmbonuspack/wiki/features
+
+// mostrar cuadros de texto
+//https://help.openstreetmap.org/questions/61347/osmdroid-how-do-i-show-and-hide-markers-description-on-click
+//https://stackoverflow.com/questions/23108709/show-marker-details-with-image-onclick-marker-openstreetmap?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa

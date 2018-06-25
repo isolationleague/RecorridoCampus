@@ -51,13 +51,21 @@ public class ImageAdapter extends BaseAdapter {
                 mThumbIds.add(R.drawable.inge8);
                 mThumbIds.add(R.drawable.inge9);
                 break;
+            case "Busto de Clodomiro Picado por Juan Rafael Chacón":
+                mThumbIds.add(R.drawable.bclodomiropp);
+                mThumbIds.add(R.drawable.bclodomirop);
+                break;
             case "Edificio de la Escuela de Arquitectura,arquitectura":
 
                 break;
-            case "Casa del SINDEU":
+            case "Instituto Confucio y  Casa del SINDEU":
+                mThumbIds.add(R.drawable.sindeup);
+                mThumbIds.add(R.drawable.sindeu02);
+                mThumbIds.add(R.drawable.sindeu01);
                 mThumbIds.add(R.drawable.sindeu);
                 break;
             case "Busto del profesor Carlos Monge Alfaro":
+                mThumbIds.add(R.drawable.bcarlosmonge);
                 mThumbIds.add(R.drawable.bcarlosmonge1);
                 mThumbIds.add(R.drawable.bcarlosmonge2);
                 break;
@@ -68,9 +76,11 @@ public class ImageAdapter extends BaseAdapter {
                 mThumbIds.add(R.drawable.fuente4);
                 break;
             case "Estatua de Rodrigo Facio Brenes":
+                mThumbIds.add(R.drawable.erodrigofp);
                 mThumbIds.add(R.drawable.erodrigof);
                 break;
             case "Edificio de Escuela de Estudios Generales":
+                mThumbIds.add(R.drawable.generalesp);
                 mThumbIds.add(R.drawable.generales1);
                 mThumbIds.add(R.drawable.generales2);
                 mThumbIds.add(R.drawable.generales3);
@@ -82,23 +92,52 @@ public class ImageAdapter extends BaseAdapter {
                 mThumbIds.add(R.drawable.generales9);
                 break;
             case "Jardín escultórico":
+                mThumbIds.add(R.drawable.jardinp);
                 mThumbIds.add(R.drawable.jardin1);
                 mThumbIds.add(R.drawable.jardin2);
                 break;
             case "Edificio de la Escuela de Química":
+                mThumbIds.add(R.drawable.quimicap);
                 mThumbIds.add(R.drawable.quimica1);
                 mThumbIds.add(R.drawable.quimica2);
                 mThumbIds.add(R.drawable.quimica3);
                 break;
-            case "Busto de Clodomiro Picado por Juan Rafael Chacón":
-                mThumbIds.add(R.drawable.bclodomirop);
+            case "Escultura de Leda Astorga":
+                mThumbIds.add(R.drawable.ledaastorga);
+                break;
+            case "Bronce. Marisel Jiménez Rittner. Biblioteca Luis Demetrio Tinoco":
+                mThumbIds.add(R.drawable.bronce);
+                break;
+            case "Busto de Luis Demetrio Tinoco":
+                mThumbIds.add(R.drawable.luisdemetriot);
+                break;
+            case "Busto del Lic. Fernando Baudrit Solera":
+                mThumbIds.add(R.drawable.fernandobaudrit);
+                break;
+            case "Eva. Bronce":
+                mThumbIds.add(R.drawable.evabronce);
+                break;
+            case "Conjunto de esculturas: bustos de Margarita Bertheau":
+                mThumbIds.add(R.drawable.yolandaeunicemargarita);
+                break;
+            case "Esculturas de José Sancho":
+                mThumbIds.add(R.drawable.portadajs);
+                mThumbIds.add(R.drawable.antarticosjs);
+                mThumbIds.add(R.drawable.gransierpejs);
+                mThumbIds.add(R.drawable.ososamorososjs);
+                mThumbIds.add(R.drawable.hachasjs);
+                mThumbIds.add(R.drawable.parejajs);
+                mThumbIds.add(R.drawable.reptiljs);
+                mThumbIds.add(R.drawable.tropeljs);
                 break;
             case "Edificio de la Facultad de Microbiología":
+                mThumbIds.add(R.drawable.microbiologiap);
+                mThumbIds.add(R.drawable.microbiologia01);
                 mThumbIds.add(R.drawable.micro1);
                 mThumbIds.add(R.drawable.micro2);
                 break;
             case "Busto de Pasteur":
-
+                 mThumbIds.add(R.drawable.pasteur);
                 break;
             case "Plaza 24 de abril":
                 mThumbIds.add(R.drawable.abril1);
@@ -113,9 +152,14 @@ public class ImageAdapter extends BaseAdapter {
                 mThumbIds.add(R.drawable.educa5);
                 mThumbIds.add(R.drawable.educa6);
                 mThumbIds.add(R.drawable.educa7);
-
                 break;
-
+            case "Edificio de la Facultad de Medicina":
+                mThumbIds.add(R.drawable.medicina);
+                break;
+            case "Edificio de Escuela Centroamericana de Geología":
+                mThumbIds.add(R.drawable.geologiap1);
+                mThumbIds.add(R.drawable.geologiap2);
+                break;
         }
 
     }

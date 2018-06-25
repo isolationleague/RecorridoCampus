@@ -166,7 +166,33 @@ public class InfoTextsFragment extends Fragment {
         if (audioPlayer != null){
             audioPlayer.release();
         }
-        audioPlayer = MediaPlayer.create(getActivity(), R.raw.lacus_somniorum);
+        //eleccion de audio
+        String audio="";
+        //audioPlayer = MediaPlayer.create(getActivity(), R.raw.lacus_somniorum);
+        switch (etiqueta)
+        {
+            case "Edificio de la Escuela de Química":
+                audio="quimicaaudio";
+                break;
+            case "Edificio de Escuela de Estudios Generales":
+                audio="generalesaudio";
+                break;
+            case "Edificio de la Facultad de Microbiología":
+                audio= "microaudio";
+                break;
+            case "Edificio de la Facultad de Medicina":
+                audio= "medicinaaudio";
+                break;
+            case "Edificio de Escuela Centroamericana de Geología":
+                audio= "geologiaaudio";
+                break;
+                default:
+                    audioPlayer = MediaPlayer.create(getActivity(), R.raw.lacus_somniorum);
+                    break;
+        }
+        //getResources().getIdentifier(audio, "raw", getContext().getPackageName());
+
+        audioPlayer = MediaPlayer.create(getActivity(),getResources().getIdentifier(audio, "raw", getContext().getPackageName()) );
         //audioPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         seekBar.setMax(audioPlayer.getDuration());
         audioPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
