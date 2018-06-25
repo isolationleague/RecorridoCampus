@@ -425,7 +425,7 @@ public class Tab1Fragment extends Fragment {
 
         File lugar = new File (getContext().getFilesDir()+ File.separator+"preferencias/" + "preferencias.txt");
         if(!lugar.exists()){
-            return null;
+            return "1";
         }
         else{
             try {

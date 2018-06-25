@@ -79,41 +79,35 @@ public class MenuPreferencias extends AppCompatActivity{
 
     }
 
-    public String ReadFile(){
+    public String ReadFile() {
 
+        File lugar = new File(getFilesDir() + File.separator + "preferencias/" + "preferencias.txt");
+        if (!lugar.exists()) {
+            System.out.println("No existo asi que salgo");
+            return "1";
+        } else {
+            try {
+                FileInputStream fileInputStream = new FileInputStream(new File(getFilesDir() + File.separator + "preferencias/" + "preferencias.txt"));
+                InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                StringBuilder stringBuilder = new StringBuilder();
 
-        try {
-            FileInputStream fileInputStream = new FileInputStream (new File(getFilesDir()+ File.separator+"preferencias/" + "preferencias.txt"));
+                while ((line = bufferedReader.readLine()) != null) {
+                    stringBuilder.append(line);// + System.getProperty("line.separator"));
+                }
+                fileInputStream.close();
+                line = stringBuilder.toString();
 
-            File lugar = new File (getFilesDir()+ File.separator+"preferencias/" + "preferencias.txt");
-
-            if(lugar.exists()){
-                System.err.println("Existo");
+                bufferedReader.close();
+            } catch (FileNotFoundException ex) {
+                //Log.d(TAG, ex.getMessage());
+            } catch (IOException ex) {
+                //Log.d(TAG, ex.getMessage());
             }
-
-            InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
-            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-            StringBuilder stringBuilder = new StringBuilder();
-
-            while ( (line = bufferedReader.readLine()) != null )
-            {
-                stringBuilder.append(line);// + System.getProperty("line.separator"));
-            }
-            fileInputStream.close();
-            line = stringBuilder.toString();
-
-            bufferedReader.close();
+            System.out.println("Es un " + line);
+            return line;
         }
-        catch(FileNotFoundException ex) {
-            //Log.d(TAG, ex.getMessage());
-        }
-        catch(IOException ex) {
-            //Log.d(TAG, ex.getMessage());
-        }
-        System.out.println("Es un "+line);
-        return line;
     }
-
 
     private void writeToFile(String data) {
 
