@@ -1,13 +1,16 @@
 package com.example.admlab105.recorridocampus;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Application;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Build;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresPermission;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,7 +18,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -29,7 +34,13 @@ import java.io.InputStreamReader;
 public class MenuPreferencias extends AppCompatActivity{
 
     Button btnPref;
+    Button save_user;
     String line;
+    TextView user;
+    AlertDialog user_input;
+    EditText user_edit;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,20 +53,59 @@ public class MenuPreferencias extends AppCompatActivity{
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(b==true){
-                    writeToFile("1");
+                    writeToFile("1","preferencias");
                 }
                 else {
-                    writeToFile("0");
+                    writeToFile("0","preferencias");
                 }
             }
         });
+        save_user = findViewById(R.id.btn_save_user);
+        save_user.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                writeToFile(user.getText().toString(),"usuario");
+            }
+        });
 
+
+        //https://www.youtube.com/watch?v=9ManYWNqKJo
+        user=findViewById(R.id.user_text);
+
+        if(!ReadFile("usuario").equals("1")){
+            user.setText(ReadFile("usuario"));
+        }
+        else{
+            user.setText("Usuario");
+        }
+
+
+        user_input=new AlertDialog.Builder(this).create();
+        user_edit=new EditText(this);
+
+        user_input.setTitle("Introduzca Nombre de Usuario");
+        user_input.setView(user_edit);
+
+        user_input.setButton(DialogInterface.BUTTON_POSITIVE, "Guardar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                user.setText(user_edit.getText());
+            }
+        });
+
+        user.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                user_edit.setText(user.getText());
+                user_input.show();
+            }
+        });
 
         btnPref = findViewById(R.id.btnPrueba);
         btnPref.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String res=ReadFile();
+                String res=ReadFile("preferencias");
                 System.out.println(res);
                 if(res.equals("1")){
                     prueba();
@@ -65,6 +115,8 @@ public class MenuPreferencias extends AppCompatActivity{
                 }
             }
         });
+
+
     }
 
     public void prueba(){
@@ -79,15 +131,15 @@ public class MenuPreferencias extends AppCompatActivity{
 
     }
 
-    public String ReadFile() {
+    public String ReadFile(String location) {
 
-        File lugar = new File(getFilesDir() + File.separator + "preferencias/" + "preferencias.txt");
+        File lugar = new File(getFilesDir() + File.separator + location+"/"+location+".txt");
         if (!lugar.exists()) {
             System.out.println("No existo asi que salgo");
             return "1";
         } else {
             try {
-                FileInputStream fileInputStream = new FileInputStream(new File(getFilesDir() + File.separator + "preferencias/" + "preferencias.txt"));
+                FileInputStream fileInputStream = new FileInputStream(new File(getFilesDir() + File.separator + location+"/"+location+".txt"));
                 InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
                 StringBuilder stringBuilder = new StringBuilder();
@@ -109,9 +161,9 @@ public class MenuPreferencias extends AppCompatActivity{
         }
     }
 
-    private void writeToFile(String data) {
+    private void writeToFile(String data, String location) {
 
-        File folder = new File(getFilesDir() + File.separator + "preferencias");
+        File folder = new File(getFilesDir() + File.separator + location);
 
         if(!folder.exists()){
             System.err.println("Se hizo el folder");
@@ -119,15 +171,15 @@ public class MenuPreferencias extends AppCompatActivity{
         }
 
 
-        File archivoimagen=new File(folder,"preferencias.txt");
+        File pref_txt=new File(folder,location+".txt");
 
-        if(archivoimagen.exists()){
+        if(pref_txt.exists()){
             System.out.println("El archivo existe");
         }
 
         FileWriter writer = null;
         try {
-            writer = new FileWriter(archivoimagen);
+            writer = new FileWriter(pref_txt);
             writer.append(data);
             //writer.flush();
             writer.close();
