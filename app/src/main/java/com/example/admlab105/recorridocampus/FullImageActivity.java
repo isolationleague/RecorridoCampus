@@ -49,7 +49,7 @@ public class FullImageActivity extends Activity {
 
         ImageView imageView = (ImageView) findViewById(R.id.full_image_view);
         imageView.setImageResource(imageAdapter.mThumbIds.get(position));
-
+*/
     }
 
     /**
@@ -104,7 +104,7 @@ public class FullImageActivity extends Activity {
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
             Context context = getApplicationContext();
-            ImageView imageView = new ImageView(context);
+            TouchImageView imageView = new TouchImageView(context);
             int padding = context.getResources().getDimensionPixelSize(
                     R.dimen.padding_small);
             imageView.setPadding(padding, padding, padding, padding);
