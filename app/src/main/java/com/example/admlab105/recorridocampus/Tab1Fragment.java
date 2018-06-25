@@ -419,7 +419,6 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
                     .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
             if (!isGPSEnabled && !isNetworkEnabled) {
-                int i;
                 // location service disabled
             } else {
                 // if GPS Enabled get lat/long using GPS Services
