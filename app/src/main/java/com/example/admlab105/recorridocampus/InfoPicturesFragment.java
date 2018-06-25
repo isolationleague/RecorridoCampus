@@ -56,6 +56,7 @@ public class InfoPicturesFragment extends Fragment {
                     // passing array index
                     i.putExtra("etiq",etiqueta);
                     i.putExtra("id", position);
+
                     startActivity(i);
 
                 }
