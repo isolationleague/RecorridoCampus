@@ -41,8 +41,10 @@ public class FullImageActivity extends Activity {
         ImageAdapter imageAdapter = new ImageAdapter(this,etiqueta);
         ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
         ArrayList<Integer>fotos = imageAdapter.mThumbIds;
-        ImagePagerAdapter adapter = new ImagePagerAdapter(fotos);
+        ImagePagerAdapter adapter = new ImagePagerAdapter(fotos,position);
         viewPager.setAdapter(adapter);
+        viewPager.setCurrentItem(position);
+
 /*
         ArrayList<String>fotos = new ArrayList<>();//***por ahora VACIO
         ImageAdapter imageAdapter = new ImageAdapter(this,etiqueta);
@@ -72,13 +74,14 @@ public class FullImageActivity extends Activity {
         //private int[] mImages;
         private ArrayList<Integer> mImages= new ArrayList<Integer>();
         private String nombreLugar="";
-
+        int pos=0;
         /**
          * Inicializa los valores del pageadapter y recibe como parametro los nombres de   imagenes que debe mostrar
          * @param e arraylist con los nombres de imagenes
          */
-        public ImagePagerAdapter(ArrayList<Integer> e){
+        public ImagePagerAdapter(ArrayList<Integer> e,int position){
             mImages = e;
+            pos=position;
         }
 
         /**
@@ -123,6 +126,10 @@ public class FullImageActivity extends Activity {
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
             ((ViewPager) container).removeView((ImageView) object);
+
         }
+
+
     }
+
 }
