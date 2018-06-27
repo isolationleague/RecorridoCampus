@@ -6,19 +6,27 @@ import android.app.Application;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Build;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresPermission;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,6 +35,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -39,10 +48,13 @@ public class MenuPreferencias extends AppCompatActivity{
     TextView user;
     AlertDialog user_input;
     EditText user_edit;
-
+    Button button2;
+    ImageView imagen_usuario;
+    static final int REQUEST_CODE=1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu_preferencias);
         //View view = inflater.inflate(R.layout.activity_menu_preferencias, container, false);
@@ -115,7 +127,16 @@ public class MenuPreferencias extends AppCompatActivity{
                 }
             }
         });
-
+        button2 = findViewById(R.id.button2);
+        button2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "Select Picture"),REQUEST_CODE);
+            }
+        });
 
     }
 
@@ -130,6 +151,37 @@ public class MenuPreferencias extends AppCompatActivity{
         }
 
     }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        try {
+            switch (requestCode) {
+
+                case REQUEST_CODE:
+                    if (resultCode == Activity.RESULT_OK) {
+                        //data gives you the image uri. Try to convert that to bitmap
+                        Uri selectedImage = data.getData();
+                        Bitmap bitmap = null;
+                        try {
+                            bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
+                            writeImage(bitmap);
+                            loadImageFromStorage();
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        break;
+                    } else if (resultCode == Activity.RESULT_CANCELED) {
+                       // Log.e(TAG, "Selecting picture cancelled");
+                    }
+                    break;
+            }
+        } catch (Exception e) {
+            //Log.e(TAG, "Exception in onActivityResult : " + e.getMessage());
+        }
+    }
+
 
     public String ReadFile(String location) {
 
@@ -187,6 +239,48 @@ public class MenuPreferencias extends AppCompatActivity{
             e.printStackTrace();
         }
     }
+
+    private void writeImage(Bitmap image) {
+
+        File folder = new File(getFilesDir() + File.separator + "imagen");
+
+        if(!folder.exists()){
+            System.err.println("Se hizo el folder");
+            folder.mkdir();
+        }
+
+
+        File user_image=new File(folder,"imagen.jpg");
+
+        if(user_image.exists()){
+            System.out.println("El archivo existe");
+        }
+        FileOutputStream fos=null;
+
+        try {
+            fos= new FileOutputStream(user_image);
+            image.compress(Bitmap.CompressFormat.PNG, 100, fos);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadImageFromStorage()
+    {
+
+        try {
+            File f=new File(getFilesDir() + File.separator + "imagen", "imagen.jpg");
+            Bitmap b = BitmapFactory.decodeStream(new FileInputStream(f));
+            ImageView img = findViewById(R.id.iconouser);
+            img.setImageBitmap(b);
+        }
+        catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+
+    }
+
 }
 /*
 package com.example.jay.myapplication;
