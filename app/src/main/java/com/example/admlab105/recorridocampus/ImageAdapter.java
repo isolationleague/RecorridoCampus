@@ -55,9 +55,7 @@ public class ImageAdapter extends BaseAdapter {
                 mThumbIds.add(R.drawable.bclodomiropp);
                 mThumbIds.add(R.drawable.bclodomirop);
                 break;
-            case "Edificio de la Escuela de Arquitectura,arquitectura":
 
-                break;
             case "Instituto Confucio y  Casa del SINDEU":
                 mThumbIds.add(R.drawable.sindeup);
                 mThumbIds.add(R.drawable.sindeu02);
@@ -140,6 +138,7 @@ public class ImageAdapter extends BaseAdapter {
                  mThumbIds.add(R.drawable.pasteur);
                 break;
             case "Plaza 24 de abril":
+                mThumbIds.add(R.drawable.abrilp);
                 mThumbIds.add(R.drawable.abril1);
                 mThumbIds.add(R.drawable.abril2);
                 mThumbIds.add(R.drawable.abril3);
@@ -160,6 +159,26 @@ public class ImageAdapter extends BaseAdapter {
                 mThumbIds.add(R.drawable.geologiap1);
                 mThumbIds.add(R.drawable.geologiap2);
                 break;
+            case "Edificio de la Escuela de Arquitectura":
+                mThumbIds.add(R.drawable.arquip);
+                mThumbIds.add(R.drawable.arqui);
+                break;
+            case "Busto de Omar Dengo":
+                mThumbIds.add(R.drawable.omardengo);
+                break;
+            case "Busto del Dr. Solón Núñez Frutos" :
+                mThumbIds.add(R.drawable.frutos);
+                break;
+            case "Busto del Dr. José Joaquín Jiménez N.":
+                mThumbIds.add(R.drawable.bjosejoaquinjimenez);
+                break;
+            case "Busto del Dr. Rafael Angel Calderón Guardia":
+                mThumbIds.add(R.drawable.calderon);
+                break;
+            case "Busto del Ing. Fabio Baudrit Moreno" :
+                mThumbIds.add(R.drawable.fabio_baudrit);
+                break;
+
         }
 
     }
