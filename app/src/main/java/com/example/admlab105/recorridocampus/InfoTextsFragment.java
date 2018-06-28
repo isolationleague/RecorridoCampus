@@ -168,8 +168,10 @@ public class InfoTextsFragment extends Fragment {
         }
         //eleccion de audio
         String audio="";
-        //audioPlayer = MediaPlayer.create(getActivity(), R.raw.lacus_somniorum);
-        switch (etiqueta)
+        audio = db.obtengaTexto(etiqueta);
+        audio= audio +"audio";
+
+       /* switch (etiqueta)
         {
             case "Edificio de la Escuela de Química":
                 audio="quimicaaudio";
@@ -189,7 +191,7 @@ public class InfoTextsFragment extends Fragment {
                 default:
                     audioPlayer = MediaPlayer.create(getActivity(), R.raw.lacus_somniorum);
                     break;
-        }
+        }*/
         //getResources().getIdentifier(audio, "raw", getContext().getPackageName());
 
         audioPlayer = MediaPlayer.create(getActivity(),getResources().getIdentifier(audio, "raw", getContext().getPackageName()) );
