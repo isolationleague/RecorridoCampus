@@ -59,10 +59,11 @@ public class MainActivity extends AppCompatActivity {
        // getSupportActionBar().setDisplayShowHomeEnabled(false);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 onBackPressed();
             }
         });
@@ -137,8 +138,8 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     public void onBackPressed() {
-        Fragment currentFragment = this.getSupportFragmentManager().findFragmentById(R.id.frameLayout);
-        if(!(currentFragment instanceof InfoFragment)) {
+        Fragment currentFragment = this.getSupportFragmentManager().findFragmentById(R.id.container);
+        if((currentFragment instanceof InfoFragment)) {
             // do something with f
             /*((Tab1Fragment) currentFragment).doSomething();*/
             if (!isUserClickedBackButton) {

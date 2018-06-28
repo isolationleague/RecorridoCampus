@@ -310,10 +310,6 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
         }
     }
 
-
-
-
-
     @Override
     public boolean singleTapConfirmedHelper(GeoPoint p) {
         InfoWindow.closeAllInfoWindowsOn(map);
