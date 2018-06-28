@@ -25,7 +25,7 @@ public class BaseSitiosHelper extends SQLiteOpenHelper {
 
     private static BaseSitiosHelper sInstance;
 
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     private static final String DATABASE_NAME = "BaseSitios.db";
     Context context;
 //https://www.androiddesignpatterns.com/2012/05/correctly-managing-your-sqlite-database.html

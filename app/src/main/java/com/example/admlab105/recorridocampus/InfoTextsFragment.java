@@ -230,7 +230,7 @@ public class InfoTextsFragment extends Fragment {
     /**
      * Clase que implementa el slideshow para mostrar imagenes en la vista de informacion general del sitio
      */
-    private class ImagePagerAdapter extends PagerAdapter {
+    public class ImagePagerAdapter extends PagerAdapter {
         //obener imagenes para el slideshow
        //private int[] mImages;
        private ArrayList<Integer> mImages= new ArrayList<Integer>();

@@ -30,7 +30,6 @@ public class ImageAdapter extends BaseAdapter {
         lugar =l;
         mThumbIds= new ArrayList<Integer>();
         int marcador =0;
-        //mThumbIds.add(R.drawable.cat);
         //mThumbIds.add(R.drawable.bird0);
         switch (lugar){
             case "Edificio de la Facultad de Ciencias Económicas":
@@ -39,7 +38,7 @@ public class ImageAdapter extends BaseAdapter {
                 mThumbIds.add(R.drawable.economicas3);
                 mThumbIds.add(R.drawable.economicas4);
                 mThumbIds.add(R.drawable.economicas5);
-            break;
+                break;
             case "Edificio de la Facultad de Ingeniería":
                 mThumbIds.add(R.drawable.inge1);
                 mThumbIds.add(R.drawable.inge2);
@@ -178,7 +177,6 @@ public class ImageAdapter extends BaseAdapter {
             case "Busto del Ing. Fabio Baudrit Moreno" :
                 mThumbIds.add(R.drawable.fabio_baudrit);
                 break;
-
         }
 
     }
