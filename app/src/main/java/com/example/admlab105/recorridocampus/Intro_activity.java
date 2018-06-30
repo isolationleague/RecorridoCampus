@@ -136,7 +136,7 @@ public class Intro_activity extends Activity {
         if (audioPlayer != null){
             audioPlayer.release();
         }
-        audioPlayer = MediaPlayer.create(getApplicationContext(), R.raw.lacus_somniorum);
+        audioPlayer = MediaPlayer.create(getApplicationContext(), R.raw.introduccion);
         //audioPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         seekBar.setMax(audioPlayer.getDuration());
         audioPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
