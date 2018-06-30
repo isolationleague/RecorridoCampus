@@ -35,6 +35,7 @@ public class InfoFragment extends Fragment {
         etiqueta = this.getArguments().getString("etiq");
         db = BaseSitiosHelper.getInstance(this.getContext());
         setRetainInstance(true);
+        db.setVisitado(etiqueta);
         //((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 

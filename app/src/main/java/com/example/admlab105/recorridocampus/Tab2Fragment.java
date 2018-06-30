@@ -25,6 +25,7 @@ public class Tab2Fragment extends Fragment {
     private static final String TAG = "Tab2Fragment";
     private Button btn;
     private ArrayList<String> sitios;
+    private ArrayList<Integer> visitados;
     private BaseSitiosHelper db;
 
     @Nullable
@@ -35,12 +36,15 @@ public class Tab2Fragment extends Fragment {
         db = BaseSitiosHelper.getInstance(this.getContext().getApplicationContext());
 
         sitios = new ArrayList<>();
+        visitados = new ArrayList<>();
+
         Cursor c = db.obtenerLugares();
 
 
         if (c.moveToFirst()) {
             do {
                 sitios.add(c.getString(0));
+                visitados.add(new Integer(c.getInt(4)));
             } while (c.moveToNext());
         }
         ArrayAdapter arrayAdapter = new ArrayAdapter(getActivity(),
@@ -51,14 +55,23 @@ public class Tab2Fragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Bundle arg = new Bundle();
-                arg.putString("etiq", sitios.get(i));
-                InfoFragment fragment = new InfoFragment();
-                fragment.setArguments(arg);
-                //FragmentManager fm = getFragmentManager();
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.seVa, fragment, "tag1");
-                transaction.addToBackStack(null);
-                transaction.commit();
+                if(visitados.get(i).equals(new Integer(1))){
+                    arg.putString("etiq", sitios.get(i));
+                    InfoFragment fragment = new InfoFragment();
+                    fragment.setArguments(arg);
+                    //FragmentManager fm = getFragmentManager();
+                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                    transaction.replace(R.id.seVa, fragment, "tag1");
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+                } else {
+                    String text = "Sitio no visitado "+visitados.get(i);
+                    int duration = Toast.LENGTH_SHORT;
+
+                    Toast toast = Toast.makeText(getContext(), text, duration);
+                    toast.show();
+                }
+
 
             }
         });
