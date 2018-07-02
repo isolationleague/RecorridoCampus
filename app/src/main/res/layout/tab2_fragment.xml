@@ -25,7 +25,6 @@
             android:id="@+id/pic"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/bird0"
             android:cropToPadding="false"
             android:scaleType="fitXY"/>
 
@@ -61,7 +60,6 @@
         android:layout_marginStart="110dp"
         android:layout_marginTop="12dp"
         android:gravity="center"
-        android:text="Nombre Apellido"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/frame" />

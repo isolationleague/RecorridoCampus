@@ -52,14 +52,17 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBAoSBVrfD75NvXO9y6j5KLsVJzKmhy1ws" />
 
-        <activity android:name=".MenuPreferencias" />
+        <activity android:name=".MenuPreferencias"
+            android:launchMode="singleInstance"/>
         <activity android:name=".Mapa" />
         <activity
             android:name=".Intro_activity"
             android:noHistory="true" />
-        <activity android:name=".FullImageActivity" />
+        <activity android:name=".FullImageActivity"
+            android:launchMode="singleInstance"/>
         <!-- <activity android:name=".MenuPreferencias"></activity> -->
-        <activity android:name=".Creditos"></activity>
+        <activity android:name=".Creditos"
+            android:launchMode="singleInstance"></activity>
     </application>
 
 </manifest>
