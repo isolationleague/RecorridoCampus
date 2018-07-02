@@ -109,11 +109,13 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         if (id == R.id.credits) {
-            Toast.makeText(this, "Créditos", Toast.LENGTH_SHORT).show();
+            Intent i = new Intent(MainActivity.this, Creditos.class);
+            startActivity(i);
             return true;
         }
         if (id == R.id.preferencias) {
-            Toast.makeText(this, "Preferencias", Toast.LENGTH_SHORT).show();
+            Intent i = new Intent(MainActivity.this, MenuPreferencias.class);
+            startActivity(i);
             return true;
         }
         return super.onOptionsItemSelected(item);

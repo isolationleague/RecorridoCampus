@@ -11,7 +11,7 @@
     tools:context=".StartScreen">
 
     <ImageView
-        android:src="@drawable/screen"
+        android:src="@drawable/startscreen"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:scaleType="fitXY" />

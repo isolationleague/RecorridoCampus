@@ -35,6 +35,7 @@ public class InfoFragment extends Fragment {
         etiqueta = this.getArguments().getString("etiq");
         db = BaseSitiosHelper.getInstance(this.getContext());
         setRetainInstance(true);
+        db.setVisitado(etiqueta);
         //((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -92,12 +93,8 @@ public class InfoFragment extends Fragment {
         //
         InfoPicturesFragment fPictures = new InfoPicturesFragment();
         fPictures.setArguments(arg); // nuevo infoPictures que se le envia el parametro de la etiqueta
-        //
-        InfoLinksFragment fLinks = new InfoLinksFragment();
-        fLinks.setArguments(arg);
-        //
+        InfoLinksFragment fLinks= new InfoLinksFragment();
         adapter.addFragment(fText, "Textos");
-        //adapter.addFragment(new InfoPicturesFragment(), "Fotos");
         adapter.addFragment(fPictures, "Fotos");
         adapter.addFragment(fLinks, "Enlaces");
         viewPager.setAdapter(adapter);

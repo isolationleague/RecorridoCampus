@@ -159,6 +159,12 @@ public class InfoTextsFragment extends Fragment {
         stopPlayer();
     }
 
+    @Override
+    public void onPause(){
+        super.onPause();
+    }
+
+
     /**
      * Inicializacion del audio player, asignacion del audio correspondiente al sitio visitado
      */
