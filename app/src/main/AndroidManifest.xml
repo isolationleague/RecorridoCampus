@@ -15,11 +15,11 @@
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
-        android:hardwareAccelerated="false"
-        android:largeHeap="true"
         android:allowBackup="true"
+        android:hardwareAccelerated="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:largeHeap="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
@@ -28,7 +28,7 @@
             android:label="@string/app_name"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".StartScreen"
             android:noHistory="true"
@@ -52,12 +52,14 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBAoSBVrfD75NvXO9y6j5KLsVJzKmhy1ws" />
 
+        <activity android:name=".MenuPreferencias" />
         <activity android:name=".Mapa" />
         <activity
             android:name=".Intro_activity"
             android:noHistory="true" />
         <activity android:name=".FullImageActivity" />
-        <!--<activity android:name=".MenuPreferencias"></activity>-->
+        <!-- <activity android:name=".MenuPreferencias"></activity> -->
+        <activity android:name=".Creditos"></activity>
     </application>
 
 </manifest>
