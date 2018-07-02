@@ -47,7 +47,6 @@
         android:layout_marginStart="90dp"
         android:layout_marginTop="20dp"
         android:gravity="center"
-        android:text="Te faltan X puntos por recorrer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView3" />

@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.osmdroid.util.GeoPoint;
@@ -76,6 +77,9 @@ public class Tab2Fragment extends Fragment {
             }
         });
 
+        TextView txtview = view.findViewById(R.id.textView4);
+        String str = "Te faltan " + visitados.size() + " sitios por visitar";
+        txtview.setText(str);
         /*btn= (Button) view.findViewById(R.id.btn2);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
