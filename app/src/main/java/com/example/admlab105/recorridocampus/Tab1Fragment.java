@@ -69,6 +69,7 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
     private BaseSitiosHelper db;    // Iterador de la base de datos
     MapEventsOverlay mapEventsOverlay;
 
+
     private int ultimoMarcador;
 
     private static final int PERMISSIONS_REQUEST_LOCATION = 1; // Permiso para geo localización del dispositivo
@@ -121,7 +122,7 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
         btnUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                miUbic(true);
+                moveraUsuario();
             }
         });
 
@@ -250,7 +251,7 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
             public void run() {
                 //System.out.println("El handler se ejecuto");
                 cercaniaActiva();
-                miUbic(false);
+                miUbic();
                 cercania.postDelayed(this, 1000);
             }
         };
@@ -471,7 +472,7 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
      * Pide los permisos del usuario y aprovecha de los listeners para ejecutar el
      * actualizar ubicacion
      */
-    private void miUbic(final boolean zoom) {
+    private void miUbic() {
 
         try {
             if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -508,7 +509,7 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
                     android.location.LocationListener locationListener1 = new android.location.LocationListener() {
                         @Override
                         public void onLocationChanged(Location location) {
-                            actualizarUbic(location, zoom);
+                            actualizarUbic(location);
                             //fragment_updater();
                             //cercaniaActiva();
 
@@ -544,7 +545,7 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
                             @Override
                             public void onLocationChanged(Location location) {
                                 try {
-                                    actualizarUbic(location, zoom);
+                                    actualizarUbic(location);
                                 }catch (IllegalStateException ise){}
                                 //fragment_updater();
                                 //cercaniaActiva();
@@ -582,7 +583,7 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
         }
 
 
-        actualizarUbic(location, zoom);
+        actualizarUbic(location);
         } catch (NullPointerException npe) {}
 
 
@@ -619,11 +620,11 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
      * Actualiza la ubicación GPS del dispositivo en el mapa
      * @param location localización del dispositivo
      */
-    private void actualizarUbic(Location location, boolean zoom) {
+    private void actualizarUbic(Location location) {
         if (location != null) {
             lat = location.getLatitude();
             lon = location.getLongitude();
-            agregarMarcador(lat, lon, zoom);
+            agregarMarcador(lat, lon);
         }
     }
 
@@ -633,7 +634,7 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
      * @param lo Longitud del usuario
      */
 
-    private void agregarMarcador(double la, double lo, boolean zoom) {
+    private void agregarMarcador(double la, double lo) {
         lat=la;
         lon=lo;
         if (marker != null) {
@@ -649,17 +650,19 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
         }
         map.getOverlays().add(marker);
 
-        if(zoom==true){
-            IMapController mapController = map.getController();
-            mapController.setZoom(17.0);
-            GeoPoint markerLocale = new GeoPoint(lat,lon);
-            mapController.setCenter(markerLocale);
-        }
-
         map.invalidate();
 
     }
 
+
+    public void moveraUsuario(){
+
+            IMapController mapController = map.getController();
+            mapController.setZoom(17.0);
+            GeoPoint markerLocale = new GeoPoint(lat,lon);
+            mapController.setCenter(markerLocale);
+
+    }
 
 
     @Override
