@@ -53,28 +53,25 @@ import static android.content.Context.VIBRATOR_SERVICE;
  */
 
 public class Tab1Fragment extends Fragment implements MapEventsReceiver{
-    private MapView map;
-    //private MyLocationNewOverlay mMyLocationOverlay;
 
-    double lat = 0.0, lon = 0.0;
+    private MapView map;    // Mapa de la aplicación
+    double lat = 0.0, lon = 0.0;    // Latitud y longitud del usuario
     private Marker marker;
-    private LinkedList<Marker> sitios;
-    private BaseSitiosHelper db;
+    //private LinkedList<Marker> sitios;
+    private BaseSitiosHelper db;    // Iterador de la base de datos
     MapEventsOverlay mapEventsOverlay;
 
     private int ultimoMarcador;
 
-    private static final int PERMISSIONS_REQUEST_LOCATION = 1;
+    private static final int PERMISSIONS_REQUEST_LOCATION = 1; // Permiso para geo localización del dispositivo
 
-    ArrayList<OverlayItem> marcadores;
+    ArrayList<OverlayItem> marcadores;  // Lista que guarda cada punto extraído de la base de datos
 
     ArrayList<Marker> nodeMarkers;
 
-    ArrayList<Double> radios;
-    boolean dentroDeRadio;
-
-
-    GeoPoint user;
+    ArrayList<Double> radios;   // Lista que guarda los radios de cada punto
+    boolean dentroDeRadio;      // true si está dentro del radio de un punto
+    GeoPoint user;              // Punto que representa al usuario
 
 
     /**
@@ -86,8 +83,7 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-
-        almacenar();// Petición de permiso para external storage
+        almacenar();// Petición de permiso para external storage, que permite dibujar el mapa de OpenStreetMaps
 
         db = BaseSitiosHelper.getInstance(this.getContext().getApplicationContext());
         View view = inflater.inflate(R.layout.tab1_fragment, container, false);
@@ -107,13 +103,11 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
         GeoPoint startPoint = new GeoPoint(9.9370, -84.0510);
         mapController.setCenter(startPoint);
 
-
         map.setMultiTouchControls(true);
 
-        ImageButton btnCampus = view.findViewById(R.id.btnCampus);
-        ImageButton btnUser = view.findViewById(R.id.btnUser);
-        ImageButton btnCerca = view.findViewById(R.id.btnCerca);
-        //nombreSitioCercano = view.findViewById(R.id.nombreSitioText);
+        ImageButton btnCampus = view.findViewById(R.id.btnCampus); // Botón para fijar el zoom en el área del Campus
+        ImageButton btnUser = view.findViewById(R.id.btnUser);      // Botón para fijar el zoom en el área del Usuario
+        ImageButton btnCerca = view.findViewById(R.id.btnCerca);    // Botón para mostrar cuál es el punto más cercano al usuario
 
 
         btnUser.setOnClickListener(new View.OnClickListener() {
@@ -142,7 +136,7 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
         nodeMarkers = new ArrayList<Marker>();
         dentroDeRadio= false;
 
-        sitios = new LinkedList<Marker>();
+        //sitios = new LinkedList<Marker>();
         Cursor c = db.obtenerLugares();
 
 
@@ -185,19 +179,25 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
             @Override
             public boolean onItemSingleTapUp(final int index, final OverlayItem item) {
 
+                String distancia = "";
                 Marker mark = new Marker(map);
                 mark.setTitle(item.getTitle());
-                String distancia = "Está a " + (int) user.distanceToAsDouble(item.getPoint()) + " mts. de distancia";
-                mark.setSnippet(distancia);
+                if (user != null) {
+                    distancia = "Está a " + (int) user.distanceToAsDouble(item.getPoint()) + " mts. de distancia";
+                    mark.setSnippet(distancia);
+                } else {
+                    distancia = "Distancia desconocida";
+                    mark.setSnippet(distancia);
+                    Toast.makeText(getActivity(), "Active la localización del dispositivo y oprima el botón de ubicación", Toast.LENGTH_LONG).show();
+
+                }
+
                 GeoPoint geo = new GeoPoint(item.getPoint().getLatitude(), item.getPoint().getLongitude());
                 mark.setPosition(geo);
                 mark.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
 
 
-                //if (nodeMarkers != null) {
-                    //nodeMarkers.clear();
-                    map.getOverlays().remove(nodeMarkers);
-                //}
+                map.getOverlays().remove(nodeMarkers);
                 for (Marker nodeMarker : nodeMarkers){
                     nodeMarker.remove(map);
                 }
@@ -226,7 +226,7 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
         };
         ItemizedIconOverlay<OverlayItem> mOverlay = new ItemizedIconOverlay<OverlayItem>(getActivity(), marcadores, gestureListener);
 
-        mapEventsOverlay = new MapEventsOverlay(this)/*MapEventsOverlay(getContext(), this)*/;
+        mapEventsOverlay = new MapEventsOverlay(this);
         map.getOverlays().add(0, mapEventsOverlay);
 
 
@@ -326,7 +326,6 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
                     }
                     Drawable newMarker = this.getResources().getDrawable(R.drawable.sitio_cercano);
                     aux.setMarker(newMarker);
-                    //nombreSitioCercano.setText(nombre);
 
                 }
             }
@@ -411,12 +410,18 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
         try {
 
             // getting GPS status
-            boolean isGPSEnabled = locationManager
-                    .isProviderEnabled(LocationManager.GPS_PROVIDER);
+            boolean isGPSEnabled = false;
+            if (locationManager != null) {
+                isGPSEnabled = locationManager
+                        .isProviderEnabled(LocationManager.GPS_PROVIDER);
+            }
 
             // getting network status
-            boolean isNetworkEnabled = locationManager
-                    .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+            boolean isNetworkEnabled = false;
+            if (locationManager != null) {
+                isNetworkEnabled = locationManager
+                        .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+            }
 
             if (!isGPSEnabled && !isNetworkEnabled) {
                 // location service disabled
@@ -558,13 +563,14 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
     private void agregarMarcador(double la, double lo) {
         lat=la;
         lon=lo;
-        //CameraUpdate miUbic = CameraUpdateFactory.newLatLngZoom(coord, 16f);
         if (marker != null) {
             marker.remove(map);
         }
         user= new GeoPoint(lat, lon);
-        marker.setTitle("Usuario");
-        marker.setPosition(user);
+        if (marker != null) {
+            marker.setTitle("Usuario");
+            marker.setPosition(user);
+        }
         if (getActivity() != null) {
             marker.setIcon(getResources().getDrawable(R.drawable.ubicacion));
         }
@@ -602,11 +608,9 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
     public void addMarker(GeoPoint point){
         org.osmdroid.views.overlay.Marker marker = new org.osmdroid.views.overlay.Marker(map);
         marker.setPosition(point);
-        //marker.setAnchor(Marker.ANCHOR_BOTTOM, Marker.ANCHOR_CENTER);
         marker.setTitle("UCR");
         IMapController mapController = map.getController();
         mapController.setCenter(point);
-        //map.getOverlays().clear();
         map.getOverlays().add(marker);
         map.invalidate();
 
