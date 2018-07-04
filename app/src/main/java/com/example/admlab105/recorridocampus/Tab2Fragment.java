@@ -40,6 +40,8 @@ public class Tab2Fragment extends Fragment {
     private BaseSitiosHelper db;
     String line;
     SeekBar seekBar;
+    ImageView img;
+    TextView txtview2;
 
     @Nullable
     @Override
@@ -52,7 +54,6 @@ public class Tab2Fragment extends Fragment {
         visitados = new ArrayList<>();
 
         Cursor c = db.obtenerLugares();
-
 
         if (c.moveToFirst()) {
             do {
@@ -88,14 +89,11 @@ public class Tab2Fragment extends Fragment {
 
             }
         });
-        TextView txtview = view.findViewById(R.id.textView4);
+        final TextView txtview = view.findViewById(R.id.textView4);
         String str = "Te faltan " + visitados.size() + " sitios por visitar";
         txtview.setText(str);
-        TextView txtview2 = view.findViewById(R.id.textView3);
-        String name = ReadFile("usuario");
-        if( !name.equals("") ){
-            txtview2.setText(name);
-        } else txtview2.setText("Usuario");
+        txtview2 = view.findViewById(R.id.textView3);
+
 
         seekBar = view.findViewById(R.id.seekBar2);
         seekBar.setClickable(false);
@@ -103,16 +101,14 @@ public class Tab2Fragment extends Fragment {
         seekBar.setMax(c.getCount());
         seekBar.setProgress(sitios.size() - visitados.size());
 
-        try {
-            File f = new File(getContext().getFilesDir() + File.separator + "imagen", "imagen.jpg");
-            Bitmap b = BitmapFactory.decodeStream(new FileInputStream(f));
-            ImageView img = view.findViewById(R.id.pic);
-            img.setImageBitmap(b);
-        }
-        catch (FileNotFoundException e)
-        {
-            e.printStackTrace();
-        }
+        img = view.findViewById(R.id.pic);
+        loadUserInfo();
+
+        img.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                loadUserInfo();
+            }
+        });
         /*btn= (Button) view.findViewById(R.id.btn2);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,8 +116,27 @@ public class Tab2Fragment extends Fragment {
                 Toast.makeText(getActivity(), "TESTING BUTTON CLICK 2",Toast.LENGTH_SHORT).show();
             }
         });*/
-
+       //getFragmentManager().beginTransaction().detach(this).attach(this).commit();
         return view;
+    }
+
+    public void loadUserInfo(){
+        String name = ReadFile("usuario");
+        if( !name.equals("") ){
+            txtview2.setText(name);
+        } else txtview2.setText("Usuario");
+        try {
+            File f = new File(getContext().getFilesDir() + File.separator + "imagen", "imagen.jpg");
+
+            if (f.exists()) {
+                Bitmap b = BitmapFactory.decodeStream(new FileInputStream(f));
+                img.setImageBitmap(b);
+            } else img.setImageResource(R.drawable.icon_app);
+        }
+        catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     public String ReadFile(String location) {
@@ -148,7 +163,7 @@ public class Tab2Fragment extends Fragment {
         }
     }
 
-    @Override
+   @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint( isVisibleToUser );
         if (getFragmentManager() != null) {
