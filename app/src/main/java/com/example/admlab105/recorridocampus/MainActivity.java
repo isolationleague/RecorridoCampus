@@ -163,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
             }.start();
-        } else if (mViewPager.getCurrentItem() > 0) {
+        } else if (mViewPager.getCurrentItem() == 1 && sViewPager == null) {
             mViewPager.setCurrentItem(mViewPager.getCurrentItem() - 1,false);
         } else {
             super.onBackPressed();

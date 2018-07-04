@@ -8,8 +8,10 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -52,6 +54,7 @@ public class Tab2Fragment extends Fragment {
 
         sitios = new ArrayList<>();
         visitados = new ArrayList<>();
+        int desbloqueados = 0;
 
         Cursor c = db.obtenerLugares();
 
@@ -61,6 +64,11 @@ public class Tab2Fragment extends Fragment {
                 visitados.add(new Integer(c.getInt(4)));
             } while (c.moveToNext());
         }
+
+        for (int i = 0; i < visitados.size(); i++) {
+            if(visitados.get(i).equals(new Integer(1))) desbloqueados++;
+        }
+
         ArrayAdapter arrayAdapter = new ArrayAdapter(getActivity(),
                 android.R.layout.simple_list_item_1, sitios);
         ListView l = (ListView) view.findViewById(R.id.lista);
@@ -85,30 +93,28 @@ public class Tab2Fragment extends Fragment {
                     Toast toast = Toast.makeText(getContext(), text, duration);
                     toast.show();
                 }
-
-
             }
         });
         final TextView txtview = view.findViewById(R.id.textView4);
-        String str = "Te faltan " + visitados.size() + " sitios por visitar";
+        String str = "Te faltan " + (sitios.size() - desbloqueados) + " sitios por visitar";
         txtview.setText(str);
         txtview2 = view.findViewById(R.id.textView3);
-
 
         seekBar = view.findViewById(R.id.seekBar2);
         seekBar.setClickable(false);
         seekBar.setFocusable(false);
         seekBar.setMax(c.getCount());
-        seekBar.setProgress(sitios.size() - visitados.size());
+        seekBar.setProgress(desbloqueados);
+
+        seekBar.setOnTouchListener(new View.OnTouchListener(){
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
 
         img = view.findViewById(R.id.pic);
         loadUserInfo();
-
-        img.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                loadUserInfo();
-            }
-        });
         /*btn= (Button) view.findViewById(R.id.btn2);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,20 +133,17 @@ public class Tab2Fragment extends Fragment {
         } else txtview2.setText("Usuario");
         try {
             File f = new File(getContext().getFilesDir() + File.separator + "imagen", "imagen.jpg");
-
             if (f.exists()) {
                 Bitmap b = BitmapFactory.decodeStream(new FileInputStream(f));
                 img.setImageBitmap(b);
             } else img.setImageResource(R.drawable.icon_app);
         }
-        catch (FileNotFoundException e)
-        {
+        catch (FileNotFoundException e) {
             e.printStackTrace();
         }
     }
 
     public String ReadFile(String location) {
-
         File dir = new File(getContext().getFilesDir() + File.separator + location+"/"+location+".txt");
         if (!dir.exists()) {
             return "";
@@ -169,5 +172,11 @@ public class Tab2Fragment extends Fragment {
         if (getFragmentManager() != null) {
             getFragmentManager().beginTransaction().detach(this).attach(this).commit();
         }
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        loadUserInfo();
     }
 }
