@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private SectionsPageAdapter mSectionsPageAdapter;
     public ViewPager mViewPager;
     private boolean isUserClickedBackButton = false;
-    public int marcador=0;
+    public int marcador = 0;
 
     /**
      * Creacion de la vista principal de la aplicacion
@@ -55,14 +55,12 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(null);
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-       // getSupportActionBar().setDisplayShowHomeEnabled(false);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
                 onBackPressed();
             }
         });
@@ -102,17 +100,18 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         if (id == R.id.intro) {
-            //Toast.makeText(this, "Introducción", Toast.LENGTH_SHORT).show();
             Intent i = new Intent(MainActivity.this, Intro_activity.class);
             startActivity(i);
             return true;
         }
         if (id == R.id.credits) {
-            Toast.makeText(this, "Créditos", Toast.LENGTH_SHORT).show();
+            Intent i = new Intent(MainActivity.this, Creditos.class);
+            startActivity(i);
             return true;
         }
         if (id == R.id.preferencias) {
-            Toast.makeText(this, "Preferencias", Toast.LENGTH_SHORT).show();
+            Intent i = new Intent(MainActivity.this, MenuPreferencias.class);
+            startActivity(i);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -137,14 +136,11 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     public void onBackPressed() {
-        Fragment currentFragment = this.getSupportFragmentManager().findFragmentById(R.id.frameLayout);
-        if(!(currentFragment instanceof InfoFragment)) {
-            // do something with f
-            /*((Tab1Fragment) currentFragment).doSomething();*/
+        ViewPager sViewPager = (ViewPager) findViewById(R.id.info_container);
+        if(mViewPager.getCurrentItem() == 0 && sViewPager == null) {
             if (!isUserClickedBackButton) {
                 final Toast toast =Toast.makeText(this,"Presione de nuevo para salir", Toast.LENGTH_LONG);
                 toast.show();
-
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
@@ -156,7 +152,6 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 super.onBackPressed();
             }
-
             new CountDownTimer(3000,1000){
 
                 @Override
@@ -166,7 +161,10 @@ public class MainActivity extends AppCompatActivity {
                 public void onFinish(){
                     isUserClickedBackButton = false;
                 }
+
             }.start();
+        } else if (mViewPager.getCurrentItem() == 1 && sViewPager == null) {
+            mViewPager.setCurrentItem(mViewPager.getCurrentItem() - 1,false);
         } else {
             super.onBackPressed();
         }

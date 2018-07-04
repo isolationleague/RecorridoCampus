@@ -11,6 +11,7 @@ import android.support.v4.view.ViewPager;
 import android.text.Html;
 import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -55,8 +56,12 @@ public class InfoTextsFragment extends Fragment {
         viewPager.setAdapter(adapter);
         playButton = view.findViewById(R.id.playButton);
         seekBar = view.findViewById(R.id.seekBar);
-        seekBar.setClickable(false);
-        seekBar.setFocusable(false);
+        seekBar.setOnTouchListener(new View.OnTouchListener(){
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
         handler = new Handler();
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -158,6 +163,12 @@ public class InfoTextsFragment extends Fragment {
         super.onStop();
         stopPlayer();
     }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+    }
+
 
     /**
      * Inicializacion del audio player, asignacion del audio correspondiente al sitio visitado

@@ -21,6 +21,7 @@ import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.service.carrier.CarrierMessagingService;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresPermission;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -60,6 +61,12 @@ import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.OverlayItem;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import org.osmdroid.util.GeoPoint;
@@ -106,6 +113,12 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
     ArrayList<Double> radios;
     boolean dentroDeRadio;
 
+    String line;
+
+    //TextView nombreSitioCercano;
+
+    Handler handler;
+    Handler cercania;
 
     GeoPoint user;
 
@@ -152,7 +165,7 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
         btnUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                miUbic();
+                miUbic(true);
             }
         });
 
@@ -275,17 +288,20 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
         volverCampus();
         marker = new Marker(map);
 
+        marcaVisitados();
+
         final Handler cercania = new Handler();
         final Runnable actualizador = new Runnable() {
             @Override
             public void run() {
                 //System.out.println("El handler se ejecuto");
                 cercaniaActiva();
-                miUbic();
+                miUbic(false);
                 cercania.postDelayed(this, 1000);
             }
         };
         actualizador.run();
+
 
         return  view;
 
@@ -310,9 +326,28 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
         }
     }
 
+    public void marcaVisitados(){
 
+        Drawable usedMarker = this.getResources().getDrawable(R.drawable.sitio_visitado);
+        Cursor c = db.obtenerLugares();
+        OverlayItem aux;
+        if (c.moveToFirst()) {
+            do {
 
+                for (int i = 0; i < marcadores.size(); ++i) {
+                    if(marcadores.get(i).getTitle().equals(c.getString(0))){
 
+                        aux=marcadores.get(i);
+                        if(c.getInt(4)==1){
+                          
+                            aux.setMarker(usedMarker);
+                        }
+                    }
+                }
+
+            } while (c.moveToNext());
+        }
+    }
 
     @Override
     public boolean singleTapConfirmedHelper(GeoPoint p) {
@@ -337,8 +372,9 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
      */
     public void cercaniaActiva(){
 
-            if (marcadores.size() != 0) {
+        if (marcadores.size() != 0) {
 
+                Drawable usedMarker = this.getResources().getDrawable(R.drawable.sitio_visitado);
                 Drawable grayMarker = this.getResources().getDrawable(R.drawable.sitio);
                 OverlayItem aux = marcadores.get(ultimoMarcador);
 
@@ -348,18 +384,24 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
                     int cercania = (int) user.distanceToAsDouble(marcadores.get(ultimoMarcador).getPoint());
                    // String nombre = marcadores.get(0).getTitle();
                     for (int i = 0; i < marcadores.size(); ++i) {
+
                         int cercania2 = (int) user.distanceToAsDouble(marcadores.get(i).getPoint());
                         if (cercania2 < cercania) {
                             OverlayItem ultimo = marcadores.get(ultimoMarcador);
+
                             ultimo.setMarker(grayMarker);
+
                             cercania = cercania2;
-                            //nombre = marcadores.get(i).getTitle();
                             aux = marcadores.get(i);
                             ultimoMarcador=i;
                         }
                     }
+                    marcaVisitados();
                     if (estaDentroDeRadio(aux) && !dentroDeRadio) {
+
+                        if(ReadFile().equals("1")){
                         activarVibracion();
+                        }
                         Toast.makeText(getActivity(), "Se encuentra dentro del área de este punto", Toast.LENGTH_LONG).show();
                         dentroDeRadio = true;
                     }
@@ -368,6 +410,7 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
                     }
                     Drawable newMarker = this.getResources().getDrawable(R.drawable.sitio_cercano);
                     aux.setMarker(newMarker);
+
                     //nombreSitioCercano.setText(nombre);
 
                 }
@@ -406,6 +449,42 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
     }
 
 
+    public String ReadFile(){
+
+        File lugar = new File (getContext().getFilesDir()+ File.separator+"preferencias/" + "preferencias.txt");
+        if(!lugar.exists()){
+            return "1";
+        }
+        else{
+            try {
+            FileInputStream fileInputStream = new FileInputStream (new File(getContext().getFilesDir()+ File.separator+"preferencias/" + "preferencias.txt"));
+
+
+
+            InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            StringBuilder stringBuilder = new StringBuilder();
+
+            while ( (line = bufferedReader.readLine()) != null )
+            {
+                stringBuilder.append(line);// + System.getProperty("line.separator"));
+            }
+            fileInputStream.close();
+            line = stringBuilder.toString();
+
+            bufferedReader.close();
+        }
+        catch(FileNotFoundException ex) {
+            //Log.d(TAG, ex.getMessage());
+        }
+        catch(IOException ex) {
+            //Log.d(TAG, ex.getMessage());
+        }
+        System.out.println("Es un "+line);
+        return line;
+    }}
+
+
 
     public void onClick(Marker mark){
         Toast.makeText(getActivity(),mark.getTitle() ,
@@ -439,7 +518,7 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
      * Pide los permisos del usuario y aprovecha de los listeners para ejecutar el
      * actualizar ubicacion
      */
-    private void miUbic() {
+    private void miUbic(final boolean zoom) {
 
         try {
             if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -471,7 +550,7 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
                     android.location.LocationListener locationListener1 = new android.location.LocationListener() {
                         @Override
                         public void onLocationChanged(Location location) {
-                            actualizarUbic(location);
+                            actualizarUbic(location, zoom);
                             //fragment_updater();
                             //cercaniaActiva();
 
@@ -507,7 +586,7 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
                             @Override
                             public void onLocationChanged(Location location) {
                                 try {
-                                    actualizarUbic(location);
+                                    actualizarUbic(location, zoom);
                                 }catch (IllegalStateException ise){}
                                 //fragment_updater();
                                 //cercaniaActiva();
@@ -545,7 +624,7 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
         }
 
 
-        actualizarUbic(location);
+        actualizarUbic(location, zoom);
         } catch (NullPointerException npe) {}
 
 
@@ -583,11 +662,11 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
      * Actualiza la ubicación GPS del dispositivo en el mapa
      * @param location localización del dispositivo
      */
-    private void actualizarUbic(Location location) {
+    private void actualizarUbic(Location location, boolean zoom) {
         if (location != null) {
             lat = location.getLatitude();
             lon = location.getLongitude();
-            agregarMarcador(lat, lon);
+            agregarMarcador(lat, lon, zoom);
         }
     }
 
@@ -597,7 +676,7 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
      * @param lo Longitud del usuario
      */
 
-    private void agregarMarcador(double la, double lo) {
+    private void agregarMarcador(double la, double lo, boolean zoom) {
         lat=la;
         lon=lo;
         //CameraUpdate miUbic = CameraUpdateFactory.newLatLngZoom(coord, 16f);
@@ -611,6 +690,14 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
             marker.setIcon(getResources().getDrawable(R.drawable.ubicacion));
         }
         map.getOverlays().add(marker);
+
+        if(zoom==true){
+            IMapController mapController = map.getController();
+            mapController.setZoom(17.0);
+            GeoPoint markerLocale = new GeoPoint(lat,lon);
+            mapController.setCenter(markerLocale);
+        }
+
         map.invalidate();
 
     }
@@ -620,6 +707,8 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
     @Override
     public void onResume(){
         super.onResume();
+        System.out.println("Este es el onResume");
+        marcaVisitados();
         //this will refresh the osmdroid configuration on resuming.
         //if you make changes to the configuration, use
         //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);

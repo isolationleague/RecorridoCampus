@@ -167,7 +167,7 @@ public class BaseSitiosHelper extends SQLiteOpenHelper {
         Cursor c=null;
 
         if (db != null) {
-            c = db.rawQuery(" SELECT nombre,coordenadaX,coordenadaY,radio FROM sitio ", null);
+            c = db.rawQuery(" SELECT nombre,coordenadaX,coordenadaY,radio,visitado FROM sitio ", null);
         }
         return c;
     }
@@ -195,6 +195,12 @@ public class BaseSitiosHelper extends SQLiteOpenHelper {
             int o =0;
             c.moveToFirst();
         } return (c.getColumnCount()!=0)? c.getString(0): "edificio_de_la_facultad_de_educacion" ;
+    }
+    public void setVisitado(String etiq){
+        SQLiteDatabase db = getWritableDatabase();
+        Cursor c = db.rawQuery("UPDATE sitio SET visitado = 1 WHERE nombre = \""+etiq+"\"", null);
+        c.moveToFirst();
+        //db.update("sitio", )
     }
 
 
