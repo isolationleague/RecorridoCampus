@@ -36,9 +36,10 @@ public class InfoLinksFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.info_links_fragment,container,false);
         TextView txtView = view.findViewById(R.id.linksView);
-        loadTextView(txtView);
         etiqueta = this.getArguments().getString("etiq");
         db = BaseSitiosHelper.getInstance(this.getContext());
+        loadTextView(txtView);
+
 
 
         return view;
@@ -55,8 +56,8 @@ public class InfoLinksFragment extends Fragment {
         link = nombretexto +"link";
 
         //el texto que se va a leer
-       // InputStream inputStream = getResources().openRawResource(R.raw.links);
-        InputStream inputStream = getResources().openRawResource(getResources().getIdentifier(link,"raw",getContext().getPackageName()));
+        InputStream inputStream = getResources().openRawResource(R.raw.links);
+        //InputStream inputStream = getResources().openRawResource(getResources().getIdentifier(link,"raw",getContext().getPackageName()));
         if(inputStream == null){
             inputStream = getResources().openRawResource(R.raw.links);
         }
