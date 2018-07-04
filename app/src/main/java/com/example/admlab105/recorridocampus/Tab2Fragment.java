@@ -87,7 +87,7 @@ public class Tab2Fragment extends Fragment {
                     transaction.addToBackStack(null);
                     transaction.commit();
                 } else {
-                    String text = "Sitio no visitado "+visitados.get(i);
+                    String text = "Sitio no visitado ";
                     int duration = Toast.LENGTH_SHORT;
 
                     Toast toast = Toast.makeText(getContext(), text, duration);
