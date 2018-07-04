@@ -25,6 +25,8 @@ public class InfoLinksFragment extends Fragment {
     private static final String TAG = "InfoLinksFragment";
 
     private Button btnTEST;
+    private BaseSitiosHelper db;
+    private String etiqueta;
 
     /**
      * Crea e inicializa la vista de los enlaces de interes para los sitios visitados
@@ -35,6 +37,10 @@ public class InfoLinksFragment extends Fragment {
         View view = inflater.inflate(R.layout.info_links_fragment,container,false);
         TextView txtView = view.findViewById(R.id.linksView);
         loadTextView(txtView);
+        etiqueta = this.getArguments().getString("etiq");
+        db = BaseSitiosHelper.getInstance(this.getContext());
+
+
         return view;
     }
 
@@ -43,7 +49,18 @@ public class InfoLinksFragment extends Fragment {
      * @param txtView: vista donde se despliegan los enlaces
      */
     public void loadTextView (TextView txtView) {
-        InputStream inputStream = getResources().openRawResource(R.raw.links);
+
+        String link ="";
+        String nombretexto = db.obtengaTexto(etiqueta);
+        link = nombretexto +"link";
+
+        //el texto que se va a leer
+       // InputStream inputStream = getResources().openRawResource(R.raw.links);
+        InputStream inputStream = getResources().openRawResource(getResources().getIdentifier(link,"raw",getContext().getPackageName()));
+        if(inputStream == null){
+            inputStream = getResources().openRawResource(R.raw.links);
+        }
+        //getActivity(),getResources().getIdentifier(audio, "raw", getContext().getPackageName())
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         //String source = "<a href='https://www.android-examples.com//'>Android-Examples.com</a>";
         Spanned Text;

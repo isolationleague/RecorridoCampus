@@ -288,6 +288,8 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
         volverCampus();
         marker = new Marker(map);
 
+        marcaVisitados();
+
         final Handler cercania = new Handler();
         final Runnable actualizador = new Runnable() {
             @Override
@@ -299,6 +301,7 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
             }
         };
         actualizador.run();
+
 
         return  view;
 
@@ -320,6 +323,29 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
                 }
             }
             Toast.makeText(getActivity(), "El sitio más cercano es "+nombre+" que esta a "+cercania+" mts. de usted",Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public void marcaVisitados(){
+
+        Drawable usedMarker = this.getResources().getDrawable(R.drawable.sitio_visitado);
+        Cursor c = db.obtenerLugares();
+        OverlayItem aux;
+        if (c.moveToFirst()) {
+            do {
+
+                for (int i = 0; i < marcadores.size(); ++i) {
+                    if(marcadores.get(i).getTitle().equals(c.getString(0))){
+
+                        aux=marcadores.get(i);
+                        if(c.getInt(4)==1){
+                          
+                            aux.setMarker(usedMarker);
+                        }
+                    }
+                }
+
+            } while (c.moveToNext());
         }
     }
 
@@ -346,8 +372,9 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
      */
     public void cercaniaActiva(){
 
-            if (marcadores.size() != 0) {
+        if (marcadores.size() != 0) {
 
+                Drawable usedMarker = this.getResources().getDrawable(R.drawable.sitio_visitado);
                 Drawable grayMarker = this.getResources().getDrawable(R.drawable.sitio);
                 OverlayItem aux = marcadores.get(ultimoMarcador);
 
@@ -357,16 +384,19 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
                     int cercania = (int) user.distanceToAsDouble(marcadores.get(ultimoMarcador).getPoint());
                    // String nombre = marcadores.get(0).getTitle();
                     for (int i = 0; i < marcadores.size(); ++i) {
+
                         int cercania2 = (int) user.distanceToAsDouble(marcadores.get(i).getPoint());
                         if (cercania2 < cercania) {
                             OverlayItem ultimo = marcadores.get(ultimoMarcador);
+
                             ultimo.setMarker(grayMarker);
+
                             cercania = cercania2;
-                            //nombre = marcadores.get(i).getTitle();
                             aux = marcadores.get(i);
                             ultimoMarcador=i;
                         }
                     }
+                    marcaVisitados();
                     if (estaDentroDeRadio(aux) && !dentroDeRadio) {
 
                         if(ReadFile().equals("1")){
@@ -380,6 +410,7 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
                     }
                     Drawable newMarker = this.getResources().getDrawable(R.drawable.sitio_cercano);
                     aux.setMarker(newMarker);
+
                     //nombreSitioCercano.setText(nombre);
 
                 }
@@ -676,6 +707,8 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
     @Override
     public void onResume(){
         super.onResume();
+        System.out.println("Este es el onResume");
+        marcaVisitados();
         //this will refresh the osmdroid configuration on resuming.
         //if you make changes to the configuration, use
         //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
