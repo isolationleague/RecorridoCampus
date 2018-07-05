@@ -1,5 +1,6 @@
 package com.example.admlab105.recorridocampus;
 
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -56,11 +58,22 @@ public class InfoLinksFragment extends Fragment {
         link = nombretexto +"link";
 
         //el texto que se va a leer
-        InputStream inputStream = getResources().openRawResource(R.raw.links);
-        //InputStream inputStream = getResources().openRawResource(getResources().getIdentifier(link,"raw",getContext().getPackageName()));
-        if(inputStream == null){
+        //InputStream inputStream = getResources().openRawResource(R.raw.links);
+        InputStream  inputStream= null;
+        // getResources().getIdentifier(link, "raw", getContext().getPackageName());
+        if( (getResources().getIdentifier(link, "raw", getContext().getPackageName()))==0){
             inputStream = getResources().openRawResource(R.raw.links);
+        }else {
+            try {
+                inputStream = getResources().openRawResource(getResources().getIdentifier(link, "raw", getContext().getPackageName()));
+            } catch (Resources.NotFoundException e) {
+                e.printStackTrace();
+            }
         }
+
+
+        //InputStream inputStream = getResources().openRawResource(getResources().getIdentifier(link,"raw",getContext().getPackageName()));
+
         //getActivity(),getResources().getIdentifier(audio, "raw", getContext().getPackageName())
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         //String source = "<a href='https://www.android-examples.com//'>Android-Examples.com</a>";
