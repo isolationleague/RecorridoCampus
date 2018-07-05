@@ -38,6 +38,7 @@ import android.app.Activity;
 import android.support.v4.app.ActivityCompat;
 import android.text.Html;
 import android.text.method.ScrollingMovementMethod;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -71,6 +72,12 @@ public class Intro_activity extends Activity {
         seekBar = (SeekBar) findViewById(R.id.seekBar);
         seekBar.setClickable(false);
         seekBar.setFocusable(false);
+        seekBar.setOnTouchListener(new View.OnTouchListener(){
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
         handler = new Handler();
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override

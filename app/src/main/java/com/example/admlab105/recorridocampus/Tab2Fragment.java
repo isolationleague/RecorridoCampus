@@ -44,6 +44,8 @@ public class Tab2Fragment extends Fragment {
     SeekBar seekBar;
     ImageView img;
     TextView txtview2;
+    TextView txtview;
+
 
     @Nullable
     @Override
@@ -54,7 +56,6 @@ public class Tab2Fragment extends Fragment {
 
         sitios = new ArrayList<>();
         visitados = new ArrayList<>();
-        int desbloqueados = 0;
 
         Cursor c = db.obtenerLugares();
 
@@ -63,10 +64,6 @@ public class Tab2Fragment extends Fragment {
                 sitios.add(c.getString(0));
                 visitados.add(new Integer(c.getInt(4)));
             } while (c.moveToNext());
-        }
-
-        for (int i = 0; i < visitados.size(); i++) {
-            if(visitados.get(i).equals(new Integer(1))) desbloqueados++;
         }
 
         ArrayAdapter arrayAdapter = new ArrayAdapter(getActivity(),
@@ -95,16 +92,13 @@ public class Tab2Fragment extends Fragment {
                 }
             }
         });
-        final TextView txtview = view.findViewById(R.id.textView4);
-        String str = "Te faltan " + (sitios.size() - desbloqueados) + " sitios por visitar";
-        txtview.setText(str);
+        txtview = view.findViewById(R.id.textView4);
         txtview2 = view.findViewById(R.id.textView3);
 
         seekBar = view.findViewById(R.id.seekBar2);
         seekBar.setClickable(false);
         seekBar.setFocusable(false);
         seekBar.setMax(c.getCount());
-        seekBar.setProgress(desbloqueados);
 
         seekBar.setOnTouchListener(new View.OnTouchListener(){
             @Override
@@ -127,6 +121,14 @@ public class Tab2Fragment extends Fragment {
     }
 
     public void loadUserInfo(){
+
+        int desbloqueados = 0;
+        for (int i = 0; i < visitados.size(); i++) {
+            if(visitados.get(i).equals(new Integer(1))) desbloqueados++;
+        }
+        String str = "Te faltan " + (visitados.size() - desbloqueados) + " sitios por visitar";
+        txtview.setText(str);
+        seekBar.setProgress(desbloqueados);
         String name = ReadFile("usuario");
         if( !name.equals("") ){
             txtview2.setText(name);
