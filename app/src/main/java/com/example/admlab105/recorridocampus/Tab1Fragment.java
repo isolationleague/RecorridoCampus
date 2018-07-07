@@ -129,6 +129,8 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
         btnCampus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                Toast.makeText(getActivity(), "Centrando mapa",Toast.LENGTH_LONG).show();
                 volverCampus();
             }
         });
@@ -224,12 +226,12 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
              */
             @Override
             public boolean onItemLongPress(final int index, final OverlayItem item) {
-                //if (estaDentroDeRadio(item)) {
+                if (estaDentroDeRadio(item)) {
                     iniciarActivity(item);
-                //} else {
-                   // String mensaje = " Se encuentra muy lejos de este punto, acérquese más";
-                   // Toast.makeText(getActivity(), mensaje, Toast.LENGTH_LONG).show();
-                //}
+                } else {
+                    String mensaje = " Se encuentra muy lejos de este punto, acérquese más";
+                    Toast.makeText(getActivity(), mensaje, Toast.LENGTH_LONG).show();
+                }
                 return true;
             }
         };
@@ -453,7 +455,7 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
         mapController.setZoom(17.0);
         GeoPoint startPoint = new GeoPoint(9.9370,-84.0510);
         mapController.setCenter(startPoint);
-        Toast.makeText(getActivity(), "Centrando mapa",Toast.LENGTH_LONG).show();
+
     }
 
     /**
