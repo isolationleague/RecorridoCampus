@@ -33,6 +33,7 @@ public class ImageAdapter extends BaseAdapter {
         //mThumbIds.add(R.drawable.bird0);
         switch (lugar){
             case "Edificio de la Facultad de Ciencias Económicas":
+                mThumbIds.add(R.drawable.economicasp);
                 mThumbIds.add(R.drawable.economicas1);
                 mThumbIds.add(R.drawable.economicas2);
                 mThumbIds.add(R.drawable.economicas3);
@@ -40,6 +41,7 @@ public class ImageAdapter extends BaseAdapter {
                 mThumbIds.add(R.drawable.economicas5);
                 break;
             case "Edificio de la Facultad de Ingeniería":
+                mThumbIds.add(R.drawable.ingep);
                 mThumbIds.add(R.drawable.inge1);
                 mThumbIds.add(R.drawable.inge2);
                 mThumbIds.add(R.drawable.inge3);
@@ -143,6 +145,7 @@ public class ImageAdapter extends BaseAdapter {
                 mThumbIds.add(R.drawable.abril3);
                 break;
             case "Edificio de la Facultad de Educación":
+                mThumbIds.add(R.drawable.educap);
                 mThumbIds.add(R.drawable.educa1);
                 mThumbIds.add(R.drawable.educa2);
                 mThumbIds.add(R.drawable.educa3);
