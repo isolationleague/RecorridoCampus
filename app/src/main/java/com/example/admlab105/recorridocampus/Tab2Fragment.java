@@ -69,6 +69,9 @@ public class Tab2Fragment extends Fragment {
         ArrayAdapter arrayAdapter = new ArrayAdapter(getActivity(),
                 android.R.layout.simple_list_item_1, sitios);
         ListView l = (ListView) view.findViewById(R.id.lista);
+        View header = getLayoutInflater().inflate(R.layout.tab2_fragment_content, null);
+        header.setOnClickListener(null);
+        l.addHeaderView(header);
         l.setAdapter(arrayAdapter);
         l.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
