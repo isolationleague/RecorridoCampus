@@ -92,7 +92,6 @@ public class Intro_activity extends Activity {
         String txt5 ="La aplicación fue desarrollada en su totalidad por estudiantes del curso CI-1430 Ingeniería de Software 2 de la Escuela de Ciencias de la Computación e Informática, con la colaboración de estudiantes con horas asistente, de diversas áreas, del museo+UCR. Así, el museo+UCR se compromete con la divulgación de las colecciones de la UCR y con el apoyo a la docencia.";
         texto = (TextView) findViewById(R.id.textView2);
         texto.setText(Html.fromHtml("<p>" + "<i>" + txt1 + "</i>" + txt2 + "<i>" + txt3 + "</i>" + txt4 + "</p>" + "<p>" +  txt5  + "</p>" + "</small>"));
-        texto.setMovementMethod(new ScrollingMovementMethod());
         almacenar();
     }
 
