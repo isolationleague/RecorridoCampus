@@ -54,16 +54,19 @@
             android:value="AIzaSyBAoSBVrfD75NvXO9y6j5KLsVJzKmhy1ws" />
 
         <activity android:name=".MenuPreferencias"
-            android:launchMode="singleInstance"/>
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait"/>
         <activity android:name=".Mapa" />
         <activity
             android:name=".Intro_activity"
-            android:noHistory="true" />
+            android:noHistory="true"
+            android:screenOrientation="portrait"/>
         <activity android:name=".FullImageActivity"
             android:launchMode="singleInstance"/>
         <!-- <activity android:name=".MenuPreferencias"></activity> -->
         <activity android:name=".Creditos"
-            android:launchMode="singleInstance"></activity>
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>
