@@ -96,7 +96,8 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.tuto) {
-            Toast.makeText(this, "Tutorial", Toast.LENGTH_SHORT).show();
+            Intent i = new Intent(MainActivity.this, Tutorial.class);
+            startActivity(i);
             return true;
         }
         if (id == R.id.intro) {
