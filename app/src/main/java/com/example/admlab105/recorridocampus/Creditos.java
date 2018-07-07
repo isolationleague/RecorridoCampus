@@ -15,7 +15,7 @@ public class Creditos extends AppCompatActivity {
 
         TextView texto = findViewById(R.id.content);
 
-        String txt1= "Estudiantes del curso Ingeniería de Software 2|El equipo de Isolation League";
+        String txt1= "Estudiantes del curso Ingeniería de Software 2";
 
         String txt2= "Maria Fernanda Carmona Ulate";
         String txt3="Javier Alonso Fernández Aguilar";
@@ -26,6 +26,9 @@ public class Creditos extends AppCompatActivity {
 
         String txt8="Profesor del curso Ingeniería de Software 2";
         String txt9="Alan Calderón Castro";
+
+        String txt9_1="Encargado de Desarrollo y de Diseño";
+        String txt9_2="Mariano Chinchilla";
 
         String txt10="Coordinadora del museo+UCR";
         String txt11="Eugenia Zavaleta Ochoa";
@@ -101,17 +104,17 @@ public class Creditos extends AppCompatActivity {
         String txt63="http://www.cu.ucr.ac.cr/busqueda/acuerdo/NumeroAcuerdo/457011.html";
         String txt64="http://www.cu.ucr.ac.cr/busqueda/acuerdo/NumeroAcuerdo/158271.html";
 
-        texto.setText(Html.fromHtml("<p>" + txt1 + "</p>" + "<p>" + "</p>"+"<p>" + txt2 + "</p>"+"<p>" + txt3 + "</p>"+"<p>" + txt4 + "</p>"
-        +"<p>" + txt5 + "</p>"+"<p>" + txt6 + "</p>"+"<p>" + txt7 + "</p>"+"<p>" + "</p>"+"<p>" + txt8 + "</p>"+"<p>" + txt9 + "</p>"
-        +"<p>" + "</p>"+txt10 + "</p>"+"<p>" + txt11 + "</p>" + "<p>" + "</p>"+txt12 + "</p>"+"<p>" + txt13 + "</p>"+"<p>" + "</p>"
-        + "</p>"+txt14 + "</p>"+"<p>" + txt15 + "</p>"+ "</p>"+txt16 + "</p>"+"<p>" + "</p>"+"<p>" + txt17 + "</p>" + "<p>" + "</p>"
-        + "</p>"+txt18 + "</p>"+"<p>" + txt19 + "</p>"+ "<p>" + "</p>"+"<p>" + txt20 + "</p>"+"<p>" + "</p>"+"<p>" + txt21 + "</p>"
-        +"<p>" + txt22 + "</p>"+"<p>" + txt23 + "</p>"+"<p>" + "</p>"+"<p>" + txt24 + "</p>"+  "<p>" + "</p>"+"<p>" + txt25 + "</p>"
+        texto.setText(Html.fromHtml("<p><strong>" + txt1 + "</strong></p>" + "<p>" + "</p>"+"<p>" + txt2 + "</p>"+"<p>" + txt3 + "</p>"+"<p>" + txt4 + "</p>"
+        +"<p>" + txt5 + "</p>"+"<p>" + txt6 + "</p>"+"<p>" + txt7 + "</p>"+"<p>" + "</p>"+"<p><strong>" + txt8 + "</strong></p>"+"<p>" + txt9 + "</p>"+"<p><strong>" + txt9_1 + "</strong></p>"+"<p>" + txt9_2 + "</p>"
+        +"<p>" + "</p><strong>"+txt10 + "</strong></p>"+"<p>" + txt11 + "</p>" + "<p>" + "</p><strong>"+txt12 + "</strong></p>"+"<p>" + txt13 + "</p>"+"<p>" + "</p>"
+        + "</p><strong>"+txt14 + "</strong></p>"+"<p>" + txt15 + "</p>"+ "</p>"+txt16 + "</p>"+"<p>" + "</p>"+"<p><strong>" + txt17 + "</strong></p>" + "<p>" + "</p>"
+        + "</p><strong>"+txt18 + "</strong></p>"+"<p>" + txt19 + "</p>"+ "<p>" + "</p>"+"<p>" + txt20 + "</p>"+"<p>" + "</p>"+"<p>" + txt21 + "</p>"
+        +"<p>" + txt22 + "</p>"+"<p>" + txt23 + "</p>"+"<p>" + "</p>"+"<p><strong>" + txt24 + "</strong></p>"+  "<p>" + "</p>"+"<p>" + txt25 + "</p>"
         +"<p>" + txt26 + "</p>"+"<p>" + txt27 + "</p>" + "<p>" + "</p>" + "<p>" + txt28 + "</p>"+"<p>" + txt29 + "</p>"+"<p>" + "</p>"
         +"<p>" + txt30 + "</p>"+"<p>" + "</p>"+"<p>" + txt31 + "</p>"+"<p>" + "</p>"+"<p>" + txt32 + "</p>"+"<p>" + "</p>"
-                +"<p>" + txt33 + "</p>"+ "<p>" + "</p>"+"<p>" + txt34 + "</p>"+"<p>" + txt35 + "</p>"+"<p>" + txt36 + "</p>"+
+                +"<p><strong>" + txt33 + "</strong></p>"+ "<p>" + "</p>"+"<p>" + txt34 + "</p>"+"<p>" + txt35 + "</p>"+"<p>" + txt36 + "</p>"+
                         "<p>" + txt37 + "</p>"+"<p>" + txt38 + "</p>"+"<p>" + txt39 + "</p>" + "<p>" + "</p>"
-        +"<p>" + txt40 + "</p>"+"<p>" + "</p>"+"<p>" + txt41 + "</p>" + "</p>"+"<p>" + txt42 + "</p>"+ "</p>"+"<p>" + txt43 + "</p>"
+        +"<p><strong>" + txt40 + "</strong></p>"+"<p>" + "</p>"+"<p>" + txt41 + "</p>" + "</p>"+"<p>" + txt42 + "</p>"+ "</p>"+"<p>" + txt43 + "</p>"
                         + "</p>"+"<p>" + txt44 + "</p>"+ "</p>"+"<p>" + txt45 + "</p>"+ "</p>"+"<p>" + txt46 + "</p>"+ "</p>"+"<p>" + txt47 + "</p>"
                 + "</p>"+"<p>" + txt48 + "</p>"+ "</p>"+"<p>" + txt49 + "</p>"+ "</p>"+"<p>" + txt50 + "</p>"+ "</p>"+"<p>" + txt51 + "</p>"
                 + "</p>"+"<p>" + txt52 + "</p>"+ "</p>"+"<p>" + txt53 + "</p>"+ "</p>"+"<p>" + txt54 + "</p>"+ "</p>"+"<p>" + txt55 + "</p>"

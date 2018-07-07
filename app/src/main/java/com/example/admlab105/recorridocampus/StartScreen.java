@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Bundle;
 import android.app.Activity;
+import android.widget.ImageView;
 
 public class StartScreen extends Activity {
 
@@ -12,8 +13,16 @@ public class StartScreen extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.start_screen);
+        final int DELAY = 2000;
 
-        int loadtime = 2000;
+        new Handler().postDelayed(new Runnable() {
+            public void run() {
+                ImageView imagen_Appbar = (ImageView)findViewById(R.id.splash);
+                imagen_Appbar.setImageResource(R.drawable.startscreen);
+            }
+        }, DELAY);
+
+        int loadtime = 4000;
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -41,6 +50,12 @@ public class StartScreen extends Activity {
             }
 
             }, loadtime);
+        /*try {
+            wait(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }*/
+
 
     }
 }

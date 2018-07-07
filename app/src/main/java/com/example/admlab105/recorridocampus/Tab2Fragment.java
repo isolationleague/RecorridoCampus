@@ -3,6 +3,7 @@ package com.example.admlab105.recorridocampus;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -66,8 +67,29 @@ public class Tab2Fragment extends Fragment {
             } while (c.moveToNext());
         }
 
-        ArrayAdapter arrayAdapter = new ArrayAdapter(getActivity(),
-                android.R.layout.simple_list_item_1, sitios);
+        /*ArrayAdapter arrayAdapter = new ArrayAdapter(getActivity(),
+                android.R.layout.simple_list_item_1, sitios);*/
+        ArrayAdapter arrayAdapter = new ArrayAdapter
+                (getActivity(), android.R.layout.simple_list_item_1, sitios){
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent){
+                // Get the current item from ListView
+                View view = super.getView(position,convertView,parent);
+                TextView text = (TextView) view.findViewById(android.R.id.text1);
+                if(visitados.get(position) == 0)
+                {
+                    // Set a background color for ListView regular row/item
+                    text.setTextColor(Color.parseColor("#96989A"));
+                }
+                else
+                {
+                    // Set the background color for alternate row/item
+                    text.setTextColor(Color.parseColor("#000000"));
+                }
+                return view;
+            }
+        };
+
         ListView l = (ListView) view.findViewById(R.id.lista);
         View header = getLayoutInflater().inflate(R.layout.tab2_fragment_content, null);
         header.setOnClickListener(null);
