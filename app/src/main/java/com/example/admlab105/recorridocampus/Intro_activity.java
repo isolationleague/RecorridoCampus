@@ -70,20 +70,20 @@ public class Intro_activity extends Activity {
         });
         playButton = (ImageButton) findViewById(R.id.playButton);
         seekBar = (SeekBar) findViewById(R.id.seekBar);
-        seekBar.setClickable(false);
-        seekBar.setFocusable(false);
-        seekBar.setOnTouchListener(new View.OnTouchListener(){
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return true;
-            }
-        });
         handler = new Handler();
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 play(v);
             }
+        });
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                if(audioPlayer != null && audioPlayer.isPlaying()) audioPlayer.seekTo(seekBar.getProgress());
+                else if(audioPlayer != null && !audioPlayer.isPlaying()) audioPlayer.seekTo(seekBar.getProgress());
+            }
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {}
         });
         String txt1 = "Un paseo por el campus ";
         String txt2 = "es una aplicación para Android, diseñada como una audio guía para ";

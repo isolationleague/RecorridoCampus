@@ -99,8 +99,6 @@ public class Tab2Fragment extends Fragment {
         txtview2 = view.findViewById(R.id.textView3);
 
         seekBar = view.findViewById(R.id.seekBar2);
-        seekBar.setClickable(false);
-        seekBar.setFocusable(false);
         seekBar.setMax(c.getCount());
 
         seekBar.setOnTouchListener(new View.OnTouchListener(){
