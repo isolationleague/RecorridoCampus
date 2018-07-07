@@ -56,12 +56,6 @@ public class InfoTextsFragment extends Fragment {
         viewPager.setAdapter(adapter);
         playButton = view.findViewById(R.id.playButton);
         seekBar = view.findViewById(R.id.seekBar);
-        seekBar.setOnTouchListener(new View.OnTouchListener(){
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return true;
-            }
-        });
         handler = new Handler();
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,8 +63,15 @@ public class InfoTextsFragment extends Fragment {
                 play(v);
             }
         });
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                if(audioPlayer != null && audioPlayer.isPlaying()) audioPlayer.seekTo(seekBar.getProgress());
+                else if(audioPlayer != null && !audioPlayer.isPlaying()) audioPlayer.seekTo(seekBar.getProgress());
+            }
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {}
+        });
         TextView txtview = view.findViewById(R.id.textView);
-        //txtview.setMovementMethod(new ScrollingMovementMethod());
         loadTextView(txtview);
         return view;
     }

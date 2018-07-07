@@ -53,20 +53,20 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBAoSBVrfD75NvXO9y6j5KLsVJzKmhy1ws" />
 
-        <activity
-            android:name=".MenuPreferencias"
-            android:launchMode="singleInstance" />
+        <activity android:name=".MenuPreferencias"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait"/>
         <activity android:name=".Mapa" />
         <activity
             android:name=".Intro_activity"
-            android:noHistory="true" />
-        <activity
-            android:name=".FullImageActivity"
-            android:launchMode="singleInstance" />
+            android:noHistory="true"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".FullImageActivity"
+            android:launchMode="singleInstance"/>
         <!-- <activity android:name=".MenuPreferencias"></activity> -->
-        <activity
-            android:name=".Creditos"
-            android:launchMode="singleInstance" />
+        <activity android:name=".Creditos"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait"></activity>
         <activity android:name=".Tutorial"></activity>
     </application>
 

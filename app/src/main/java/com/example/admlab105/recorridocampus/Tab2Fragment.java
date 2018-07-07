@@ -69,6 +69,9 @@ public class Tab2Fragment extends Fragment {
         ArrayAdapter arrayAdapter = new ArrayAdapter(getActivity(),
                 android.R.layout.simple_list_item_1, sitios);
         ListView l = (ListView) view.findViewById(R.id.lista);
+        View header = getLayoutInflater().inflate(R.layout.tab2_fragment_content, null);
+        header.setOnClickListener(null);
+        l.addHeaderView(header);
         l.setAdapter(arrayAdapter);
         l.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -84,7 +87,7 @@ public class Tab2Fragment extends Fragment {
                     transaction.addToBackStack(null);
                     transaction.commit();
                 } else {
-                    String text = "Sitio no visitado ";
+                    String text = "Sitio no visitado";
                     int duration = Toast.LENGTH_SHORT;
 
                     Toast toast = Toast.makeText(getContext(), text, duration);
@@ -96,8 +99,6 @@ public class Tab2Fragment extends Fragment {
         txtview2 = view.findViewById(R.id.textView3);
 
         seekBar = view.findViewById(R.id.seekBar2);
-        seekBar.setClickable(false);
-        seekBar.setFocusable(false);
         seekBar.setMax(c.getCount());
 
         seekBar.setOnTouchListener(new View.OnTouchListener(){

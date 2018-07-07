@@ -453,6 +453,7 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
         mapController.setZoom(17.0);
         GeoPoint startPoint = new GeoPoint(9.9370,-84.0510);
         mapController.setCenter(startPoint);
+        Toast.makeText(getActivity(), "Centrando mapa",Toast.LENGTH_LONG).show();
     }
 
     /**
@@ -661,7 +662,7 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
             mapController.setZoom(17.0);
             GeoPoint markerLocale = new GeoPoint(lat,lon);
             mapController.setCenter(markerLocale);
-
+            Toast.makeText(getActivity(), "Ubicación actual",Toast.LENGTH_LONG).show();
     }
 
 
