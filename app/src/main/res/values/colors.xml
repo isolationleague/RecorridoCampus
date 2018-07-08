@@ -5,4 +5,6 @@
     <color name="colorPrimaryDark">#eaeaea</color>
     <color name="colorAccent">#000000</color>
     <color name="infoTabLayoutBackground">#FFFFFF</color>
+
+    <color name="DarkGreen">#006400</color>
 </resources>
