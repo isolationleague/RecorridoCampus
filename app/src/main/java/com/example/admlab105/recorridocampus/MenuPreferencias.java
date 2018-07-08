@@ -60,6 +60,10 @@ public class MenuPreferencias extends AppCompatActivity{
         final Switch vibracion = findViewById(R.id.switch1);
         vibracion.setChecked(true);
 
+        /**
+         *Cambia el contenido del archivo de preferencias
+         */
+
         vibracion.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -74,12 +78,21 @@ public class MenuPreferencias extends AppCompatActivity{
 
         user=findViewById(R.id.user_text);
 
+        /**
+         * Si el usuario ha cambiado el nombre carga el nombre guardado
+         */
+
         if(!ReadFile("usuario").equals("1")){
             user.setText(ReadFile("usuario"));
         }
         else{
             user.setText("Usuario");
         }
+
+        /**
+         * Genera un AlertDialog con texto para que se modifique el nombre
+         * de usuario
+         */
 
         user_input=new AlertDialog.Builder(this).create();
         user_edit=new EditText(this);
@@ -134,6 +147,10 @@ public class MenuPreferencias extends AppCompatActivity{
 
     }
 
+    /**
+     * Activa la vibracion por 0.5 segundos
+     */
+
     public void prueba(){
         Vibrator v = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
         // Vibrate for 500 milliseconds
@@ -145,6 +162,12 @@ public class MenuPreferencias extends AppCompatActivity{
         }
 
     }
+
+    /**
+     * Abre el selector de imagenes y si se selecciona una imagen la guarda
+     * en la carpeta de aplicación
+     */
+
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -158,7 +181,7 @@ public class MenuPreferencias extends AppCompatActivity{
                         Bitmap bitmap = null;
                         try {
                             bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
-                            writeImage(bitmap);
+                            escribirImagen(bitmap);
                             cargarimagen();
                         } catch (FileNotFoundException e) {
                             e.printStackTrace();
@@ -176,6 +199,12 @@ public class MenuPreferencias extends AppCompatActivity{
         }
     }
 
+
+    /**
+     * Lee un archivo
+     * @param location el nombre de la carpeta donde se guarda el contenido
+     * @return devuelve el contenido del archivo
+     */
 
     public String ReadFile(String location) {
 
@@ -207,6 +236,12 @@ public class MenuPreferencias extends AppCompatActivity{
         }
     }
 
+    /**
+     * Escribe el archivo
+     * @param data Lo que se va a guardar
+     * @param location donde se va a guardar
+     */
+
     private void writeToFile(String data, String location) {
 
         File folder = new File(getFilesDir() + File.separator + location);
@@ -235,7 +270,12 @@ public class MenuPreferencias extends AppCompatActivity{
         }
     }
 
-    private void writeImage(Bitmap image) {
+    /**
+     * Guarda la imagen seleccionada
+     * @param image la imagen que se selecciono
+     */
+
+    private void escribirImagen(Bitmap image) {
 
         File folder = new File(getFilesDir() + File.separator + "imagen");
 
@@ -259,6 +299,10 @@ public class MenuPreferencias extends AppCompatActivity{
             e.printStackTrace();
         }
     }
+
+    /**
+     * Carga la imagen al imageview del layout
+     */
 
     private void cargarimagen()
     {
