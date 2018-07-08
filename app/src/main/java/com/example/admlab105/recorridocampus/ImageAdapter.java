@@ -180,6 +180,9 @@ public class ImageAdapter extends BaseAdapter {
             case "Busto del Ing. Fabio Baudrit Moreno" :
                 mThumbIds.add(R.drawable.fabio_baudrit);
                 break;
+            case "Intro":
+                mThumbIds.add(R.drawable.tempera_baja_calidad);
+                break;
         }
 
     }
