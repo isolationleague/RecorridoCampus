@@ -61,6 +61,8 @@
             android:name=".Intro_activity"
             android:noHistory="true"
             android:screenOrientation="portrait"/>
+        <activity android:name=".FullImageActivityIntro"
+            android:launchMode="singleInstance"/>
         <activity android:name=".FullImageActivity"
             android:launchMode="singleInstance"/>
         <!-- <activity android:name=".MenuPreferencias"></activity> -->

@@ -5,20 +5,15 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ZoomControls;
 
 import java.util.ArrayList;
 
-public class FullImageActivity extends Activity {
+public class FullImageActivityIntro extends Activity {
 
     /**
      * Funcion de despliegue en pantalla completa de una imagen seleccionada en el grid de
@@ -38,9 +33,9 @@ public class FullImageActivity extends Activity {
         int position = i.getExtras().getInt("id");
         String etiqueta = i.getExtras().getString("etiq");
 
-        ImageAdapter imageAdapter = new ImageAdapter(this,etiqueta);
         ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
-        ArrayList<Integer>fotos = imageAdapter.mThumbIds;
+       ArrayList<Integer> fotos = new ArrayList<Integer>();
+        fotos.add(R.drawable.tempera_baja_calidad);
         ImagePagerAdapter adapter = new ImagePagerAdapter(fotos,position);
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(position);
@@ -53,7 +48,13 @@ public class FullImageActivity extends Activity {
         imageView.setImageResource(imageAdapter.mThumbIds.get(position));
 */
     }
-
+    @Override
+    public void onBackPressed()
+    {
+        Intent i = new Intent(this, Intro_activity.class);
+        // passing array index
+        startActivity(i);
+    }
     /**
      * Al tocar la imagen desplegada en pantalla completa, retorna a la vista del Grid
      *

@@ -74,7 +74,7 @@ public class Intro_activity extends Activity {
         imageViewIntro.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(context, FullImageActivity.class);
+                Intent i = new Intent(context, FullImageActivityIntro.class);
                 // passing array index
                 i.putExtra("etiq","Intro");
                 i.putExtra("id", 0);
@@ -226,6 +226,11 @@ public class Intro_activity extends Activity {
             // permissions this app might request.
         }
     }
-
+    @Override
+    public void onBackPressed()
+    {
+        Intent i = new Intent(Intro_activity.this, MainActivity.class);
+        startActivity(i);
+    }
 
 }
