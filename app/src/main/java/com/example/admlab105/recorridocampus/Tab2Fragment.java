@@ -35,6 +35,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
+
+
 public class Tab2Fragment extends Fragment {
     private static final String TAG = "Tab2Fragment";
     private Button btn;
@@ -47,7 +49,13 @@ public class Tab2Fragment extends Fragment {
     TextView txtview2;
     TextView txtview;
 
-
+    /**
+     * Crea la vista de mi recorrido para visualizar la informaci'on del usuario
+     * así como para accesar al contenido de los sitios visitados aunque no se encuentre
+     * dentro del rango de cercanía. Utilizado como fragment dentro de MainActivity.
+     * Inicializa los elementos de la vista, etc
+     * @param savedInstanceState: para paso de informacion entre fragmnets.
+     */
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -143,6 +151,11 @@ public class Tab2Fragment extends Fragment {
         return view;
     }
 
+    /**
+     * Carga el contenido de la vista, como el progreso de sitios visitados,
+     * la cantidad de sitios que faltan por visitar.
+     * Además carga la información del usuario, nombre e imagen.
+     */
     public void loadUserInfo(){
 
         int desbloqueados = 0;
@@ -168,6 +181,11 @@ public class Tab2Fragment extends Fragment {
         }
     }
 
+    /**
+     * Método que lee el archivo donde se guarda el nombre del usuario para su despliegue.
+     * @param location: nombre del archivo donde se encuentra la información.
+     * @return line: String que contiene el nombre del usuario.
+     */
     public String ReadFile(String location) {
         File dir = new File(getContext().getFilesDir() + File.separator + location+"/"+location+".txt");
         if (!dir.exists()) {
@@ -191,6 +209,11 @@ public class Tab2Fragment extends Fragment {
         }
     }
 
+    /**
+     * Método que checkea si la vista "mi recorrido" es visible para el usuario,
+     * para cambiar la información de perfil en caso de modificación desde el menú de preferencias.
+     * @param isVisibleToUser: booleano para verificar visibilidad de la vista para el usuario.
+     */
    @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint( isVisibleToUser );
@@ -199,6 +222,9 @@ public class Tab2Fragment extends Fragment {
         }
     }
 
+    /**
+     * Para actualizar la información cada vez que se entra a la vista.
+     */
     @Override
     public void onResume(){
         super.onResume();
