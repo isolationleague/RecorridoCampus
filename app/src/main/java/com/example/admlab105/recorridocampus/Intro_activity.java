@@ -28,6 +28,7 @@ public class Intro_activity extends AppCompatActivity {
 package com.example.admlab105.recorridocampus;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
@@ -42,6 +43,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -56,7 +58,7 @@ public class Intro_activity extends Activity {
     Handler handler;
     Runnable runnable;
     static final int PERMISSIONS_REQUEST_LOCATION=1;
-
+    final Context context=this;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +67,17 @@ public class Intro_activity extends Activity {
         bclose.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent i = new Intent(Intro_activity.this, MainActivity.class);
+                startActivity(i);
+            }
+        });
+        ImageView imageViewIntro = (ImageView) findViewById(R.id.imageViewIntro);
+        imageViewIntro.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(context, FullImageActivity.class);
+                // passing array index
+                i.putExtra("etiq","Intro");
+                i.putExtra("id", 0);
                 startActivity(i);
             }
         });
@@ -213,5 +226,6 @@ public class Intro_activity extends Activity {
             // permissions this app might request.
         }
     }
+
 
 }

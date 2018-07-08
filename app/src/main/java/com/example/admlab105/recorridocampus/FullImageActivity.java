@@ -53,7 +53,11 @@ public class FullImageActivity extends Activity {
         imageView.setImageResource(imageAdapter.mThumbIds.get(position));
 */
     }
-
+    @Override
+    public void onBackPressed()
+    {
+        finish();
+    }
     /**
      * Al tocar la imagen desplegada en pantalla completa, retorna a la vista del Grid
      *
