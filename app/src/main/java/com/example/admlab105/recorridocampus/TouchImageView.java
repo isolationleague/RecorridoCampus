@@ -37,7 +37,9 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.OverScroller;
 import android.widget.Scroller;
-
+/**
+ * Clase extension de ImageView con funcionalidad para que se le pueda hacer zoom a la imagen
+ */
 public class TouchImageView extends ImageView {
 
     private static final String DEBUG = "DEBUG";

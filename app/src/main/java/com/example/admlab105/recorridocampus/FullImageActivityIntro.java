@@ -16,8 +16,7 @@ import java.util.ArrayList;
 public class FullImageActivityIntro extends Activity {
 
     /**
-     * Funcion de despliegue en pantalla completa de una imagen seleccionada en el grid de
-     * imagenes del sitio seleccionado
+     * Funcion de despliegue en pantalla completa de una imagen o posibles imagenes varias de la introducción de la aplicación
      *
      * @param savedInstanceState estado de instanciacion
      */
@@ -55,18 +54,7 @@ public class FullImageActivityIntro extends Activity {
         // passing array index
         startActivity(i);
     }
-    /**
-     * Al tocar la imagen desplegada en pantalla completa, retorna a la vista del Grid
-     *
-     * @param event evento de toque de la imagen
-     * @return retorna a la actividad anterior
-     */
- /*   @Override
-    public boolean onTouchEvent(MotionEvent event) {
-       //
-        return super.onTouchEvent(event);
-    }
-*/
+
     /**
      * Clase que implementa el slideshow para mostrar imagenes en la vista de informacion general del sitio
      */
