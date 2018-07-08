@@ -55,7 +55,7 @@
         app:layout_constraintVertical_bias="0.889" />
 
     <ImageView
-        android:id="@+id/imageView3"
+        android:id="@+id/imageView5"
         android:layout_width="wrap_content"
         android:layout_height="68dp"
         android:layout_marginBottom="8dp"
@@ -67,7 +67,7 @@
         app:srcCompat="@drawable/opcion_upper" />
 
     <ImageView
-        android:id="@+id/imageView4"
+        android:id="@+id/imageView6"
         android:layout_width="wrap_content"
         android:layout_height="65dp"
         android:layout_marginTop="492dp"
@@ -90,7 +90,7 @@
         android:layout_marginTop="8dp"
         android:text="Propiedades"
         android:textSize="25dp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView4"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView6"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.028"
         app:layout_constraintStart_toStartOf="parent"

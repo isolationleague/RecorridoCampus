@@ -7,7 +7,7 @@
     tools:context=".Creditos">
 
     <ImageView
-        android:id="@+id/imageView4"
+        android:id="@+id/imageView6"
         android:layout_width="0dp"
         android:layout_height="65dp"
         android:layout_marginTop="492dp"
@@ -20,7 +20,7 @@
         app:srcCompat="@drawable/opcion_lower" />
 
     <ImageView
-        android:id="@+id/imageView3"
+        android:id="@+id/imageView5"
         android:layout_width="663dp"
         android:layout_height="67dp"
         android:layout_marginBottom="200dp"
@@ -45,7 +45,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.032"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView5" />
 
     <TextView
         android:id="@+id/content"
@@ -58,7 +58,7 @@
         android:layout_marginTop="16dp"
         android:text="TextView"
         android:textAlignment="gravity"
-        app:layout_constraintBottom_toTopOf="@+id/imageView4"
+        app:layout_constraintBottom_toTopOf="@+id/imageView6"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.032"
         app:layout_constraintStart_toStartOf="parent"
