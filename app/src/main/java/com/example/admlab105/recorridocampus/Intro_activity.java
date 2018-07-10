@@ -51,7 +51,6 @@ import android.widget.TextView;
 public class Intro_activity extends Activity {
 
     MediaPlayer audioPlayer;
-    Button bclose;
     TextView texto;
     ImageButton playButton;
     SeekBar seekBar;
@@ -63,13 +62,6 @@ public class Intro_activity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intro_activity);
-        bclose= (Button) findViewById(R.id.buttonClose);
-        bclose.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Intent i = new Intent(Intro_activity.this, MainActivity.class);
-                startActivity(i);
-            }
-        });
         ImageView imageViewIntro = (ImageView) findViewById(R.id.imageViewIntro);
         imageViewIntro.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -13,7 +13,7 @@ public class StartScreen extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.start_screen);
-        final int DELAY = 2000;
+        final int DELAY = 3000;
 
         new Handler().postDelayed(new Runnable() {
             public void run() {
@@ -22,7 +22,7 @@ public class StartScreen extends Activity {
             }
         }, DELAY);
 
-        int loadtime = 4000;
+        int loadtime = 5000;
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
