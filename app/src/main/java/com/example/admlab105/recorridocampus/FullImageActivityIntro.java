@@ -47,12 +47,14 @@ public class FullImageActivityIntro extends Activity {
         imageView.setImageResource(imageAdapter.mThumbIds.get(position));
 */
     }
+
     @Override
     public void onBackPressed()
     {
         Intent i = new Intent(this, Intro_activity.class);
         // passing array index
         startActivity(i);
+        this.finish();
     }
 
     /**

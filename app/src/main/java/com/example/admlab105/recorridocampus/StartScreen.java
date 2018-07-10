@@ -44,18 +44,8 @@ public class StartScreen extends Activity {
                     startActivity(next2);
                     finish();
                 }
-
-
-
             }
 
             }, loadtime);
-        /*try {
-            wait(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }*/
-
-
     }
 }
