@@ -107,8 +107,8 @@ public class Tab2Fragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Bundle arg = new Bundle();
-                if(visitados.get(i).equals(new Integer(1))){
-                    arg.putString("etiq", sitios.get(i));
+                if(visitados.get(i-1).equals(new Integer(1))){
+                    arg.putString("etiq", sitios.get(i-1));
                     InfoFragment fragment = new InfoFragment();
                     fragment.setArguments(arg);
                     //FragmentManager fm = getFragmentManager();
