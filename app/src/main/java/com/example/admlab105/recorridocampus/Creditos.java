@@ -16,6 +16,7 @@ public class Creditos extends AppCompatActivity {
         TextView texto = findViewById(R.id.content);
 
         String txt1= "Estudiantes del curso Ingeniería de Software 2";
+        String ex1="El equipo de Isolation League";
 
         String txt2= "Maria Fernanda Carmona Ulate";
         String txt3="Javier Alonso Fernández Aguilar";
@@ -104,7 +105,7 @@ public class Creditos extends AppCompatActivity {
         String txt63="http://www.cu.ucr.ac.cr/busqueda/acuerdo/NumeroAcuerdo/457011.html";
         String txt64="http://www.cu.ucr.ac.cr/busqueda/acuerdo/NumeroAcuerdo/158271.html";
 
-        texto.setText(Html.fromHtml("<p><strong>" + txt1 + "</strong></p>" + "<p>" + "</p>"+"<p>" + txt2 + "</p>"+"<p>" + txt3 + "</p>"+"<p>" + txt4 + "</p>"
+        texto.setText(Html.fromHtml("<p><strong>" + txt1 + "</strong></p>" + "<p><strong>" + ex1 + "</strong></p>"+"<p>" + "</p>"+"<p>" + txt2 + "</p>"+"<p>" + txt3 + "</p>"+"<p>" + txt4 + "</p>"
         +"<p>" + txt5 + "</p>"+"<p>" + txt6 + "</p>"+"<p>" + txt7 + "</p>"+"<p>" + "</p>"+"<p><strong>" + txt8 + "</strong></p>"+"<p>" + txt9 + "</p>"+"<p><strong>" + txt9_1 + "</strong></p>"+"<p>" + txt9_2 + "</p>"
         +"<p>" + "</p><strong>"+txt10 + "</strong></p>"+"<p>" + txt11 + "</p>" + "<p>" + "</p><strong>"+txt12 + "</strong></p>"+"<p>" + txt13 + "</p>"+"<p>" + "</p>"
         + "</p><strong>"+txt14 + "</strong></p>"+"<p>" + txt15 + "</p>"+ "</p>"+txt16 + "</p>"+"<p>" + "</p>"+"<p><strong>" + txt17 + "</strong></p>" + "<p>" + "</p>"
