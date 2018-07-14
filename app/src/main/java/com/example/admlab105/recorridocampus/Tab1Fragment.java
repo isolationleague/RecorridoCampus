@@ -659,12 +659,16 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
 
 
     public void moveraUsuario(){
-
+        if(user!=null) {
             IMapController mapController = map.getController();
             mapController.setZoom(17.0);
-            GeoPoint markerLocale = new GeoPoint(lat,lon);
+            GeoPoint markerLocale = new GeoPoint(lat, lon);
             mapController.setCenter(markerLocale);
-            Toast.makeText(getActivity(), "Ubicación actual",Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), "Ubicación actual", Toast.LENGTH_LONG).show();
+        }
+        else{
+            Toast.makeText(getActivity(), "Por favor active la función de localizacion en su dispositivo", Toast.LENGTH_LONG).show();
+        }
     }
 
 
