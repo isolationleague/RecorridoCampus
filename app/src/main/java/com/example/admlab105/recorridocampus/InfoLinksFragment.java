@@ -48,7 +48,7 @@ public class InfoLinksFragment extends Fragment {
     }
 
     /**
-     * Lectura de los enlaces de la base de datos y despliegue de los mismos n vietas
+     * Lectura de los enlaces de la base de datos
      * @param txtView: vista donde se despliegan los enlaces
      */
     public void loadTextView (TextView txtView) {
@@ -58,31 +58,31 @@ public class InfoLinksFragment extends Fragment {
         link = nombretexto +"link";
 
         //el texto que se va a leer
-        //InputStream inputStream = getResources().openRawResource(R.raw.links);
-        InputStream  inputStream= null;
-        // getResources().getIdentifier(link, "raw", getContext().getPackageName());
-        if( (getResources().getIdentifier(link, "raw", getContext().getPackageName()))==0){
-            inputStream = getResources().openRawResource(R.raw.links);
-        }else {
+        InputStream  inputStream = null;
+        inputStream = getResources().openRawResource(R.raw.links);
+        getLinks(inputStream, txtView);
+        if( (getResources().getIdentifier( link, "raw", getContext().getPackageName())) !=0 ){
             try {
                 inputStream = getResources().openRawResource(getResources().getIdentifier(link, "raw", getContext().getPackageName()));
+                getLinks(inputStream, txtView);
             } catch (Resources.NotFoundException e) {
                 e.printStackTrace();
             }
         }
+    }
 
-
-        //InputStream inputStream = getResources().openRawResource(getResources().getIdentifier(link,"raw",getContext().getPackageName()));
-
-        //getActivity(),getResources().getIdentifier(audio, "raw", getContext().getPackageName())
+    /**
+     * Lectura de los archivos con los enlaces de los sitios para agregarlos al texto del sitio
+     * @param inputStream Buffer del texto
+     * @param txtView Vista para desplegar el texto del sitio.
+     */
+    public void getLinks(InputStream inputStream, TextView txtView) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        //String source = "<a href='https://www.android-examples.com//'>Android-Examples.com</a>";
         Spanned Text;
         int i;
         try {
             i = inputStream.read();
-            while (i != -1)
-            {
+            while (i != -1) {
                 if (i == 0xA) {
                     Text = Html.fromHtml(byteArrayOutputStream.toString());
                     txtView.setMovementMethod(LinkMovementMethod.getInstance());
