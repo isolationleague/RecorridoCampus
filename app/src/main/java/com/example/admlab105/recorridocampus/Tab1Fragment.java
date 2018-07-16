@@ -228,10 +228,10 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
             public boolean onItemLongPress(final int index, final OverlayItem item) {
                 if (estaDentroDeRadio(item)) {
                     iniciarActivity(item);
-                } else {
-                    String mensaje = " Se encuentra muy lejos de este punto, acérquese más";
+               } else {
+                    String mensaje = "Se encuentra muy lejos de este punto, acérquese más";
                     Toast.makeText(getActivity(), mensaje, Toast.LENGTH_LONG).show();
-                }
+               }
                 return true;
             }
         };
@@ -385,12 +385,19 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
      * @return true si se está dentro del radio, false si se está fuera
      */
     public boolean estaDentroDeRadio(OverlayItem item){
+
+        if(user!=null){
         int distancia = (int) user.distanceToAsDouble(item.getPoint());
 
         if (distancia > radios.get(marcadores.indexOf(item))) {
             return false;
         }
         return true;
+        }
+        else{
+            Toast.makeText(getActivity(), "Por favor active la función de localizacion en su dispositivo", Toast.LENGTH_LONG).show();
+            return false;
+        }
     }
 
     /**
