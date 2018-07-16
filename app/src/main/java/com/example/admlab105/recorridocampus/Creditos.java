@@ -15,6 +15,8 @@ public class Creditos extends AppCompatActivity {
 
         TextView texto = findViewById(R.id.content);
 
+        String ex2="Desarrollo de la aplicación";
+
         String txt1= "Estudiantes del curso Ingeniería de Software 2";
         String ex1="El equipo de Isolation League";
 
@@ -25,11 +27,15 @@ public class Creditos extends AppCompatActivity {
         String txt6="Juan Manuel Torres Vega";
         String txt7="Kevin Yegeni Waltam Vásquez";
 
+        String ex3="Asistentes del museo+UCR";
+        String ex4="Daniela Rodríguez Minsky, diseño gráfico y audios";
+        String ex5="Carlos Garita Viquez, fotografías y recopilación de contenido";
+
         String txt8="Profesor del curso Ingeniería de Software 2";
         String txt9="Alan Calderón Castro";
 
-        String txt9_1="Encargado de Desarrollo y de Diseño";
-        String txt9_2="Mariano Chinchilla";
+        String txt9_1="Sección de diseño gráfico museo+UCR";
+        String txt9_2="Mariano Javier Chinchilla Chavarría";
 
         String txt10="Coordinadora del museo+UCR";
         String txt11="Eugenia Zavaleta Ochoa";
@@ -105,10 +111,10 @@ public class Creditos extends AppCompatActivity {
         String txt63="http://www.cu.ucr.ac.cr/busqueda/acuerdo/NumeroAcuerdo/457011.html";
         String txt64="http://www.cu.ucr.ac.cr/busqueda/acuerdo/NumeroAcuerdo/158271.html";
 
-        texto.setText(Html.fromHtml("<p><strong>" + txt1 + "</strong></p>" + "<p><strong>" + ex1 + "</strong></p>"+"<p>" + "</p>"+"<p>" + txt2 + "</p>"+"<p>" + txt3 + "</p>"+"<p>" + txt4 + "</p>"
-        +"<p>" + txt5 + "</p>"+"<p>" + txt6 + "</p>"+"<p>" + txt7 + "</p>"+"<p>" + "</p>"+"<p><strong>" + txt8 + "</strong></p>"+"<p>" + txt9 + "</p>"+"<p><strong>" + txt9_1 + "</strong></p>"+"<p>" + txt9_2 + "</p>"
-        +"<p>" + "</p><strong>"+txt10 + "</strong></p>"+"<p>" + txt11 + "</p>" + "<p>" + "</p><strong>"+txt12 + "</strong></p>"+"<p>" + txt13 + "</p>"+"<p>" + "</p>"
-        + "</p><strong>"+txt14 + "</strong></p>"+"<p>" + txt15 + "</p>"+ "</p>"+txt16 + "</p>"+"<p>" + "</p>"+"<p><strong>" + txt17 + "</strong></p>" + "<p>" + "</p>"
+        texto.setText(Html.fromHtml("<p><b>"+ex2+"</p></b>"+ "<p><strong>" + txt1 + "</strong></p>" + "<p><strong>" + ex1 + "</strong></p>"+"<p>" + "</p>"+"<p>" + txt2 + "</p>"+"<p>" + txt3 + "</p>"+"<p>" + txt4 + "</p>"
+        +"<p>" + txt5 + "</p>"+"<p>" + txt6 + "</p>"+"<p>" + txt7 + "</p>"+"<p><b>"+ex3+"</p></b>"+"<p>"+ex4+"</p>"+"<p>"+ex5+"</p>"+"<p>" + "</p>"+"<p><strong>" + txt8 + "</strong></p>"+"<p>" + txt9 + "</p>"+"<p><strong>" + txt10 + "</strong></p>"+"<p>" + txt11 + "</p>"
+        +"<p>" + "</p><strong>"+txt9_1 + "</strong></p>"+"<p>" + txt9_2 + "</p>" + "<p>" + "</p><strong>"+txt12 + "</strong></p>"+"<p>" + txt13 + "</p>"+"<p>" + "</p>"
+        +"<p>" + "</p>"+"<p><strong>" + txt17 + "</strong></p>" + "<p>" + "</p>"
         + "</p><strong>"+txt18 + "</strong></p>"+"<p>" + txt19 + "</p>"+ "<p>" + "</p>"+"<p>" + txt20 + "</p>"+"<p>" + "</p>"+"<p>" + txt21 + "</p>"
         +"<p>" + txt22 + "</p>"+"<p>" + txt23 + "</p>"+"<p>" + "</p>"+"<p><strong>" + txt24 + "</strong></p>"+  "<p>" + "</p>"+"<p>" + txt25 + "</p>"
         +"<p>" + txt26 + "</p>"+"<p>" + txt27 + "</p>" + "<p>" + "</p>" + "<p>" + txt28 + "</p>"+"<p>" + txt29 + "</p>"+"<p>" + "</p>"

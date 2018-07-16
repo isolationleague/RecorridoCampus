@@ -226,12 +226,12 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
              */
             @Override
             public boolean onItemLongPress(final int index, final OverlayItem item) {
-             //   if (estaDentroDeRadio(item)) {
+                if (estaDentroDeRadio(item)) {
                     iniciarActivity(item);
-            //    } else {
+                } else {
                     String mensaje = " Se encuentra muy lejos de este punto, acérquese más";
                     Toast.makeText(getActivity(), mensaje, Toast.LENGTH_LONG).show();
-            //    }
+                }
                 return true;
             }
         };
@@ -280,6 +280,10 @@ public class Tab1Fragment extends Fragment implements MapEventsReceiver{
                 }
             }
             Toast.makeText(getActivity(), "El sitio más cercano es "+nombre+" que esta a "+cercania+" mts. de usted",Toast.LENGTH_LONG).show();
+        }
+        else{
+            Toast.makeText(getActivity(), "Por favor active la función de localización de su dispositivo",Toast.LENGTH_LONG).show();
+
         }
     }
 
